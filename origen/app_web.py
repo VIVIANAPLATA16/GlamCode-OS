@@ -63,14 +63,15 @@ st.markdown("""
     }
 
     /* Ocultar elementos estándar de Streamlit */
-    /* ESCUDO DE INVISIBILIDAD TOTAL */
-    .stAppDeployButton, .st-emotion-cache-12fmjuu, .st-emotion-cache-ch5vc8, .st-emotion-cache-6q9sum {
-        display: none !important;
-    }
+    /* ESCUDO DE INVISIBILIDAD REFORZADO 2026 */
     header {visibility: hidden !important;}
     footer {visibility: hidden !important;}
     #MainMenu {visibility: hidden !important;}
-    .block-container {padding-top: 2rem;}
+    .stDeployButton {display:none !important;}
+    [data-testid="stToolbar"] {visibility: hidden !important;}
+    [data-testid="stDecoration"] {display:none !important;}
+    [data-testid="stHeader"] {display:none !important;}
+    .block-container {padding-top: 1rem !important;}
     </style>
     """, unsafe_allow_html=True)
 
