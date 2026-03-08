@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="titulo-seccion">Citas</h2>
+
+<form method="POST">
+    <input type="text" name="cliente" placeholder="Nombre del cliente" required>
+    <input type="text" name="servicio" placeholder="Servicio" required>
+    <input type="date" name="fecha" required>
+    <button type="submit">Agendar Cita</button>
+</form>
+
+<table>
+    <tr>
+        <th>Cliente</th>
+        <th>Servicio</th>
+        <th>Fecha</th>
+    </tr>
+
+    {% for cita in citas %}
+    <tr>
+        <td>{{ cita.cliente }}</td>
+        <td>{{ cita.servicio }}</td>
+        <td>{{ cita.fecha }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

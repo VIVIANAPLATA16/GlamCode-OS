@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="titulo-seccion">Dashboard</h2>
+
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        Total Clientes<br><br>
+        <strong>{{ total_clientes }}</strong>
+    </div>
+
+    <div class="dashboard-card">
+        Total Citas<br><br>
+        <strong>{{ total_citas }}</strong>
+    </div>
+</div>
+
+{% endblock %}

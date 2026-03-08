@@ -1,0 +1,164 @@
+body {
+    margin: 0;
+    font-family: 'Cormorant Garamond', serif;
+    background: radial-gradient(circle at top, #111111 0%, #000000 70%);
+    color: #f5f5f5;
+}
+
+header {
+    background: #000000;
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid #c6a75e;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 40px;
+    letter-spacing: 4px;
+    font-weight: 500;
+    color: #c6a75e;
+}
+
+nav {
+    margin-top: 20px;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 25px;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: 0.4s ease;
+}
+
+nav a:hover {
+    color: #c6a75e;
+}
+
+main {
+    padding: 60px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* TITULOS */
+.titulo-seccion {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 50px;
+    letter-spacing: 3px;
+    color: #c6a75e;
+}
+
+/* CARDS DASHBOARD */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+.dashboard-card {
+    background: #111111;
+    padding: 40px;
+    border: 1px solid #c6a75e;
+    text-align: center;
+    font-size: 22px;
+    transition: 0.4s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(198,167,94,0.2);
+}
+
+/* FORMULARIOS */
+form {
+    background: #111111;
+    padding: 30px;
+    border: 1px solid #c6a75e;
+    margin-bottom: 40px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: #000000;
+    border: 1px solid #c6a75e;
+    color: white;
+}
+
+button {
+    background: transparent;
+    color: #c6a75e;
+    border: 1px solid #c6a75e;
+    padding: 10px 25px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+button:hover {
+    background: #c6a75e;
+    color: #000000;
+}
+
+/* TABLAS */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #111111;
+    border: 1px solid #c6a75e;
+}
+
+th, td {
+    padding: 15px;
+    border-bottom: 1px solid #c6a75e;
+    text-align: center;
+}
+
+th {
+    color: #c6a75e;
+    letter-spacing: 2px;
+}
+
+/* SERVICIOS */
+.grid-servicios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+}
+
+.servicio-card {
+    background: #111111;
+    padding: 40px;
+    border: 1px solid #c6a75e;
+    text-align: center;
+    transition: 0.4s ease;
+}
+
+.servicio-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(198,167,94,0.2);
+}
+
+.precio {
+    font-size: 20px;
+    color: #c6a75e;
+    margin-top: 10px;
+}
+
+footer {
+    background: #000000;
+    color: #c6a75e;
+    text-align: center;
+    padding: 25px;
+    border-top: 1px solid #c6a75e;
+    margin-top: 60px;
+}
