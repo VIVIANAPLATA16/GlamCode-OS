@@ -48,29 +48,23 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-
-        if not email or not password:
-            return "Por favor, ingresa correo y contraseña", 400
-
         conn = conectar()
         if conn:
-            # Forzamos a que el cursor NO sea diccionario para que user[0] funcione siempre
-            cursor = conn.cursor(dictionary=False) 
-            query = "SELECT id, peluqueria FROM usuarios WHERE email=%s AND password=%s"
-            cursor.execute(query, (email, password))
-            user = cursor.fetchone()
-            conn.close()
-
-            if user:
-                # user[0] es el ID, user[1] es el nombre de la peluquería
-                session["usuario_id"] = user[0]
-                session["usuario_nombre"] = user[1] 
-                return redirect(url_for("inicio")) 
-            else:
-                return "Usuario o contraseña incorrectos. <a href='/login'>Volver a intentar</a>", 401
-        else:
-            return "Error de conexión a la base de datos", 500
-
+            try:
+                cursor = conn.cursor()
+                # MySQL en la nube es estricto con los nombres
+                query = "SELECT id, peluqueria FROM usuarios WHERE email=%s AND password=%s"
+                cursor.execute(query, (email, password))
+                user = cursor.fetchone()
+                if user:
+                    session["usuario_id"] = user[0]
+                    session["usuario_nombre"] = user[1]
+                    return redirect(url_for("inicio"))
+                return "Usuario o contraseña incorrectos", 401
+            except Exception as e:
+                return f"Error en Login: {e}", 500
+            finally:
+                conn.close()
     return render_template("login.html")
 
 # =============================
@@ -82,27 +76,18 @@ def registro():
         peluqueria = request.form.get("peluqueria")
         email = request.form.get("email")
         password = request.form.get("password")
-
-        if not peluqueria or not email or not password:
-            return "Todos los campos son obligatorios", 400
-
         conexion = conectar()
         if conexion:
-            cursor = conexion.cursor()
             try:
-                cursor.execute(
-                    "INSERT INTO usuarios(peluqueria, email, password) VALUES(%s, %s, %s)",
-                    (peluqueria, email, password)
-                )
+                cursor = conexion.cursor()
+                query = "INSERT INTO usuarios (peluqueria, email, password) VALUES (%s, %s, %s)"
+                cursor.execute(query, (peluqueria, email, password))
                 conexion.commit()
                 return redirect(url_for("login"))
             except Exception as e:
-                return f"Error al registrar: {e}", 500
+                return f"Error en Registro: {e}", 500
             finally:
                 conexion.close()
-        else:
-            return "Error de conexión", 500
-
     return render_template("registro.html")
 
 # =============================
