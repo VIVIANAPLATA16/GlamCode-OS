@@ -1,35 +1,29 @@
-import sqlite3
+import mysql.connector
+import os
+from dotenv import load_dotenv
 
-def probar_base_de_datos():
-    # 1. Conectar (Crea el archivo si no existe)
-    conexion = sqlite3.connect('peluqueria_avanzada.db')
-    cursor = conexion.cursor()
+# Esto permite que el código lea las variables (llaves) que pusimos en Render
+load_dotenv()
 
-    # 2. Crear la tabla de clientes
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS clientes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT NOT NULL,
-            servicio TEXT,
-            precio REAL
+def obtener_conexion():
+    try:
+        conexion = mysql.connector.connect(
+            host=os.getenv('DB_HOST'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            database=os.getenv('DB_NAME'),
+            port=os.getenv('DB_PORT')
         )
-    ''')
+        return conexion
+    except mysql.connector.Error as err:
+        print(f"Error al conectar a la base de datos: {err}")
+        return None
 
-    # 3. Insertar datos "Inventados" para la prueba
-    cursor.execute("INSERT INTO clientes (nombre, servicio, precio) VALUES ('Viviana Plata', 'Diseño de Imagen', 50.0)")
-    cursor.execute("INSERT INTO clientes (nombre, servicio, precio) VALUES ('Cliente VIP', 'Corte y Barba', 35.0)")
-
-    # 4. Recuperar los datos para verlos
-    cursor.execute("SELECT * FROM clientes")
-    usuarios = cursor.fetchall()
-
-    print("--- DATOS EN LA BASE DE DATOS ---")
-    for usuario in usuarios:
-        print(f"ID: {usuario[0]} | Nombre: {usuario[1]} | Servicio: {usuario[2]} | Precio: ${usuario[3]}")
-
-    conexion.commit()
-    conexion.close()
-
-# Ejecutar la prueba
+# Esta parte es para que puedas probar si la conexión a la nube funciona
 if __name__ == "__main__":
-    probar_base_de_datos()
+    con = obtener_conexion()
+    if con and con.is_connected():
+        print("¡CONEXIÓN EXITOSA A TIDB CLOUD! Tu base de datos ya está en la nube.")
+        con.close()
+    else:
+        print("No se pudo conectar. Revisa las variables en Render.")
