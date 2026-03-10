@@ -1,33 +1,42 @@
-# ✂️ Sistema de Gestión Profesional - Peluquería
-> "Innovación tecnológica para el sector de la belleza." 🚀
+✂️ GlamCode OS - Gestión de Peluquería Profesional
+"Innovación tecnológica para el sector de la belleza." 🚀
 
-Este software es una solución integral para la administración de centros de estética, diseñado para optimizar el registro de servicios y la base de datos de clientes. Desarrollado como parte de mi formación en **Tecnología en Desarrollo de Software**.
+Este software es una solución Web integral para la administración de centros de estética, diseñado para optimizar el registro de servicios y la base de datos de clientes. Desarrollado como parte de mi formación en Tecnología en Análisis y Desarrollo de Software (ADSO).
 
-## 📸 Vista Previa
-Aquí puedes ver cómo luce el sistema actualmente:
+🌟 Características Principales
+Panel de Control: Gestión centralizada de clientes y servicios.
 
-![Menú Principal](https://github.com/VIVIANAPLATA16/sistema-gestion-peluqueria/blob/main/recursos/menu.png?raw=true)
-*Interfaz de usuario en desarrollo.*
+Diseño Responsivo: Interfaz elegante con acabados dorados y negros.
 
-### 📝 Registro y Control
-![Registro de Datos](recursos/interfaz_real.png)
-*Módulo de captura de datos y confirmación de guardado.*
+Persistencia de Datos: Uso de bases de datos relacionales para mayor seguridad.
 
-## 📁 Estructura del Sistema
-- **`origen/`**: El cerebro del programa (Lógica e Interfaz).
-- **`datos/`**: Donde se guarda toda la información de forma segura.
-- **`recursos/`**: Imágenes y elementos visuales del proyecto.
+📁 Estructura del Sistema
+app.py: Servidor Flask y rutas principales del sistema.
 
-## 🛠️ Tecnologías
-- **Python 🐍**: Lenguaje principal para la lógica de negocio.
-- **JSON**: Almacenamiento de datos persistente.
-- **Licencia MIT**: Software abierto bajo estándares profesionales.
-- **SQLite 🗄️**: Implementación de base de datos relacional para mayor seguridad de los datos. 
+templates/: Archivos HTML con el diseño de la interfaz.
 
-## 📅 Hoja de Ruta (Roadmap)
-- [ ] Implementar base de datos SQLite.
-- [ ] Mejorar la interfaz visual con CustomTkinter.
-- [ ] Módulo de facturación automática.
+database.py: Configuración y conexión a la base de datos.
 
----
-Creado con ❤️ por **Viviana Plata** | Futura Ingeniera de Software.
+requirements.txt: Listado de librerías necesarias para Flask.
+
+origen/: Carpeta de respaldos y archivos de lógica previos.
+
+🛠️ Tecnologías
+Backend: Python + Flask
+
+Frontend: HTML5, CSS3 & Jinja2
+
+Base de Datos: SQLite / MySQL
+
+🚀 Cómo ejecutar el proyecto
+Instala las dependencias:
+
+pip install -r requirements.txt
+
+Ejecuta la aplicación:
+
+python app.py
+
+Accede en tu navegador a: http://127.0.0.1:5000
+
+Creado con ❤️ por Viviana Plata | Futura Ingeniera de Software.
