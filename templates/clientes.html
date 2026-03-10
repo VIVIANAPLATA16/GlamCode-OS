@@ -1,23 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h2>Clientes</h2>
-<table>
+
+<h3>Agregar Cliente</h3>
+
+<form method="POST" action="{{ url_for('clientes') }}">
+    <input type="text" name="nombre" placeholder="Nombre" required>
+    <input type="text" name="telefono" placeholder="Teléfono" required>
+    <button type="submit">Guardar</button>
+</form>
+
+<br>
+
+<table border="1">
     <thead>
         <tr>
             <th>ID</th>
             <th>Nombre</th>
             <th>Teléfono</th>
+            <th>Acciones</th>
         </tr>
     </thead>
+
     <tbody>
         {% for cliente in clientes %}
         <tr>
             <td>{{ cliente[0] }}</td>
             <td>{{ cliente[1] }}</td>
             <td>{{ cliente[2] }}</td>
+
+            <td>
+
+                <a href="{{ url_for('editar_cliente', id=cliente[0]) }}">
+                    Editar
+                </a>
+
+                |
+
+                <a href="{{ url_for('delete_cliente', id=cliente[0]) }}">
+                    Eliminar
+                </a>
+
+            </td>
+
         </tr>
         {% endfor %}
     </tbody>
+
 </table>
+
 {% endblock %}

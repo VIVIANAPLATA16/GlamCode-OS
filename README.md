@@ -1,40 +1,50 @@
-✂️ GlamCode OS - Gestión de Peluquería Profesional
-"Innovación tecnológica para el sector de la belleza." 🚀
+# ✂️ GlamCode OS by Viviana ✨
+> **"Innovación tecnológica para el sector de la belleza."** 🚀
 
-Este software es una solución Web integral para la administración de centros de estética, diseñado para optimizar el registro de servicios y la base de datos de clientes. Desarrollado como parte de mi formación en Tecnología en Análisis y Desarrollo de Software (ADSO).
+**GlamCode OS** es una solución web integral diseñada para la gestión profesional de centros de estética y peluquerías. Este sistema representa la evolución técnica de un prototipo inicial (SaaS en Streamlit), migrando hacia una arquitectura más robusta con **Flask** y **SQLite**, ofreciendo una interfaz de lujo inspirada en acabados dorados y negros.
 
-🌟 Características Principales
+Desarrollado como proyecto central en mi formación de **Tecnología en Análisis y Desarrollo de Software (ADSO)**.
 
-Panel de Control: Gestión centralizada de clientes y servicios.
+---
 
-Diseño Responsivo: Interfaz elegante con acabados dorados y negros.
+## 🌟 Características Principales
 
-Persistencia de Datos: Uso de bases de datos relacionales para mayor seguridad.
+* **Luxury Dashboard:** Interfaz exclusiva diseñada para una experiencia de usuario premium.
+* **Gestión de Clientes:** Módulo completo para el registro y seguimiento de base de datos.
+* **Control de Servicios y Citas:** Administración ágil de la agenda y catálogo de servicios.
+* **Persistencia de Datos:** Arquitectura relacional para mayor seguridad y escalabilidad.
+* **Diseño Responsivo:** Adaptado para su uso en tablets y computadores de salón.
 
-📁 Estructura del Sistema
+## 🛠️ Stack Tecnológico
 
-app.py: Servidor Flask y rutas principales del sistema.
+| Capa | Tecnologías |
+| :--- | :--- |
+| **Backend** | Python 3 + Flask |
+| **Frontend** | HTML5, CSS3 (Custom Luxury Design) & Jinja2 |
+| **Base de Datos** | SQLite (Persistencia local) / Estructura preparada para MySQL |
+| **Control de Versiones** | Git + GitHub |
 
-templates/: Archivos HTML con el diseño de la interfaz.
+### 🔮 Mejoras futuras
 
-database.py: Configuración y conexión a la base de datos.
+- [ ] Panel de análisis financiero y reportes de ventas.
+- [ ] Sistema de notificaciones vía WhatsApp/Email para citas.
+- [ ] Control de acceso basado en roles (Administrador / Empleado).
+- [ ] Migración a base de datos en la nube (PostgreSQL/MySQL).
 
-requirements.txt: Listado de librerías necesarias para Flask.
+## 📁 Estructura del Proyecto
 
-origen/: Carpeta de respaldos y archivos de lógica previos.
+```text
+├── app.py              # Servidor Flask y lógica de rutas principales
+├── database.db         # Base de datos relacional SQLite
+├── static/             # Archivos CSS, imágenes y recursos visuales
+├── templates/          # Vistas HTML (Dashboard, Clientes, Citas, etc.)
+├── requirements.txt    # Dependencias del proyecto
+└── origen/             # Documentación y archivos de lógica previa (Legacy)
 
-🛠️ Tecnologías Utilizadas
+👩‍💻 Autora
+Viviana Plata
+Futura Ingeniera de Software | Estudiante ADSO
+📍 Bogotá, Colombia
 
-Backend: Python + Flask
+Creado con ❤️ para transformar la industria de la belleza.
 
-Frontend: HTML5, CSS3 & Jinja2
-
-Base de Datos: SQLite / MySQL
-
-🚀 Cómo ejecutar el proyecto
-
-Instalar las dependencias: Ejecuta el comando: pip install -r requirements.txt
-
-Ejecutar la aplicación: Ejecuta el archivo principal: python app.py
-
-Creado con ❤️ por Viviana Plata | Futura Ingeniera de Software.

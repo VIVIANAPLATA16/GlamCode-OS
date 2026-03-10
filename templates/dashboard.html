@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GlamCode Luxury</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* HEADER Y NAVEGACIÓN CENTRADA */
+        header {
+            border-bottom: 1px solid #C5A065;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #C5A065;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin: 0 0 20px 0;
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px; /* Espacio entre botones */
+        }
+
+        nav a {
+            color: #C5A065;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            transition: 0.4s;
+            font-weight: 400;
+        }
+
+        nav a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #C5A065;
+        }
+
+        /* SECCIÓN CENTRAL */
+        .seccion-principal {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .bienvenida-titulo {
+            color: #C5A065;
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .nombre-negocio {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-top: 10px;
+            letter-spacing: 3px;
+            font-weight: 200;
+            text-transform: lowercase;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 20px;
+            text-align: center;
+            color: #C5A065;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            border-top: 1px solid #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>GLAMCODE OS</h1>
+        <nav>
+            <a href="{{ url_for('inicio') }}">Dashboard</a>
+            <a href="{{ url_for('clientes') }}">Clientes</a>
+            <a href="/servicios">Servicios</a>
+            <a href="/citas">Citas</a>
+            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+        </nav>
+    </header>
+
+    <main class="seccion-principal">
+        <h2 class="bienvenida-titulo">Bienvenida</h2>
+        <p class="nombre-negocio">{{ nombre }} ✨</p>
+    </main>
+
+    <footer>
+        © 2026 GLAMCODE - LUXURY HAIR SYSTEM
+    </footer>
+
+</body>
+</html>

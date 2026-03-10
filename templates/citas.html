@@ -2,29 +2,51 @@
 
 {% block content %}
 
-<h2 class="titulo-seccion">Citas</h2>
+<h2>Citas</h2>
 
 <form method="POST">
-    <input type="text" name="cliente" placeholder="Nombre del cliente" required>
-    <input type="text" name="servicio" placeholder="Servicio" required>
+
+    <label>Nombre del cliente</label>
+    <input type="text" name="cliente" required>
+
+    <label>Servicio</label>
+    <input type="text" name="servicio" required>
+
+    <label>Fecha</label>
     <input type="date" name="fecha" required>
+
     <button type="submit">Agendar Cita</button>
+
 </form>
 
-<table>
-    <tr>
-        <th>Cliente</th>
-        <th>Servicio</th>
-        <th>Fecha</th>
-    </tr>
+<br><br>
 
-    {% for cita in citas %}
-    <tr>
-        <td>{{ cita.cliente }}</td>
-        <td>{{ cita.servicio }}</td>
-        <td>{{ cita.fecha }}</td>
-    </tr>
-    {% endfor %}
+<table border="1">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Cliente</th>
+<th>Servicio</th>
+<th>Fecha</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for cita in citas %}
+
+<tr>
+<td>{{ cita[0] }}</td>
+<td>{{ cita[1] }}</td>
+<td>{{ cita[2] }}</td>
+<td>{{ cita[3] }}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
 </table>
 
 {% endblock %}

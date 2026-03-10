@@ -1,10 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h2>Servicios</h2>
-<ul>
-    {% for servicio in servicios %}
-        <li>{{ servicio[1] }} - {{ servicio[2] }}</li>
-    {% endfor %}
-</ul>
+
+<form method="POST">
+
+    <label>Nombre del servicio</label>
+    <input type="text" name="nombre" required>
+
+    <label>Precio</label>
+    <input type="number" name="precio" required>
+
+    <button type="submit">Agregar Servicio</button>
+
+</form>
+
+<br><br>
+
+<table border="1">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Servicio</th>
+<th>Precio</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for servicio in servicios %}
+
+<tr>
+<td>{{ servicio[0] }}</td>
+<td>{{ servicio[1] }}</td>
+<td>{{ servicio[2] }}</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
 {% endblock %}

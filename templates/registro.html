@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Registro GlamCode</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<h2>Crear cuenta de peluquería</h2>
+
+<form method="POST">
+
+<label>Nombre de la peluquería</label>
+<input type="text" name="peluqueria" required>
+
+<label>Email</label>
+<input type="email" name="email" required>
+
+<label>Contraseña</label>
+<input type="password" name="password" required>
+
+<button type="submit">Crear cuenta</button>
+
+</form>
+
+<p>Ya tienes cuenta?</p>
+
+<a href="{{ url_for('login') }}">Iniciar sesión</a>
+
+</body>
+
+</html>
