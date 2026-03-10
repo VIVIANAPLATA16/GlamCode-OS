@@ -54,13 +54,15 @@ def login():
 
         conn = conectar()
         if conn:
-            cursor = conn.cursor()
-            # Buscamos el ID y el nombre de la peluquería para la sesión
-            cursor.execute("SELECT id, peluqueria FROM usuarios WHERE email=%s AND password=%s", (email, password))
+            # Forzamos a que el cursor NO sea diccionario para que user[0] funcione siempre
+            cursor = conn.cursor(dictionary=False) 
+            query = "SELECT id, peluqueria FROM usuarios WHERE email=%s AND password=%s"
+            cursor.execute(query, (email, password))
             user = cursor.fetchone()
             conn.close()
 
             if user:
+                # user[0] es el ID, user[1] es el nombre de la peluquería
                 session["usuario_id"] = user[0]
                 session["usuario_nombre"] = user[1] 
                 return redirect(url_for("inicio")) 
