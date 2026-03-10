@@ -17,8 +17,7 @@ def conectar():
 
 @app.route("/")
 def inicio():
-    return "<h1>Sistema Peluquería funcionando</h1><a href='/clientes'>Ir a Clientes</a>"
-
+    return render_template("clientes.html")
 
 # ==============================
 # CLIENTES
