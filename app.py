@@ -68,7 +68,7 @@ def clientes():
     cursor = conn.cursor()
     if request.method == "POST":
         n, t = request.form.get("nombre"), request.form.get("telefono")
-        cursor.execute("INSERT INTO clientes (usuario_id, nombre, telefono) VALUES (%s, %s, %s)", (session["usuario_id"], n, t))
+        cursor.execute("INSERT INTO clientes (usuario_id, nombre, terminal) VALUES (%s, %s, %s)", (session["usuario_id"], n, t))
         conn.commit()
     cursor.execute("SELECT id, nombre, telefono FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
     lista = cursor.fetchall()
@@ -116,8 +116,6 @@ def citas():
         
     cursor.execute("SELECT id, cliente, servicio, precio, fecha FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
     lista_raw = cursor.fetchall()
-    
-    # SEPARAR FECHA Y HORA PARA LA TABLA
     lista_final = []
     for c in lista_raw:
         fecha_completa = c[4]
@@ -125,9 +123,7 @@ def citas():
             f_solo, h_solo = fecha_completa.split("T")
         else:
             f_solo, h_solo = fecha_completa, ""
-        # Nueva estructura: (id, cliente, servicio, precio, fecha, hora)
         lista_final.append((c[0], c[1], c[2], c[3], f_solo, h_solo))
-
     conn.close()
     return render_template("citas.html", citas=lista_final)
 
@@ -137,20 +133,36 @@ def editar_cita(id):
     conn = conectar()
     cursor = conn.cursor()
     if request.method == "POST":
-        cl, s, f = request.form.get("cliente"), request.form.get("servicio"), request.form.get("fecha")
+        cl = request.form.get("cliente")
+        s = request.form.get("servicio")
+        f_s = request.form.get("fecha_solo")
+        h_s = request.form.get("hora_solo")
+        
+        # Unimos fecha y hora para la BD
+        fecha_unida = f"{f_s}T{h_s}"
+        
         cursor.execute("SELECT precio FROM servicios WHERE nombre=%s AND usuario_id=%s", (s, session["usuario_id"]))
         res = cursor.fetchone()
         precio_v = res[0] if res else 0
+        
         cursor.execute("UPDATE citas SET cliente=%s, servicio=%s, precio=%s, fecha=%s WHERE id=%s AND usuario_id=%s", 
-                       (cl, s, precio_v, f, id, session["usuario_id"]))
+                       (cl, s, precio_v, fecha_unida, id, session["usuario_id"]))
         conn.commit()
         conn.close()
         return redirect(url_for("citas"))
         
     cursor.execute("SELECT id, cliente, servicio, precio, fecha FROM citas WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
     cita = cursor.fetchone()
+    
+    # Separar para que el formulario de edición muestre los valores actuales
+    f_solo, h_solo = "", ""
+    if cita and cita[4] and "T" in cita[4]:
+        f_solo, h_solo = cita[4].split("T")
+    elif cita:
+        f_solo = cita[4]
+
     conn.close()
-    return render_template("editar_cita.html", cita=cita)
+    return render_template("editar_cita.html", cita=cita, fecha_s=f_solo, hora_s=h_solo)
 
 @app.route("/delete_cita/<int:id>")
 def delete_cita(id):
