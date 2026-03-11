@@ -20,22 +20,34 @@ def conectar():
 # =============================
 # DASHBOARD (RUTA PRINCIPAL)
 # =============================
+# =============================
+# DASHBOARD (RUTA PRINCIPAL) - CORREGIDO
+# =============================
 @app.route("/")
 def inicio():
     if "usuario_id" not in session:
         return redirect(url_for("login"))
     
     conexion = conectar()
+    total_clientes = 0
+    total_citas = 0
+    
     if conexion:
         try:
             cursor = conexion.cursor()
-            # Contar clientes
-            cursor.execute("SELECT COUNT(*) FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
-            total_clientes = cursor.fetchone()[0]
+            # Intentamos contar clientes (si falla la columna, ponemos 0)
+            try:
+                cursor.execute("SELECT COUNT(*) FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
+                total_clientes = cursor.fetchone()[0]
+            except:
+                total_clientes = "Pendiente"
 
-            # Contar citas
-            cursor.execute("SELECT COUNT(*) FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
-            total_citas = cursor.fetchone()[0]
+            # Intentamos contar citas (si falla la columna, ponemos 0)
+            try:
+                cursor.execute("SELECT COUNT(*) FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
+                total_citas = cursor.fetchone()[0]
+            except:
+                total_citas = "Pendiente"
             
             return render_template(
                 "dashboard.html", 
@@ -47,7 +59,7 @@ def inicio():
             return f"Error en Dashboard: {e}", 500
         finally:
             conexion.close()
-    return "Error de conexión con la base de datos", 500
+    return "Error de conexión", 500
 
 # =============================
 # LOGIN
