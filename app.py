@@ -102,7 +102,7 @@ def logout():
     return redirect(url_for("login"))
 
 # =============================
-# CLIENTES (CORREGIDO)
+# CLIENTES
 # =============================
 @app.route("/clientes", methods=["GET", "POST"])
 def clientes():
@@ -132,7 +132,6 @@ def clientes():
     finally:
         conexion.close()
 
-# ESTA ES LA FUNCIÓN QUE TE HACÍA FALTA:
 @app.route("/editar_cliente/<int:id>", methods=["GET", "POST"])
 def editar_cliente(id):
     if "usuario_id" not in session:
@@ -157,6 +156,19 @@ def editar_cliente(id):
     conexion.close()
     if not cliente: return redirect(url_for("clientes"))
     return render_template("editar_cliente.html", cliente=cliente)
+
+@app.route("/delete_cliente/<int:id>")
+def delete_cliente(id):
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+    
+    conexion = conectar()
+    if conexion:
+        cursor = conexion.cursor()
+        cursor.execute("DELETE FROM clientes WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
+        conexion.commit()
+        conexion.close()
+    return redirect(url_for("clientes"))
 
 # =============================
 # SERVICIOS
@@ -217,24 +229,7 @@ def citas():
     finally:
         conexion.close()
 
-# =============================
-# ARRANQUE
-# =============================
-
-@app.route("/delete_cliente/<int:id>")
-def delete_cliente(id):
-    if "usuario_id" not in session:
-        return redirect(url_for("login"))
-    
-    conexion = conectar()
-    if conexion:
-        cursor = conexion.cursor()
-        cursor.execute("DELETE FROM clientes WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
-        conexion.commit()
-        conexion.close()
-    return redirect(url_for("clientes"))
-
-    @app.route("/editar_cita/<int:id>", methods=["GET", "POST"])
+@app.route("/editar_cita/<int:id>", methods=["GET", "POST"])
 def editar_cita(id):
     if "usuario_id" not in session:
         return redirect(url_for("login"))
@@ -277,6 +272,9 @@ def delete_cita(id):
         conexion.close()
     return redirect(url_for("citas"))
 
+# =============================
+# ARRANQUE
+# =============================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
