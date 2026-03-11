@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Editar Cita</h2>
+
+<div style="background: #1a1a1a; padding: 20px; border-radius: 8px; display: inline-block;">
+    <form method="POST">
+        <p>
+            <label>Cliente:</label><br>
+            <input type="text" name="cliente" value="{{ cita[1] }}" required>
+        </p>
+        <p>
+            <label>Servicio:</label><br>
+            <input type="text" name="servicio" value="{{ cita[2] }}" required>
+        </p>
+        <p>
+            <label>Fecha:</label><br>
+            <input type="date" name="fecha" value="{{ cita[3] }}" required>
+        </p>
+        
+        <button type="submit" style="background: #d4af37; color: black; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold;">
+            Actualizar Cita
+        </button>
+        
+        <a href="{{ url_for('citas') }}" style="color: #999; margin-left: 10px; text-decoration: none;">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}

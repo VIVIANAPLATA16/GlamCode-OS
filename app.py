@@ -233,7 +233,50 @@ def delete_cliente(id):
         conexion.commit()
         conexion.close()
     return redirect(url_for("clientes"))
+
+    @app.route("/editar_cita/<int:id>", methods=["GET", "POST"])
+def editar_cita(id):
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
     
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    if request.method == "POST":
+        nuevo_cliente = request.form.get("cliente")
+        nuevo_servicio = request.form.get("servicio")
+        nueva_fecha = request.form.get("fecha")
+        
+        cursor.execute(
+            "UPDATE citas SET cliente=%s, servicio=%s, fecha=%s WHERE id=%s AND usuario_id=%s",
+            (nuevo_cliente, nuevo_servicio, nueva_fecha, id, session["usuario_id"])
+        )
+        conexion.commit()
+        conexion.close()
+        return redirect(url_for("citas"))
+
+    cursor.execute("SELECT id, cliente, servicio, fecha FROM citas WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
+    cita = cursor.fetchone()
+    conexion.close()
+    
+    if not cita:
+        return redirect(url_for("citas"))
+        
+    return render_template("editar_cita.html", cita=cita)
+
+@app.route("/delete_cita/<int:id>")
+def delete_cita(id):
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+    
+    conexion = conectar()
+    if conexion:
+        cursor = conexion.cursor()
+        cursor.execute("DELETE FROM citas WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
+        conexion.commit()
+        conexion.close()
+    return redirect(url_for("citas"))
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

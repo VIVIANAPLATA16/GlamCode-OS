@@ -4,49 +4,51 @@
 
 <h2>Citas</h2>
 
-<form method="POST">
+<div style="background: #1a1a1a; padding: 20px; border-radius: 8px; display: inline-block; margin-bottom: 30px;">
+    <h3>Agendar Nueva Cita</h3>
+    <form method="POST">
+        <label>Nombre del cliente</label><br>
+        <input type="text" name="cliente" required><br><br>
 
-    <label>Nombre del cliente</label>
-    <input type="text" name="cliente" required>
+        <label>Servicio</label><br>
+        <input type="text" name="servicio" required><br><br>
 
-    <label>Servicio</label>
-    <input type="text" name="servicio" required>
+        <label>Fecha</label><br>
+        <input type="date" name="fecha" required><br><br>
 
-    <label>Fecha</label>
-    <input type="date" name="fecha" required>
+        <button type="submit" style="background: #d4af37; color: black; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold;">
+            Agendar Cita
+        </button>
+    </form>
+</div>
 
-    <button type="submit">Agendar Cita</button>
+<br>
 
-</form>
-
-<br><br>
-
-<table border="1">
-
-<thead>
-<tr>
-<th>ID</th>
-<th>Cliente</th>
-<th>Servicio</th>
-<th>Fecha</th>
-</tr>
-</thead>
-
-<tbody>
-
-{% for cita in citas %}
-
-<tr>
-<td>{{ cita[0] }}</td>
-<td>{{ cita[1] }}</td>
-<td>{{ cita[2] }}</td>
-<td>{{ cita[3] }}</td>
-</tr>
-
-{% endfor %}
-
-</tbody>
-
+<table border="1" style="width: 100%; border-collapse: collapse; text-align: center;">
+    <thead>
+        <tr style="background: #333; color: #d4af37;">
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Servicio</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cita in citas %}
+        <tr>
+            <td>{{ cita[0] }}</td>
+            <td>{{ cita[1] }}</td>
+            <td>{{ cita[2] }}</td>
+            <td>{{ cita[3] }}</td>
+            <td>
+                <a href="{{ url_for('editar_cita', id=cita[0]) }}" style="color: #d4af37; text-decoration: none; font-weight: bold;">Editar</a>
+                | 
+                <a href="{{ url_for('delete_cita', id=cita[0]) }}" style="color: #ff4d4d; text-decoration: none; font-weight: bold;" onclick="return confirm('¿Seguro que deseas eliminar esta cita?')">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}
