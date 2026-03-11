@@ -36,6 +36,7 @@
                 <th style="padding: 15px;">Servicio</th>
                 <th style="padding: 15px;">Precio</th>
                 <th style="padding: 15px;">Fecha</th>
+                <th style="padding: 15px;">Hora</th>
                 <th style="padding: 15px;">Acciones</th>
             </tr>
         </thead>
@@ -46,10 +47,10 @@
                 <td style="padding: 12px;">{{ cita[1] }}</td>
                 <td style="padding: 12px;">{{ cita[2] }}</td>
                 <td style="padding: 12px; color: #c5a059; font-weight: bold;">
-                    {% if cita[3] %}${{ "{:,.0f}".format(cita[3]) }}{% else %}$0{% endif %}
+                    ${{ "{:,.0f}".format(cita[3]) }}
                 </td>
-                <td style="padding: 12px;">{{ cita[4] }}</td>
-                <td style="padding: 12px;">
+                <td style="padding: 12px;">{{ cita[4] }}</td> <td style="padding: 12px;">{{ cita[5] }}</td> <td style="padding: 12px;">
+                    <a href="{{ url_for('editar_cita', id=cita[0]) }}" style="color: #c5a059; text-decoration: none;">Editar</a> | 
                     <a href="{{ url_for('delete_cita', id=cita[0]) }}" style="color: #c5a059; text-decoration: none;" onclick="return confirm('¿Eliminar cita?')">Eliminar</a>
                 </td>
             </tr>
