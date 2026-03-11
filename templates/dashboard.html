@@ -35,7 +35,8 @@
         nav {
             display: flex;
             justify-content: center;
-            gap: 40px; /* Espacio entre botones */
+            align-items: center;
+            gap: 40px;
         }
 
         nav a {
@@ -51,6 +52,30 @@
         nav a:hover {
             color: #fff;
             text-shadow: 0 0 10px #C5A065;
+        }
+
+        /* ESTILO ESPECIAL PARA BOTÓN EQUIPO */
+        .btn-equipo {
+            border: 1px solid #C5A065;
+            padding: 8px 15px;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .btn-equipo:hover {
+            background-color: #C5A065;
+            color: #000 !important;
+        }
+
+        /* ESTILO PARA CERRAR SESIÓN (SUTIL) */
+        .logout-link {
+            opacity: 0.7;
+            font-size: 0.75rem;
+        }
+
+        .logout-link:hover {
+            color: #ff4d4d !important;
+            text-shadow: none !important;
         }
 
         /* SECCIÓN CENTRAL */
@@ -101,7 +126,8 @@
             <a href="{{ url_for('clientes') }}">Clientes</a>
             <a href="/servicios">Servicios</a>
             <a href="/citas">Citas</a>
-            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+            <a href="/crear_estilista" class="btn-equipo">+ Equipo</a>
+            <a href="{{ url_for('logout') }}" class="logout-link">Cerrar sesión</a>
         </nav>
     </header>
 
