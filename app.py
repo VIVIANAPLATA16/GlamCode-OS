@@ -10,18 +10,13 @@ app.secret_key = "glamcode_secret"
 # =============================
 def conectar():
     try:
-        # Intentamos obtener la conexión de database_pro
         return obtener_conexion()
     except Exception as e:
-        # Si falla, lo imprimimos en la consola de Render para debuguear
         print(f"DEBUG: Error de conexión a la base de datos: {e}")
         return None
 
 # =============================
-# DASHBOARD (RUTA PRINCIPAL)
-# =============================
-# =============================
-# DASHBOARD (RUTA PRINCIPAL) - CORREGIDO
+# DASHBOARD
 # =============================
 @app.route("/")
 def inicio():
@@ -35,19 +30,17 @@ def inicio():
     if conexion:
         try:
             cursor = conexion.cursor()
-            # Intentamos contar clientes (si falla la columna, ponemos 0)
             try:
                 cursor.execute("SELECT COUNT(*) FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
                 total_clientes = cursor.fetchone()[0]
             except:
-                total_clientes = "Pendiente"
+                total_clientes = 0
 
-            # Intentamos contar citas (si falla la columna, ponemos 0)
             try:
                 cursor.execute("SELECT COUNT(*) FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
                 total_citas = cursor.fetchone()[0]
             except:
-                total_citas = "Pendiente"
+                total_citas = 0
             
             return render_template(
                 "dashboard.html", 
@@ -59,10 +52,10 @@ def inicio():
             return f"Error en Dashboard: {e}", 500
         finally:
             conexion.close()
-    return "Error de conexión", 500
+    return redirect(url_for("login"))
 
 # =============================
-# LOGIN
+# LOGIN / REGISTRO / LOGOUT
 # =============================
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -76,21 +69,15 @@ def login():
                 query = "SELECT id, peluqueria FROM usuarios WHERE email=%s AND password=%s"
                 cursor.execute(query, (email, password))
                 user = cursor.fetchone()
-                
                 if user:
                     session["usuario_id"] = user[0]
                     session["usuario_nombre"] = user[1]
                     return redirect(url_for("inicio"))
                 return "Usuario o contraseña incorrectos", 401
-            except Exception as e:
-                return f"Error en Login: {e}", 500
             finally:
                 conn.close()
     return render_template("login.html")
 
-# =============================
-# REGISTRO
-# =============================
 @app.route("/registro", methods=["GET","POST"])
 def registro():
     if request.method == "POST":
@@ -105,22 +92,17 @@ def registro():
                 cursor.execute(query, (peluqueria, email, password))
                 conexion.commit()
                 return redirect(url_for("login"))
-            except Exception as e:
-                return f"Error en Registro: {e}", 500
             finally:
                 conexion.close()
     return render_template("registro.html")
 
-# =============================
-# LOGOUT
-# =============================
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
 # =============================
-# CLIENTES
+# CLIENTES (CORREGIDO)
 # =============================
 @app.route("/clientes", methods=["GET", "POST"])
 def clientes():
@@ -128,39 +110,53 @@ def clientes():
         return redirect(url_for("login"))
 
     conexion = conectar()
-    if not conexion: 
-        return "Error de conexión con la base de datos", 500
+    if not conexion: return "Error de conexión", 500
     
     try:
         cursor = conexion.cursor()
-        
-        # 1. ACCIÓN DE GUARDAR (Si es POST)
         if request.method == "POST":
             nombre = request.form.get("nombre")
             telefono = request.form.get("telefono")
             if nombre and telefono:
-                # Usamos try/except pequeño aquí para que un error de INSERT no mate toda la página
-                try:
-                    cursor.execute(
-                        "INSERT INTO clientes (usuario_id, nombre, telefono) VALUES (%s, %s, %s)",
-                        (session["usuario_id"], nombre, telefono)
-                    )
-                    conexion.commit()
-                except Exception as e:
-                    print(f"Error al insertar: {e}")
+                cursor.execute(
+                    "INSERT INTO clientes (usuario_id, nombre, telefono) VALUES (%s, %s, %s)",
+                    (session["usuario_id"], nombre, telefono)
+                )
+                conexion.commit()
 
-        # 2. ACCIÓN DE LEER (Siempre ocurre para mostrar la lista)
         cursor.execute("SELECT id, nombre, telefono FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
         lista_clientes = cursor.fetchall()
-        
-        # 3. RESPUESTA SIEMPRE FUERA DEL IF POST
         return render_template("clientes.html", clientes=lista_clientes)
-
     except Exception as e:
-        return f"Error crítico en la pestaña clientes: {e}", 500
+        return f"Error: {e}", 500
     finally:
-        if conexion:
-            conexion.close()
+        conexion.close()
+
+# ESTA ES LA FUNCIÓN QUE TE HACÍA FALTA:
+@app.route("/editar_cliente/<int:id>", methods=["GET", "POST"])
+def editar_cliente(id):
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+    
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    if request.method == "POST":
+        nuevo_nombre = request.form.get("nombre")
+        nuevo_telefono = request.form.get("telefono")
+        cursor.execute(
+            "UPDATE clientes SET nombre=%s, telefono=%s WHERE id=%s AND usuario_id=%s",
+            (nuevo_nombre, nuevo_telefono, id, session["usuario_id"])
+        )
+        conexion.commit()
+        conexion.close()
+        return redirect(url_for("clientes"))
+
+    cursor.execute("SELECT id, nombre, telefono FROM clientes WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
+    cliente = cursor.fetchone()
+    conexion.close()
+    if not cliente: return redirect(url_for("clientes"))
+    return render_template("editar_cliente.html", cliente=cliente)
 
 # =============================
 # SERVICIOS
@@ -224,6 +220,20 @@ def citas():
 # =============================
 # ARRANQUE
 # =============================
+
+@app.route("/delete_cliente/<int:id>")
+def delete_cliente(id):
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+    
+    conexion = conectar()
+    if conexion:
+        cursor = conexion.cursor()
+        cursor.execute("DELETE FROM clientes WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
+        conexion.commit()
+        conexion.close()
+    return redirect(url_for("clientes"))
+    
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

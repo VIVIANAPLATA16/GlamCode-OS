@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Editar Cliente</h2>
+
+<div style="background: #1a1a1a; padding: 20px; border-radius: 8px; display: inline-block;">
+    <form method="POST">
+        <p>
+            <label>Nombre:</label><br>
+            <input type="text" name="nombre" value="{{ cliente[1] }}" required>
+        </p>
+        <p>
+            <label>Teléfono:</label><br>
+            <input type="text" name="telefono" value="{{ cliente[2] }}" required>
+        </p>
+        
+        <button type="submit" style="background: #d4af37; color: black; padding: 10px 20px; border: none; cursor: pointer;">
+            Actualizar Datos
+        </button>
+        
+        <a href="{{ url_for('clientes') }}" style="color: #999; margin-left: 10px; text-decoration: none;">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}
