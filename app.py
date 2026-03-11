@@ -34,11 +34,14 @@ def login():
         conn = conectar()
         if conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT id, peluqueria FROM usuarios WHERE email=%s AND password=%s", (email, password))
+            # IMPORTANTE: Ahora seleccionamos el 'rol' para guardarlo en la sesión
+            cursor.execute("SELECT id, peluqueria, rol FROM usuarios WHERE email=%s AND password=%s", (email, password))
             user = cursor.fetchone()
             conn.close()
             if user:
-                session["usuario_id"], session["usuario_nombre"] = user[0], user[1]
+                session["usuario_id"] = user[0]
+                session["usuario_nombre"] = user[1]
+                session["rol"] = user[2]  # Aquí guardamos si es 'admin' o 'estilista'
                 return redirect(url_for("inicio"))
         return "Error en login", 401
     return render_template("login.html")
@@ -197,6 +200,30 @@ def delete_servicio(id):
     conn.commit()
     conn.close()
     return redirect(url_for("servicios"))
+
+@app.route("/crear_estilista", methods=["GET", "POST"])
+def crear_estilista():
+    if "usuario_id" not in session or session.get("rol") != "admin":
+        return redirect(url_for("login"))
+    
+    if request.method == "POST":
+        nombre_p = request.form.get("peluqueria") # Nombre del salón
+        email = request.form.get("email")
+        password = request.form.get("password")
+        
+        conn = conectar()
+        if conn:
+            cursor = conn.cursor()
+            # Insertamos al nuevo usuario con rol 'estilista' y amarrado a tu ID
+            cursor.execute("""
+                INSERT INTO usuarios (peluqueria, email, password, rol, admin_id) 
+                VALUES (%s, %s, %s, 'estilista', %s)
+            """, (nombre_p, email, password, session["usuario_id"]))
+            conn.commit()
+            conn.close()
+            return redirect(url_for("inicio"))
+            
+    return render_template("crear_estilista.html")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

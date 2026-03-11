@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GlamCode OS - Peluquería</title>
 
-    <!-- Fuente elegante tipo lujo -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -21,6 +19,16 @@
         <a href="{{ url_for('clientes') }}">Clientes</a>
         <a href="{{ url_for('servicios') }}">Servicios</a>
         <a href="{{ url_for('citas') }}">Citas</a>
+
+        {% if session.get('rol') == 'admin' %}
+        <a href="{{ url_for('crear_estilista') }}" style="color: #000; background: #c5a059; padding: 4px 10px; border-radius: 4px; font-weight: bold; margin-left: 10px;">
+            + Registrar Equipo
+        </a>
+        {% endif %}
+
+        {% if session.get('usuario_id') %}
+        <a href="{{ url_for('logout') }}" style="color: #ff4444; margin-left: 15px;">Cerrar Sesión</a>
+        {% endif %}
     </nav>
 </header>
 
