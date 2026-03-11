@@ -1,62 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-5">
-    <h2 class="text-center mb-5" style="color: #c5a059; font-family: 'Playfair Display', serif; font-weight: bold;">Gestión de Citas</h2>
-    
-    <div class="row justify-content-center mb-5">
-        <div class="col-12 col-md-6 col-lg-5">
-            <div class="card bg-dark text-white shadow" style="border: 2px solid #c5a059; border-radius: 15px;">
-                <div class="card-body p-4">
-                    <h4 class="card-title text-center mb-4" style="color: #c5a059;">Agendar Nueva Cita</h4>
-                    <form method="POST">
-                        <div class="mb-3">
-                            <label class="form-label">Nombre del cliente</label>
-                            <input type="text" name="cliente" class="form-control bg-dark text-white border-secondary shadow-sm" style="border-radius: 8px;" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Servicio</label>
-                            <input type="text" name="servicio" class="form-control bg-dark text-white border-secondary shadow-sm" style="border-radius: 8px;" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Fecha</label>
-                            <input type="date" name="fecha" class="form-control bg-dark text-white border-secondary shadow-sm" style="border-radius: 8px;" required>
-                        </div>
-                        <button type="submit" class="btn w-100 py-2" style="background-color: #c5a059; color: black; font-weight: bold; border-radius: 8px; transition: 0.3s;">
-                            Agendar Cita
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+<h2 class="text-center" style="color: #c5a059; margin-bottom: 30px;">Gestión de Citas</h2>
 
-    <div class="table-responsive">
-        <table class="table table-dark table-hover border-secondary text-center mt-3 shadow">
-            <thead>
-                <tr style="color: #c5a059; font-size: 1.1rem; border-bottom: 2px solid #c5a059;">
-                    <th class="py-3">ID</th>
-                    <th class="py-3">Cliente</th>
-                    <th class="py-3">Servicio</th>
-                    <th class="py-3">Fecha</th>
-                    <th class="py-3">Acciones</th>
-                </tr>
-            </thead>
-            <tbody class="align-middle">
-                {% for cita in citas %}
-                <tr style="border-bottom: 1px solid rgba(197, 160, 89, 0.2);">
-                    <td>{{ cita[0] }}</td>
-                    <td>{{ cita[1] }}</td>
-                    <td>{{ cita[2] }}</td>
-                    <td>{{ cita[3] }}</td>
-                    <td>
-                        <a href="{{ url_for('editar_cita', id=cita[0]) }}" class="btn btn-sm" style="color: #c5a059; font-weight: 500;">Editar</a>
-                        <span style="color: #c5a059; opacity: 0.5;">|</span>
-                        <a href="{{ url_for('delete_cita', id=cita[0]) }}" class="btn btn-sm" style="color: #c5a059; font-weight: 500;" onclick="return confirm('¿Eliminar esta cita?')">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<div style="display: flex; justify-content: center; margin-bottom: 40px;">
+    <div style="width: 100%; max-width: 450px; border: 1px solid #c5a059; padding: 25px; border-radius: 10px; background: #000;">
+        <h3 style="color: #c5a059; text-align: center; margin-top: 0;">Agendar Nueva Cita</h3>
+        <form method="POST">
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Nombre del cliente</label>
+                <input type="text" name="cliente" style="width: 100%; padding: 8px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Servicio</label>
+                <input type="text" name="servicio" style="width: 100%; padding: 8px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px;">Fecha</label>
+                <input type="date" name="fecha" style="width: 100%; padding: 8px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
+            </div>
+            <button type="submit" style="width: 100%; padding: 10px; background: #c5a059; color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                Agendar Cita
+            </button>
+        </form>
     </div>
+</div>
+
+<div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; text-align: center;">
+        <thead>
+            <tr style="color: #c5a059; border-bottom: 2px solid #c5a059;">
+                <th style="padding: 10px;">ID</th>
+                <th style="padding: 10px;">Cliente</th>
+                <th style="padding: 10px;">Servicio</th>
+                <th style="padding: 10px;">Fecha</th>
+                <th style="padding: 10px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cita in citas %}
+            <tr style="border-bottom: 1px solid #222;">
+                <td style="padding: 10px;">{{ cita[0] }}</td>
+                <td style="padding: 10px;">{{ cita[1] }}</td>
+                <td style="padding: 10px;">{{ cita[2] }}</td>
+                <td style="padding: 10px;">{{ cita[3] }}</td>
+                <td style="padding: 10px;">
+                    <a href="{{ url_for('editar_cita', id=cita[0]) }}" style="color: #c5a059; text-decoration: none; margin-right: 10px;">Editar</a>
+                    <span style="color: #333;">|</span>
+                    <a href="{{ url_for('delete_cita', id=cita[0]) }}" style="color: #c5a059; text-decoration: none; margin-left: 10px;" onclick="return confirm('¿Eliminar cita?')">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
