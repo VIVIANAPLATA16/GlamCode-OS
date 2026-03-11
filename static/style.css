@@ -295,3 +295,47 @@ p{
 text-align:center;
 margin-top:10px;
 }
+
+/* ================================================= */
+/* AJUSTES FINALES DE COHERENCIA - GLAMCODE OS     */
+/* ================================================= */
+
+/* 1. Arreglo para el botón + EQUIPO (Imagen 1) */
+nav a[href*="equipo"], .btn-nav-equipo {
+    background: transparent !important;
+    color: #c6a75e !important;
+    border: 1px solid #c6a75e !important;
+    padding: 8px 15px !important;
+    margin-left: 15px !important;
+    border-radius: 0px !important; /* Cuadrado para mantener la elegancia */
+    transition: 0.4s ease !important;
+}
+
+nav a[href*="equipo"]:hover {
+    background: #c6a75e !important;
+    color: #000000 !important;
+}
+
+/* 2. Arreglo para CERRAR SESIÓN (Imagen 2) */
+/* Lo hacemos minimalista: solo texto que cambia a blanco o dorado */
+nav a[href*="logout"], .cerrar-sesion-nav {
+    color: #f5f5f5 !important; /* Blanco suave como tu texto principal */
+    border: none !important;
+    background: transparent !important;
+    font-weight: 500 !important;
+    margin-left: 20px !important;
+    opacity: 0.8;
+}
+
+nav a[href*="logout"]:hover {
+    color: #c6a75e !important; /* Solo cambia a dorado al pasar el mouse */
+    opacity: 1;
+}
+
+/* 3. Alineación del Menú para que no se amontone */
+nav {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+}
