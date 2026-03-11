@@ -203,27 +203,35 @@ def delete_servicio(id):
 
 @app.route("/crear_estilista", methods=["GET", "POST"])
 def crear_estilista():
-    if "usuario_id" not in session or session.get("rol") != "admin":
+    if "usuario_id" not in session:
         return redirect(url_for("login"))
     
-    if request.method == "POST":
-        nombre_p = request.form.get("peluqueria") # Nombre del salón
-        email = request.form.get("email")
-        password = request.form.get("password")
+    conn = conectar()
+    if not conn:
+        return "Error: No se pudo conectar a TiDB", 500
         
-        conn = conectar()
-        if conn:
-            cursor = conn.cursor()
-            # Insertamos al nuevo usuario con rol 'estilista' y amarrado a tu ID
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        # Capturamos los datos del formulario
+        nom = request.form.get("peluqueria") 
+        ema = request.form.get("email")
+        pas = request.form.get("password")
+        
+        if nom and ema and pas:
             cursor.execute("""
                 INSERT INTO usuarios (peluqueria, email, password, rol, admin_id) 
                 VALUES (%s, %s, %s, 'estilista', %s)
-            """, (nombre_p, email, password, session["usuario_id"]))
+            """, (nom, ema, pas, session["usuario_id"]))
             conn.commit()
-            conn.close()
-            return redirect(url_for("inicio"))
+        return redirect(url_for("crear_estilista"))
             
-    return render_template("crear_estilista.html")
+    # Traemos los colaboradores creados por este admin
+    cursor.execute("SELECT id, peluqueria, email FROM usuarios WHERE admin_id=%s", (session["usuario_id"],))
+    equipo = cursor.fetchall()
+    conn.close()
+            
+    return render_template("crear_estilista.html", colaboradores=equipo)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
