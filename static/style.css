@@ -339,3 +339,23 @@ nav {
     align-items: center !important;
     flex-wrap: wrap !important;
 }
+
+/* ================================================= */
+/* LIMPIEZA DE NAVEGACIÓN - SOLO TEXTO DORADO       */
+/* ================================================= */
+
+/* Elimina cuadros, bordes y fondos de todos los enlaces del nav */
+nav a {
+    background: transparent !important;
+    border: none !important;
+    color: #c6a75e !important; /* Dorado GlamCode */
+    padding: 5px 10px !important;
+    text-decoration: none !important;
+    transition: 0.3s ease !important;
+    display: inline-block !important;
+}
+
+/* Efecto hover: brilla en blanco al pasar el mouse */
+nav a:hover {
+    color: #ffffff !important;
+}
