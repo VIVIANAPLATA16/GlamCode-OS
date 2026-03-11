@@ -11,7 +11,8 @@ def obtener_conexion():
             user=os.getenv('DB_USER'),
             password=os.getenv('DB_PASSWORD'),
             database=os.getenv('DB_NAME'),
-            port=os.getenv('DB_PORT')
+            port=int(os.getenv('DB_PORT', 4000)), # Forzamos a que sea número
+            ssl_disabled=False # ESTO ES LO QUE FALTA PARA TIDB
         )
         return conexion
     except mysql.connector.Error as err:
