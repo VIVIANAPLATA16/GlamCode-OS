@@ -122,31 +122,45 @@ def logout():
 # =============================
 # CLIENTES
 # =============================
-@app.route("/clientes", methods=["GET","POST"])
+@app.route("/clientes", methods=["GET", "POST"])
 def clientes():
     if "usuario_id" not in session:
         return redirect(url_for("login"))
 
     conexion = conectar()
-    if not conexion: return "Error de conexión", 500
+    if not conexion: 
+        return "Error de conexión con la base de datos", 500
     
     try:
         cursor = conexion.cursor()
+        
+        # 1. ACCIÓN DE GUARDAR (Si es POST)
         if request.method == "POST":
             nombre = request.form.get("nombre")
             telefono = request.form.get("telefono")
             if nombre and telefono:
-                cursor.execute(
-                    "INSERT INTO clientes (usuario_id, nombre, telefono) VALUES (%s, %s, %s)",
-                    (session["usuario_id"], nombre, telefono)
-                )
-                conexion.commit()
+                # Usamos try/except pequeño aquí para que un error de INSERT no mate toda la página
+                try:
+                    cursor.execute(
+                        "INSERT INTO clientes (usuario_id, nombre, telefono) VALUES (%s, %s, %s)",
+                        (session["usuario_id"], nombre, telefono)
+                    )
+                    conexion.commit()
+                except Exception as e:
+                    print(f"Error al insertar: {e}")
 
+        # 2. ACCIÓN DE LEER (Siempre ocurre para mostrar la lista)
         cursor.execute("SELECT id, nombre, telefono FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
         lista_clientes = cursor.fetchall()
+        
+        # 3. RESPUESTA SIEMPRE FUERA DEL IF POST
         return render_template("clientes.html", clientes=lista_clientes)
+
+    except Exception as e:
+        return f"Error crítico en la pestaña clientes: {e}", 500
     finally:
-        conexion.close()
+        if conexion:
+            conexion.close()
 
 # =============================
 # SERVICIOS
