@@ -7,8 +7,9 @@ app.secret_key = "glamcode_secret"
 
 # =============================
 # FUNCION DE CONEXIÓN (NUBE)
-# =============-================
+# =============================
 def conectar():
+    # Retorna la conexión de database_pro
     return obtener_conexion()
 
 # =============================
@@ -21,23 +22,26 @@ def inicio():
     
     conexion = conectar()
     if conexion:
-        cursor = conexion.cursor()
-        # Contar clientes
-        cursor.execute("SELECT COUNT(*) FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
-        total_clientes = cursor.fetchone()[0]
+        try:
+            cursor = conexion.cursor()
+            # Contar clientes
+            cursor.execute("SELECT COUNT(*) FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
+            total_clientes = cursor.fetchone()[0]
 
-        # Contar citas
-        cursor.execute("SELECT COUNT(*) FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
-        total_citas = cursor.fetchone()[0]
-        
-        conexion.close()
-
-        return render_template(
-            "dashboard.html", 
-            nombre=session.get("usuario_nombre", "Glam Beauty"), 
-            total_clientes=total_clientes, 
-            total_citas=total_citas
-        )
+            # Contar citas
+            cursor.execute("SELECT COUNT(*) FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
+            total_citas = cursor.fetchone()[0]
+            
+            return render_template(
+                "dashboard.html", 
+                nombre=session.get("usuario_nombre", "Glam Beauty"), 
+                total_clientes=total_clientes, 
+                total_citas=total_citas
+            )
+        except Exception as e:
+            return f"Error en Dashboard: {e}", 500
+        finally:
+            conexion.close()
     return "Error de conexión con la base de datos", 500
 
 # =============================
@@ -51,11 +55,12 @@ def login():
         conn = conectar()
         if conn:
             try:
+                # dictionary=False asegura que user[0] funcione siempre
                 cursor = conn.cursor()
-                # MySQL en la nube es estricto con los nombres
                 query = "SELECT id, peluqueria FROM usuarios WHERE email=%s AND password=%s"
                 cursor.execute(query, (email, password))
                 user = cursor.fetchone()
+                
                 if user:
                     session["usuario_id"] = user[0]
                     session["usuario_nombre"] = user[1]
@@ -80,6 +85,7 @@ def registro():
         if conexion:
             try:
                 cursor = conexion.cursor()
+                # Aseguramos espacio en 'usuarios (peluqueria'
                 query = "INSERT INTO usuarios (peluqueria, email, password) VALUES (%s, %s, %s)"
                 cursor.execute(query, (peluqueria, email, password))
                 conexion.commit()
@@ -109,23 +115,23 @@ def clientes():
     conexion = conectar()
     if not conexion: return "Error de conexión", 500
     
-    cursor = conexion.cursor()
+    try:
+        cursor = conexion.cursor()
+        if request.method == "POST":
+            nombre = request.form.get("nombre")
+            telefono = request.form.get("telefono")
+            if nombre and telefono:
+                cursor.execute(
+                    "INSERT INTO clientes (usuario_id, nombre, telefono) VALUES (%s, %s, %s)",
+                    (session["usuario_id"], nombre, telefono)
+                )
+                conexion.commit()
 
-    if request.method == "POST":
-        nombre = request.form.get("nombre")
-        telefono = request.form.get("telefono")
-        if nombre and telefono:
-            cursor.execute(
-                "INSERT INTO clientes(usuario_id, nombre, telefono) VALUES(%s, %s, %s)",
-                (session["usuario_id"], nombre, telefono)
-            )
-            conexion.commit()
-
-    cursor.execute("SELECT id, nombre, telefono FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
-    lista_clientes = cursor.fetchall()
-    conexion.close()
-
-    return render_template("clientes.html", clientes=lista_clientes)
+        cursor.execute("SELECT id, nombre, telefono FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
+        lista_clientes = cursor.fetchall()
+        return render_template("clientes.html", clientes=lista_clientes)
+    finally:
+        conexion.close()
 
 # =============================
 # SERVICIOS
@@ -138,23 +144,23 @@ def servicios():
     conexion = conectar()
     if not conexion: return "Error de conexión", 500
 
-    cursor = conexion.cursor()
+    try:
+        cursor = conexion.cursor()
+        if request.method == "POST":
+            nombre = request.form.get("nombre")
+            precio = request.form.get("precio")
+            if nombre and precio:
+                cursor.execute(
+                    "INSERT INTO servicios (usuario_id, nombre, precio) VALUES (%s, %s, %s)",
+                    (session["usuario_id"], nombre, precio)
+                )
+                conexion.commit()
 
-    if request.method == "POST":
-        nombre = request.form.get("nombre")
-        precio = request.form.get("precio")
-        if nombre and precio:
-            cursor.execute(
-                "INSERT INTO servicios(usuario_id, nombre, precio) VALUES(%s, %s, %s)",
-                (session["usuario_id"], nombre, precio)
-            )
-            conexion.commit()
-
-    cursor.execute("SELECT id, nombre, precio FROM servicios WHERE usuario_id=%s", (session["usuario_id"],))
-    lista_servicios = cursor.fetchall()
-    conexion.close()
-
-    return render_template("servicios.html", servicios=lista_servicios)
+        cursor.execute("SELECT id, nombre, precio FROM servicios WHERE usuario_id=%s", (session["usuario_id"],))
+        lista_servicios = cursor.fetchall()
+        return render_template("servicios.html", servicios=lista_servicios)
+    finally:
+        conexion.close()
 
 # =============================
 # CITAS
@@ -167,25 +173,26 @@ def citas():
     conexion = conectar()
     if not conexion: return "Error de conexión", 500
 
-    cursor = conexion.cursor()
+    try:
+        cursor = conexion.cursor()
+        if request.method == "POST":
+            cliente = request.form.get("cliente")
+            servicio = request.form.get("servicio")
+            fecha = request.form.get("fecha")
+            if cliente and servicio and fecha:
+                cursor.execute(
+                    "INSERT INTO citas (usuario_id, cliente, servicio, fecha) VALUES (%s, %s, %s, %s)",
+                    (session["usuario_id"], cliente, servicio, fecha)
+                )
+                conexion.commit()
 
-    if request.method == "POST":
-        cliente = request.form.get("cliente")
-        servicio = request.form.get("servicio")
-        fecha = request.form.get("fecha")
-        if cliente and servicio and fecha:
-            cursor.execute(
-                "INSERT INTO citas(usuario_id, cliente, servicio, fecha) VALUES(%s, %s, %s, %s)",
-                (session["usuario_id"], cliente, servicio, fecha)
-            )
-            conexion.commit()
-
-    cursor.execute("SELECT id, cliente, servicio, fecha FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
-    lista_citas = cursor.fetchall()
-    conexion.close()
-
-    return render_template("citas.html", citas=lista_citas)
+        cursor.execute("SELECT id, cliente, servicio, fecha FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
+        lista_citas = cursor.fetchall()
+        return render_template("citas.html", citas=lista_citas)
+    finally:
+        conexion.close()
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    # Esta parte es vital para Render
+    port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
