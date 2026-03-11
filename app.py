@@ -106,10 +106,18 @@ def citas():
     conn = conectar()
     cursor = conn.cursor()
     if request.method == "POST":
-        cl, s, f = request.form.get("cliente"), request.form.get("servicio"), request.form.get("fecha")
-        cursor.execute("INSERT INTO citas (usuario_id, cliente, servicio, fecha) VALUES (%s, %s, %s, %s)", (session["usuario_id"], cl, s, f))
+        cl, s_nombre, f = request.form.get("cliente"), request.form.get("servicio"), request.form.get("fecha")
+        
+        # BUSCAR PRECIO AUTOMÁTICAMENTE
+        cursor.execute("SELECT precio FROM servicios WHERE nombre=%s AND usuario_id=%s", (s_nombre, session["usuario_id"]))
+        res = cursor.fetchone()
+        precio_v = res[0] if res else 0
+        
+        cursor.execute("INSERT INTO citas (usuario_id, cliente, servicio, precio, fecha) VALUES (%s, %s, %s, %s, %s)", 
+                       (session["usuario_id"], cl, s_nombre, precio_v, f))
         conn.commit()
-    cursor.execute("SELECT id, cliente, servicio, fecha FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
+        
+    cursor.execute("SELECT id, cliente, servicio, precio, fecha FROM citas WHERE usuario_id=%s", (session["usuario_id"],))
     lista = cursor.fetchall()
     conn.close()
     return render_template("citas.html", citas=lista)
@@ -121,11 +129,19 @@ def editar_cita(id):
     cursor = conn.cursor()
     if request.method == "POST":
         cl, s, f = request.form.get("cliente"), request.form.get("servicio"), request.form.get("fecha")
-        cursor.execute("UPDATE citas SET cliente=%s, servicio=%s, fecha=%s WHERE id=%s AND usuario_id=%s", (cl, s, f, id, session["usuario_id"]))
+        
+        # ACTUALIZAR PRECIO SI CAMBIA EL SERVICIO
+        cursor.execute("SELECT precio FROM servicios WHERE nombre=%s AND usuario_id=%s", (s, session["usuario_id"]))
+        res = cursor.fetchone()
+        precio_v = res[0] if res else 0
+        
+        cursor.execute("UPDATE citas SET cliente=%s, servicio=%s, precio=%s, fecha=%s WHERE id=%s AND usuario_id=%s", 
+                       (cl, s, precio_v, f, id, session["usuario_id"]))
         conn.commit()
         conn.close()
         return redirect(url_for("citas"))
-    cursor.execute("SELECT id, cliente, servicio, fecha FROM citas WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
+        
+    cursor.execute("SELECT id, cliente, servicio, precio, fecha FROM citas WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
     cita = cursor.fetchone()
     conn.close()
     return render_template("editar_cita.html", cita=cita)
@@ -167,6 +183,5 @@ def delete_servicio(id):
     return redirect(url_for("servicios"))
 
 if __name__ == "__main__":
-    # Render usa la variable PORT, si no existe usa 10000
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
