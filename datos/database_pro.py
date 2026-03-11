@@ -11,21 +11,21 @@ def obtener_conexion():
             user=os.getenv('DB_USER'),
             password=os.getenv('DB_PASSWORD'),
             database=os.getenv('DB_NAME'),
-            port=int(os.getenv('DB_PORT', 4000)), # Forzamos a que sea número
-            ssl_disabled=False # ESTO ES LO QUE FALTA PARA TIDB
+            port=int(os.getenv('DB_PORT', 4000)),
+            # Configuración obligatoria para TiDB Cloud en producción
+            ssl_verify_cert=False,
+            ssl_ca=None
         )
         return conexion
     except mysql.connector.Error as err:
         print(f"Error al conectar: {err}")
         return None
 
-# --- AQUÍ ESTÁN LAS FUNCIONES QUE FALTABAN ---
-
 def crear_usuario(peluqueria, email, password):
     conexion = obtener_conexion()
     if conexion:
         cursor = conexion.cursor()
-        query = "INSERT INTO usuarios (peluqueria, email, password) VALUES (%s, %s, %s)"
+        query = "INSERT INTO usuarios (peluqueria, email, password, rol) VALUES (%s, %s, %s, 'admin')"
         cursor.execute(query, (peluqueria, email, password))
         conexion.commit()
         cursor.close()
@@ -35,7 +35,7 @@ def validar_usuario(email, password):
     conexion = obtener_conexion()
     if conexion:
         cursor = conexion.cursor(dictionary=True)
-        query = "SELECT * FROM usuarios WHERE email = %s AND password = %s"
+        query = "SELECT id, peluqueria, email, rol FROM usuarios WHERE email = %s AND password = %s"
         cursor.execute(query, (email, password))
         usuario = cursor.fetchone()
         cursor.close()

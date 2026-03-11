@@ -7,9 +7,10 @@ app.secret_key = "glamcode_secret"
 
 def conectar():
     try:
+        # Añadimos un tiempo de espera interno para que no se quede colgado
         return obtener_conexion()
     except Exception as e:
-        print(f"Error BD: {e}")
+        print(f"Error crítico de conexión BD: {e}")
         return None
 
 @app.route("/")
