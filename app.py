@@ -139,10 +139,34 @@ def delete_cita(id):
     conn.close()
     return redirect(url_for("citas"))
 
-@app.route("/servicios")
+@app.route("/servicios", methods=["GET", "POST"])
 def servicios():
-    return render_template("servicios.html", servicios=[])
+    if "usuario_id" not in session: return redirect(url_for("login"))
+    conn = conectar()
+    cursor = conn.cursor()
+    
+    if request.method == "POST":
+        n = request.form.get("nombre")
+        p = request.form.get("precio")
+        cursor.execute("INSERT INTO servicios (usuario_id, nombre, precio) VALUES (%s, %s, %s)", (session["usuario_id"], n, p))
+        conn.commit()
+    
+    cursor.execute("SELECT id, nombre, precio FROM servicios WHERE usuario_id=%s", (session["usuario_id"],))
+    lista = cursor.fetchall()
+    conn.close()
+    return render_template("servicios.html", servicios=lista)
+
+@app.route("/delete_servicio/<int:id>")
+def delete_servicio(id):
+    if "usuario_id" not in session: return redirect(url_for("login"))
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM servicios WHERE id=%s AND usuario_id=%s", (id, session["usuario_id"]))
+    conn.commit()
+    conn.close()
+    return redirect(url_for("servicios"))
 
 if __name__ == "__main__":
+    # Render usa la variable PORT, si no existe usa 10000
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
