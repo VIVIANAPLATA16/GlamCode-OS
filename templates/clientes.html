@@ -1,54 +1,52 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h2 style="color: #c5a059; text-align: center; margin-bottom: 30px;">Gestión de Clientes</h2>
 
-<h2>Clientes</h2>
+<div style="display: flex; justify-content: center; margin-bottom: 40px;">
+    <div style="width: 100%; max-width: 450px; border: 1px solid #c5a059; padding: 25px; border-radius: 10px; background: #000; color: white; text-align: center;">
+        <h3 style="color: #c5a059; margin-top: 0; margin-bottom: 20px;">Nuevo Cliente</h3>
+        
+        <form method="POST">
+            <div style="margin-bottom: 15px; text-align: left;">
+                <label style="display: block; margin-bottom: 5px; color: #ccc;">Nombre</label>
+                <input type="text" name="nombre" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
+            </div>
+            <div style="margin-bottom: 25px; text-align: left;">
+                <label style="display: block; margin-bottom: 5px; color: #ccc;">Teléfono</label>
+                <input type="text" name="telefono" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
+            </div>
+            <button type="submit" style="width: 100%; padding: 12px; background: #c5a059; color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                Agregar Cliente
+            </button>
+        </form>
+    </div>
+</div>
 
-<h3>Agregar Cliente</h3>
-
-<form method="POST" action="{{ url_for('clientes') }}">
-    <input type="text" name="nombre" placeholder="Nombre" required>
-    <input type="text" name="telefono" placeholder="Teléfono" required>
-    <button type="submit">Guardar</button>
-</form>
-
-<br>
-
-<table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {% for cliente in clientes %}
-        <tr>
-            <td>{{ cliente[0] }}</td>
-            <td>{{ cliente[1] }}</td>
-            <td>{{ cliente[2] }}</td>
-
-            <td>
-
-                <a href="{{ url_for('editar_cliente', id=cliente[0]) }}">
-                    Editar
-                </a>
-
-                |
-
-                <a href="{{ url_for('delete_cliente', id=cliente[0]) }}">
-                    Eliminar
-                </a>
-
-            </td>
-
-        </tr>
-        {% endfor %}
-    </tbody>
-
-</table>
-
+<div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; text-align: center; color: white; border: 1px solid #c5a059;">
+        <thead>
+            <tr style="color: #c5a059; border-bottom: 2px solid #c5a059;">
+                <th style="padding: 15px;">ID</th>
+                <th style="padding: 15px;">Nombre</th>
+                <th style="padding: 15px;">Teléfono</th>
+                <th style="padding: 15px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr style="border-bottom: 1px solid #222;">
+                <td style="padding: 12px;">{{ cliente[0] }}</td>
+                <td style="padding: 12px;">{{ cliente[1] }}</td>
+                <td style="padding: 12px;">{{ cliente[2] }}</td>
+                <td style="padding: 12px;">
+                    <a href="{{ url_for('editar_cliente', id=cliente[0]) }}" style="color: #c5a059; text-decoration: none;">Editar</a>
+                    <span style="color: #444; margin: 0 8px;">|</span>
+                    <a href="{{ url_for('delete_cliente', id=cliente[0]) }}" style="color: #c5a059; text-decoration: none;" onclick="return confirm('¿Eliminar cliente?')">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
