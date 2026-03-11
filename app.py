@@ -9,8 +9,13 @@ app.secret_key = "glamcode_secret"
 # FUNCION DE CONEXIÓN (NUBE)
 # =============================
 def conectar():
-    # Retorna la conexión de database_pro
-    return obtener_conexion()
+    try:
+        # Intentamos obtener la conexión de database_pro
+        return obtener_conexion()
+    except Exception as e:
+        # Si falla, lo imprimimos en la consola de Render para debuguear
+        print(f"DEBUG: Error de conexión a la base de datos: {e}")
+        return None
 
 # =============================
 # DASHBOARD (RUTA PRINCIPAL)
@@ -55,7 +60,6 @@ def login():
         conn = conectar()
         if conn:
             try:
-                # dictionary=False asegura que user[0] funcione siempre
                 cursor = conn.cursor()
                 query = "SELECT id, peluqueria FROM usuarios WHERE email=%s AND password=%s"
                 cursor.execute(query, (email, password))
@@ -85,7 +89,6 @@ def registro():
         if conexion:
             try:
                 cursor = conexion.cursor()
-                # Aseguramos espacio en 'usuarios (peluqueria'
                 query = "INSERT INTO usuarios (peluqueria, email, password) VALUES (%s, %s, %s)"
                 cursor.execute(query, (peluqueria, email, password))
                 conexion.commit()
@@ -192,7 +195,9 @@ def citas():
     finally:
         conexion.close()
 
+# =============================
+# ARRANQUE
+# =============================
 if __name__ == "__main__":
-    # Esta parte es vital para Render
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
