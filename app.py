@@ -234,6 +234,21 @@ def crear_estilista():
             
     return render_template("crear_estilista.html", colaboradores=equipo)
 
+@app.route("/eliminar_estilista/<int:id>")
+def eliminar_estilista(id):
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+    
+    conn = conectar()
+    if conn:
+        cursor = conn.cursor()
+        # Solo eliminamos si el colaborador pertenece al administrador actual
+        cursor.execute("DELETE FROM usuarios WHERE id = %s AND admin_id = %s", (id, session["usuario_id"]))
+        conn.commit()
+        conn.close()
+    
+    return redirect(url_for("crear_estilista"))
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

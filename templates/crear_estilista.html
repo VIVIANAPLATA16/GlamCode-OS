@@ -29,13 +29,14 @@
 
 <h3 style="color: #c5a059; text-align: center; margin-bottom: 20px;">Equipo de Trabajo Actual</h3>
 
-<div style="max-width: 800px; margin: 0 auto; background: #000; border: 1px solid #333; border-radius: 10px; overflow: hidden;">
+<div style="max-width: 900px; margin: 0 auto; background: #000; border: 1px solid #333; border-radius: 10px; overflow: hidden;">
     <table style="width: 100%; border-collapse: collapse; color: white; text-align: left;">
         <thead>
             <tr style="background: #111; color: #c5a059; border-bottom: 1px solid #c5a059;">
                 <th style="padding: 15px;">Estilista</th>
                 <th style="padding: 15px;">Email</th>
                 <th style="padding: 15px; text-align: center;">Estado</th>
+                <th style="padding: 15px; text-align: center;">Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -47,11 +48,18 @@
                     <td style="padding: 12px 15px; text-align: center;">
                         <span style="background: #c5a059; color: black; padding: 3px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold;">Activo</span>
                     </td>
+                    <td style="padding: 12px 15px; text-align: center;">
+                        <a href="{{ url_for('eliminar_estilista', id=colab[0]) }}" 
+                           onclick="return confirm('¿Seguro que quieres eliminar a este colaborador?')"
+                           style="color: #ff4444; text-decoration: none; font-size: 0.85em; border: 1px solid #ff4444; padding: 4px 10px; border-radius: 5px; transition: 0.3s;">
+                           Eliminar
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             {% else %}
                 <tr>
-                    <td colspan="3" style="padding: 30px; text-align: center; color: #666;">
+                    <td colspan="4" style="padding: 30px; text-align: center; color: #666;">
                         No hay colaboradores registrados todavía.
                     </td>
                 </tr>
@@ -60,4 +68,5 @@
     </table>
 </div>
 
-<div style="margin-bottom: 100px;"></div> {% endblock %}
+<div style="margin-bottom: 100px;"></div> 
+{% endblock %}
