@@ -36,7 +36,7 @@
                 <th style="padding: 15px;">Estilista</th>
                 <th style="padding: 15px;">Email</th>
                 <th style="padding: 15px; text-align: center;">Estado</th>
-                <th style="padding: 15px; text-align: center;">Acción</th>
+                <th style="padding: 15px; text-align: center;">Gestión</th>
             </tr>
         </thead>
         <tbody>
@@ -46,12 +46,12 @@
                     <td style="padding: 12px 15px;">{{ colab[1] }}</td>
                     <td style="padding: 12px 15px; color: #aaa;">{{ colab[2] }}</td>
                     <td style="padding: 12px 15px; text-align: center;">
-                        <span style="background: #c5a059; color: black; padding: 3px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold;">Activo</span>
+                        <span style="background: rgba(197, 160, 89, 0.2); color: #c5a059; border: 1px solid #c5a059; padding: 2px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold;">Activo</span>
                     </td>
                     <td style="padding: 12px 15px; text-align: center;">
                         <a href="{{ url_for('eliminar_estilista', id=colab[0]) }}" 
                            onclick="return confirm('¿Seguro que quieres eliminar a este colaborador?')"
-                           style="color: #ff4444; text-decoration: none; font-size: 0.85em; border: 1px solid #ff4444; padding: 4px 10px; border-radius: 5px; transition: 0.3s;">
+                           class="btn-delete">
                            Eliminar
                         </a>
                     </td>
@@ -67,6 +67,24 @@
         </tbody>
     </table>
 </div>
+
+<style>
+    .btn-delete {
+        color: #c5a059;
+        text-decoration: none;
+        font-size: 0.8em;
+        border: 1px solid rgba(197, 160, 89, 0.4);
+        padding: 5px 12px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        background: transparent;
+    }
+    .btn-delete:hover {
+        background: #c5a059;
+        color: #000;
+        box-shadow: 0 0 10px rgba(197, 160, 89, 0.3);
+    }
+</style>
 
 <div style="margin-bottom: 100px;"></div> 
 {% endblock %}
