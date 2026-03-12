@@ -29,7 +29,7 @@ Desarrollado como proyecto central en mi formación de **Tecnología en Análisi
 - [ ] Panel de análisis financiero y reportes de ventas.
 - [ ] Sistema de notificaciones vía WhatsApp/Email para citas.
 - [ ] Control de acceso basado en roles (Administrador / Empleado).
-- [ ] Migración a base de datos en la nube (PostgreSQL/MySQL).
+  
 
 ## 📁 Estructura del Proyecto
 
