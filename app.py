@@ -67,13 +67,24 @@ def logout():
 
 @app.route("/clientes", methods=["GET", "POST"])
 def clientes():
-    if "usuario_id" not in session: return redirect(url_for("login"))
-    conn = conectar()
+    if "usuario_id" not in session: 
+        return redirect(url_for("login"))
+    
+    # Usamos obtener_conexion() para tener el SSL activo
+    conn = obtener_conexion() 
     cursor = conn.cursor()
+    
     if request.method == "POST":
-        n, t = request.form.get("nombre"), request.form.get("telefono")
-        cursor.execute("INSERT INTO clientes (usuario_id, nombre, terminal) VALUES (%s, %s, %s)", (session["usuario_id"], n, t))
-        conn.commit()
+        n = request.form.get("nombre")
+        t = request.form.get("telefono")
+        try:
+            # CAMBIO AQUÍ: 'telefono' en lugar de 'terminal'
+            cursor.execute("INSERT INTO clientes (usuario_id, nombre, telefono) VALUES (%s, %s, %s)", 
+                           (session["usuario_id"], n, t))
+            conn.commit()
+        except Exception as e:
+            print(f"Error al insertar: {e}")
+            
     cursor.execute("SELECT id, nombre, telefono FROM clientes WHERE usuario_id=%s", (session["usuario_id"],))
     lista = cursor.fetchall()
     conn.close()
