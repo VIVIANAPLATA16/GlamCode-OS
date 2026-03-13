@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
-<meta charset="UTF-8">
-<title>Login GlamCode</title>
-
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | GlamCode OS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
+<body class="login-page">
 
-<body>
+    <div class="login-container">
+        <div class="login-box">
+            <header class="login-header">
+                <h1>GLAMCODE</h1>
+                <p class="subtitle">SISTEMA DE GESTIÓN PROFESIONAL</p>
+            </header>
 
-<h2>Ingresar al sistema</h2>
+            <h2>Ingresar al sistema</h2>
 
-<form method="POST">
+            <form method="POST">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="ejemplo@correo.com" required>
+                </div>
 
-<label>Email</label>
-<input type="email" name="email" required>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
 
-<label>Contraseña</label>
-<input type="password" name="password" required>
+                <button type="submit" class="btn-primary">INGRESAR</button>
+            </form>
 
-<button type="submit">Ingresar</button>
-
-</form>
-
-<p>No tienes cuenta?</p>
-
-<a href="{{ url_for('registro') }}">Crear cuenta</a>
+            <div class="login-footer">
+                <p>¿No tienes cuenta? <a href="{{ url_for('registro') }}">Crear cuenta</a></p>
+            </div>
+        </div>
+    </div>
 
 </body>
-
 </html>
