@@ -33,14 +33,28 @@ def crear_usuario(peluqueria, email, password):
 
 def validar_usuario(email, password):
     conexion = obtener_conexion()
+
     if conexion:
         cursor = conexion.cursor(dictionary=True)
-        query = "SELECT id, peluqueria, email, rol FROM usuarios WHERE email = %s AND password = %s"
-        cursor.execute(query, (email, password))
+
+        query = """
+        SELECT id, peluqueria, email, rol, password
+        FROM usuarios
+        WHERE email = %s
+        """
+
+        cursor.execute(query, (email.strip(),))
         usuario = cursor.fetchone()
+
+        if usuario:
+            if password.strip() == usuario["password"]:
+                cursor.close()
+                conexion.close()
+                return usuario
+
         cursor.close()
         conexion.close()
-        return usuario
+
     return None
 
 def obtener_dashboard_data(usuario_id):

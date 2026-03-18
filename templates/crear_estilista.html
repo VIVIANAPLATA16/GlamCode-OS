@@ -1,90 +1,78 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<h2 style="color: #c5a059; text-align: center; margin-bottom: 30px;">Registrar Nuevo Colaborador</h2>
+{% block title %}Equipo - GlamCode OS{% endblock %}
+{% block page_title %}Equipo{% endblock %}
 
-<div style="display: flex; justify-content: center; margin-bottom: 50px;">
-    <div style="width: 100%; max-width: 400px; border: 1px solid #c5a059; padding: 25px; border-radius: 10px; background: #000; color: white; box-shadow: 0 4px 15px rgba(197, 160, 89, 0.2);">
-        <form method="POST">
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Nombre del Estilista</label>
-                <input type="text" name="peluqueria" placeholder="Ej: Juan Barbero" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Correo de Acceso</label>
-                <input type="email" name="email" placeholder="juan@glamcode.com" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Contraseña Temporal</label>
-                <input type="password" name="password" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            <button type="submit" style="width: 100%; padding: 12px; background: #c5a059; color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s;">
-                Crear Cuenta de Empleado
-            </button>
-        </form>
+{% block content %}
+<div class="card">
+  <div class="card__header card__header--between">
+    <div>
+      <h2 class="card__title">Nuevo colaborador</h2>
+      <p class="card__subtitle">Crea cuentas para tu equipo.</p>
     </div>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="peluqueria">Nombre del estilista</label>
+        <input id="peluqueria" type="text" name="peluqueria" placeholder="Ej: Juan Barbero" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Correo de acceso</label>
+        <input id="email" type="email" name="email" placeholder="juan@glamcode.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña temporal</label>
+        <input id="password" type="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Crear cuenta de empleado</button>
+    </form>
+  </div>
 </div>
 
-<hr style="border: 0; border-top: 1px solid #c5a059; opacity: 0.3; margin-bottom: 40px;">
-
-<h3 style="color: #c5a059; text-align: center; margin-bottom: 20px;">Equipo de Trabajo Actual</h3>
-
-<div style="max-width: 900px; margin: 0 auto; background: #000; border: 1px solid #333; border-radius: 10px; overflow: hidden;">
-    <table style="width: 100%; border-collapse: collapse; color: white; text-align: left;">
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Equipo de trabajo actual</h2>
+  </div>
+  <div class="card__body">
+    <div class="table-container">
+      <table class="table">
         <thead>
-            <tr style="background: #111; color: #c5a059; border-bottom: 1px solid #c5a059;">
-                <th style="padding: 15px;">Estilista</th>
-                <th style="padding: 15px;">Email</th>
-                <th style="padding: 15px; text-align: center;">Estado</th>
-                <th style="padding: 15px; text-align: center;">Gestión</th>
-            </tr>
+          <tr>
+            <th>Estilista</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-            {% if colaboradores %}
-                {% for colab in colaboradores %}
-                <tr style="border-bottom: 1px solid #222;">
-                    <td style="padding: 12px 15px;">{{ colab[1] }}</td>
-                    <td style="padding: 12px 15px; color: #aaa;">{{ colab[2] }}</td>
-                    <td style="padding: 12px 15px; text-align: center;">
-                        <span style="background: rgba(197, 160, 89, 0.2); color: #c5a059; border: 1px solid #c5a059; padding: 2px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold;">Activo</span>
-                    </td>
-                    <td style="padding: 12px 15px; text-align: center;">
-                        <a href="{{ url_for('eliminar_estilista', id=colab[0]) }}" 
-                           onclick="return confirm('¿Seguro que quieres eliminar a este colaborador?')"
-                           class="btn-delete">
-                           Eliminar
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="4" style="padding: 30px; text-align: center; color: #666;">
-                        No hay colaboradores registrados todavía.
-                    </td>
-                </tr>
-            {% endif %}
+          {% if colaboradores %}
+            {% for colab in colaboradores %}
+            <tr>
+              <td>{{ colab[1] }}</td>
+              <td class="text-muted">{{ colab[2] }}</td>
+              <td>
+                <span class="badge badge--success">Activo</span>
+              </td>
+              <td class="table__actions">
+                <a href="{{ url_for('equipo.eliminar_estilista', id=colab[0]) }}"
+                   class="btn btn--danger btn--sm js-confirm"
+                   data-confirm="¿Seguro que quieres eliminar a este colaborador?">
+                  Eliminar
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4" class="text-center text-muted">
+                No hay colaboradores registrados todavía.
+              </td>
+            </tr>
+          {% endif %}
         </tbody>
-    </table>
+      </table>
+    </div>
+  </div>
 </div>
-
-<style>
-    .btn-delete {
-        color: #c5a059;
-        text-decoration: none;
-        font-size: 0.8em;
-        border: 1px solid rgba(197, 160, 89, 0.4);
-        padding: 5px 12px;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-        background: transparent;
-    }
-    .btn-delete:hover {
-        background: #c5a059;
-        color: #000;
-        box-shadow: 0 0 10px rgba(197, 160, 89, 0.3);
-    }
-</style>
-
-<div style="margin-bottom: 100px;"></div> 
 {% endblock %}

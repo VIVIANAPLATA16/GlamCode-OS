@@ -1,61 +1,81 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<h2 style="color: #c5a059; text-align: center; margin-bottom: 30px;">Gestión de Citas</h2>
+{% block title %}Citas - GlamCode OS{% endblock %}
+{% block page_title %}Citas{% endblock %}
 
-<div style="display: flex; justify-content: center; margin-bottom: 40px;">
-    <div style="width: 100%; max-width: 500px; border: 1px solid #c5a059; padding: 25px; border-radius: 10px; background: #000; color: white; text-align: center;">
-        <h3 style="color: #c5a059; margin-top: 0; margin-bottom: 20px;">Agendar Nueva Cita</h3>
-        
-        <form method="POST">
-            <div style="margin-bottom: 15px; text-align: left;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Cliente</label>
-                <input type="text" name="cliente" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            <div style="margin-bottom: 15px; text-align: left;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Servicio</label>
-                <input type="text" name="servicio" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            <div style="margin-bottom: 25px; text-align: left;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Fecha y Hora</label>
-                <input type="datetime-local" name="fecha" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            <button type="submit" style="width: 100%; padding: 12px; background: #c5a059; color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-                Agendar Cita
-            </button>
-        </form>
+{% block content %}
+<div class="card">
+  <div class="card__header card__header--between">
+    <div>
+      <h2 class="card__title">Agendar nueva cita</h2>
+      <p class="card__subtitle">Registra fácilmente la próxima visita de tu cliente.</p>
     </div>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="cliente">Cliente</label>
+        <input id="cliente" type="text" name="cliente" required>
+      </div>
+      <div class="form-group">
+        <label for="servicio">Servicio</label>
+        <input id="servicio" type="text" name="servicio" required>
+      </div>
+      <div class="form-group">
+        <label for="fecha">Fecha y hora</label>
+        <input id="fecha" type="datetime-local" name="fecha" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Agendar cita</button>
+    </form>
+  </div>
 </div>
 
-<div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; text-align: center; color: white; border: 1px solid #c5a059;">
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Citas programadas</h2>
+  </div>
+  <div class="card__body">
+    <div class="table-container">
+      <table class="table">
         <thead>
-            <tr style="color: #c5a059; border-bottom: 2px solid #c5a059;">
-                <th style="padding: 15px;">ID</th>
-                <th style="padding: 15px;">Cliente</th>
-                <th style="padding: 15px;">Servicio</th>
-                <th style="padding: 15px;">Precio</th>
-                <th style="padding: 15px;">Fecha</th>
-                <th style="padding: 15px;">Hora</th>
-                <th style="padding: 15px;">Acciones</th>
-            </tr>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Servicio</th>
+            <th>Precio</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-            {% for cita in citas %}
-            <tr style="border-bottom: 1px solid #222;">
-                <td style="padding: 12px;">{{ cita[0] }}</td>
-                <td style="padding: 12px;">{{ cita[1] }}</td>
-                <td style="padding: 12px;">{{ cita[2] }}</td>
-                <td style="padding: 12px; color: #c5a059; font-weight: bold;">
-                    ${{ "{:,.0f}".format(cita[3]) }}
-                </td>
-                <td style="padding: 12px;">{{ cita[4] }}</td> <td style="padding: 12px;">{{ cita[5] }}</td> <td style="padding: 12px;">
-                    <a href="{{ url_for('editar_cita', id=cita[0]) }}" style="color: #c5a059; text-decoration: none;">Editar</a> | 
-                    <a href="{{ url_for('delete_cita', id=cita[0]) }}" style="color: #c5a059; text-decoration: none;" onclick="return confirm('¿Eliminar cita?')">Eliminar</a>
-                </td>
-            </tr>
-            {% endfor %}
+          {% for cita in citas %}
+          <tr>
+            <td>{{ cita[0] }}</td>
+            <td>{{ cita[1] }}</td>
+            <td>{{ cita[2] }}</td>
+            <td>${{ "{:,.0f}".format(cita[3]) }}</td>
+            <td>{{ cita[4] }}</td>
+            <td>{{ cita[5] }}</td>
+            <td class="table__actions">
+              <a href="{{ url_for('citas.editar_cita', id=cita[0]) }}" class="btn btn--ghost btn--sm">Editar</a>
+              <a href="{{ url_for('citas.delete_cita', id=cita[0]) }}"
+                 class="btn btn--danger btn--sm js-confirm"
+                 data-confirm="¿Eliminar cita?">
+                Eliminar
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center text-muted">
+              No hay citas programadas todavía.
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

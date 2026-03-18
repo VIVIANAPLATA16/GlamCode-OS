@@ -1,52 +1,71 @@
 {% extends 'base.html' %}
 
-{% block content %}
-<h2 style="color: #c5a059; text-align: center; margin-bottom: 30px;">Gestión de Clientes</h2>
+{% block title %}Clientes - GlamCode OS{% endblock %}
+{% block page_title %}Clientes{% endblock %}
 
-<div style="display: flex; justify-content: center; margin-bottom: 40px;">
-    <div style="width: 100%; max-width: 450px; border: 1px solid #c5a059; padding: 25px; border-radius: 10px; background: #000; color: white; text-align: center;">
-        <h3 style="color: #c5a059; margin-top: 0; margin-bottom: 20px;">Nuevo Cliente</h3>
-        
-        <form method="POST">
-            <div style="margin-bottom: 15px; text-align: left;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Nombre</label>
-                <input type="text" name="nombre" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            <div style="margin-bottom: 25px; text-align: left;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Teléfono</label>
-                <input type="text" name="telefono" style="width: 100%; padding: 10px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            <button type="submit" style="width: 100%; padding: 12px; background: #c5a059; color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-                Agregar Cliente
-            </button>
-        </form>
+{% block content %}
+<div class="card">
+  <div class="card__header card__header--between">
+    <div>
+      <h2 class="card__title">Listado de clientes</h2>
+      <p class="card__subtitle">Gestiona la información de tus clientes.</p>
     </div>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" name="nombre" required>
+      </div>
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="text" name="telefono" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Agregar cliente</button>
+    </form>
+  </div>
 </div>
 
-<div style="overflow-x: auto;">
-    <table style="width: 100%; border-collapse: collapse; text-align: center; color: white; border: 1px solid #c5a059;">
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Clientes registrados</h2>
+  </div>
+  <div class="card__body">
+    <div class="table-container">
+      <table class="table">
         <thead>
-            <tr style="color: #c5a059; border-bottom: 2px solid #c5a059;">
-                <th style="padding: 15px;">ID</th>
-                <th style="padding: 15px;">Nombre</th>
-                <th style="padding: 15px;">Teléfono</th>
-                <th style="padding: 15px;">Acciones</th>
-            </tr>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-            {% for cliente in clientes %}
-            <tr style="border-bottom: 1px solid #222;">
-                <td style="padding: 12px;">{{ cliente[0] }}</td>
-                <td style="padding: 12px;">{{ cliente[1] }}</td>
-                <td style="padding: 12px;">{{ cliente[2] }}</td>
-                <td style="padding: 12px;">
-                    <a href="{{ url_for('editar_cliente', id=cliente[0]) }}" style="color: #c5a059; text-decoration: none;">Editar</a>
-                    <span style="color: #444; margin: 0 8px;">|</span>
-                    <a href="{{ url_for('delete_cliente', id=cliente[0]) }}" style="color: #c5a059; text-decoration: none;" onclick="return confirm('¿Eliminar cliente?')">Eliminar</a>
-                </td>
-            </tr>
-            {% endfor %}
+          {% for cliente in clientes %}
+          <tr>
+            <td>{{ cliente[0] }}</td>
+            <td>{{ cliente[1] }}</td>
+            <td>{{ cliente[2] }}</td>
+            <td class="table__actions">
+              <a href="{{ url_for('clientes.editar_cliente', id=cliente[0]) }}" class="btn btn--ghost btn--sm">Editar</a>
+              <a href="{{ url_for('clientes.delete_cliente', id=cliente[0]) }}"
+                 class="btn btn--danger btn--sm js-confirm"
+                 data-confirm="¿Eliminar cliente?">
+                Eliminar
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-center text-muted">
+              Aún no tienes clientes registrados.
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

@@ -1,26 +1,26 @@
 {% extends 'base.html' %}
 
+{% block title %}Editar cliente - GlamCode OS{% endblock %}
+{% block page_title %}Editar cliente{% endblock %}
+
 {% block content %}
-
-<h2>Editar Cliente</h2>
-
-<div style="background: #1a1a1a; padding: 20px; border-radius: 8px; display: inline-block;">
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Datos del cliente</h2>
+  </div>
+  <div class="card__body">
     <form method="POST">
-        <p>
-            <label>Nombre:</label><br>
-            <input type="text" name="nombre" value="{{ cliente[1] }}" required>
-        </p>
-        <p>
-            <label>Teléfono:</label><br>
-            <input type="text" name="telefono" value="{{ cliente[2] }}" required>
-        </p>
-        
-        <button type="submit" style="background: #d4af37; color: black; padding: 10px 20px; border: none; cursor: pointer;">
-            Actualizar Datos
-        </button>
-        
-        <a href="{{ url_for('clientes') }}" style="color: #999; margin-left: 10px; text-decoration: none;">Cancelar</a>
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" name="nombre" value="{{ cliente[1] }}" required>
+      </div>
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="text" name="telefono" value="{{ cliente[2] }}" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Actualizar datos</button>
+      <a href="{{ url_for('clientes.clientes') }}" class="btn btn--ghost btn--sm">Cancelar</a>
     </form>
+  </div>
 </div>
-
 {% endblock %}

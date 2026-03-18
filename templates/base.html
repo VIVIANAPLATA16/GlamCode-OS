@@ -3,44 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlamCode OS - Peluquería</title>
+    <title>{% block title %}GlamCode OS - Panel{% endblock %}</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
 </head>
+<body class="app-body">
+<div class="layout">
+    <aside class="sidebar" aria-label="Menú principal">
+        <div class="sidebar__brand">
+            <span class="sidebar__brand-mark">GC</span>
+            <span class="sidebar__brand-text">GlamCode OS</span>
+        </div>
+        <nav class="sidebar__nav">
+            <a href="{{ url_for('dashboard.inicio') }}"
+               class="nav-link {% if request.endpoint == 'dashboard.inicio' %}nav-link--active{% endif %}">
+                <span class="nav-link__icon">🏠</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('clientes.clientes') }}"
+               class="nav-link {% if request.endpoint == 'clientes.clientes' %}nav-link--active{% endif %}">
+                <span class="nav-link__icon">👤</span>
+                <span>Clientes</span>
+            </a>
+            <a href="{{ url_for('citas.citas') }}"
+               class="nav-link {% if request.endpoint == 'citas.citas' %}nav-link--active{% endif %}">
+                <span class="nav-link__icon">📅</span>
+                <span>Citas</span>
+            </a>
+            <a href="{{ url_for('servicios.servicios') }}"
+               class="nav-link {% if request.endpoint == 'servicios.servicios' %}nav-link--active{% endif %}">
+                <span class="nav-link__icon">✂️</span>
+                <span>Servicios</span>
+            </a>
+            {% if session.get('rol') == 'admin' %}
+            <a href="{{ url_for('equipo.crear_estilista') }}"
+               class="nav-link {% if request.endpoint == 'equipo.crear_estilista' %}nav-link--active{% endif %}">
+                <span class="nav-link__icon">👥</span>
+                <span>Equipo</span>
+            </a>
+            {% endif %}
+        </nav>
+        <div class="sidebar__footer">
+            {% if session.get('usuario_id') %}
+            <form action="{{ url_for('auth.logout') }}" method="get">
+                <button type="submit" class="btn btn--ghost w-100">Cerrar sesión</button>
+            </form>
+            {% endif %}
+            <p class="sidebar__footer-copy">© 2026 GlamCode</p>
+        </div>
+    </aside>
 
-<body>
+    <div class="layout__main">
+        <header class="topbar">
+            <button class="topbar__menu-toggle" aria-label="Abrir menú" id="btn-menu-toggle">
+                ☰
+            </button>
+            <div class="topbar__content">
+                <div>
+                    <h1 class="topbar__title">
+                        {% block page_title %}{% endblock %}
+                    </h1>
+                    {% if session.get('usuario_nombre') %}
+                    <p class="topbar__subtitle">
+                        {{ session.get('usuario_nombre') }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
 
-<header>
-    <h1>GLAMCODE OS</h1>
-    <nav>
-        <a href="{{ url_for('inicio') }}">Dashboard</a>
-        <a href="{{ url_for('clientes') }}">Clientes</a>
-        <a href="{{ url_for('servicios') }}">Servicios</a>
-        <a href="{{ url_for('citas') }}">Citas</a>
-
-        {% if session.get('rol') == 'admin' %}
-        <a href="{{ url_for('crear_estilista') }}" style="color: #000; background: #c5a059; padding: 4px 10px; border-radius: 4px; font-weight: bold; margin-left: 10px;">
-            EQUIPO
-        </a>
-        {% endif %}
-
-        {% if session.get('usuario_id') %}
-        <a href="{{ url_for('logout') }}" style="color: #ff4444; margin-left: 15px;">Cerrar Sesión</a>
-        {% endif %}
-    </nav>
-</header>
-
-<main>
-    <div class="container">
-        {% block content %}{% endblock %}
+        <main class="main-content" id="main-content">
+            {% include 'partials/_flash_messages.html' %}
+            {% block content %}{% endblock %}
+        </main>
     </div>
-</main>
+</div>
 
-<footer>
-    © 2026 GlamCode - Luxury Hair System
-</footer>
-
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/confirm.js') }}"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

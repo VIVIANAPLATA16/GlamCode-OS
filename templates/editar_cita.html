@@ -1,42 +1,34 @@
 {% extends 'base.html' %}
 
+{% block title %}Editar cita - GlamCode OS{% endblock %}
+{% block page_title %}Editar cita{% endblock %}
+
 {% block content %}
-<h2 style="color: #c5a059; text-align: center; margin-bottom: 30px;">Editar Cita</h2>
-
-<div style="display: flex; justify-content: center; margin-bottom: 50px;">
-    <div style="width: 100%; max-width: 500px; border: 1px solid #c5a059; padding: 25px; border-radius: 10px; background: #000; color: white;">
-        <h3 style="color: #c5a059; margin-top: 0; margin-bottom: 20px; text-align: center;">Modificar Información</h3>
-        
-        <form method="POST">
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Cliente</label>
-                <input type="text" name="cliente" value="{{ cita[1] }}" style="width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; color: #ccc;">Servicio</label>
-                <input type="text" name="servicio" value="{{ cita[2] }}" style="width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-            </div>
-
-            <div style="display: flex; gap: 15px; margin-bottom: 25px;">
-                <div style="flex: 1;">
-                    <label style="display: block; margin-bottom: 5px; color: #ccc;">Fecha</label>
-                    <input type="date" name="fecha_solo" value="{{ fecha_s }}" style="width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-                </div>
-                <div style="flex: 1;">
-                    <label style="display: block; margin-bottom: 5px; color: #ccc;">Hora (AM/PM)</label>
-                    <input type="time" name="hora_solo" value="{{ hora_s }}" style="width: 100%; padding: 12px; background: #111; border: 1px solid #333; color: white; border-radius: 5px;" required>
-                </div>
-            </div>
-
-            <button type="submit" style="width: 100%; padding: 14px; background: #c5a059; color: black; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px;">
-                Actualizar Cita
-            </button>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="{{ url_for('citas') }}" style="color: #c5a059; text-decoration: none; font-size: 14px;">← Cancelar y volver</a>
-            </div>
-        </form>
-    </div>
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Datos de la cita</h2>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="cliente">Cliente</label>
+        <input id="cliente" type="text" name="cliente" value="{{ cita[1] }}" required>
+      </div>
+      <div class="form-group">
+        <label for="servicio">Servicio</label>
+        <input id="servicio" type="text" name="servicio" value="{{ cita[2] }}" required>
+      </div>
+      <div class="form-group">
+        <label for="fecha_solo">Fecha</label>
+        <input id="fecha_solo" type="date" name="fecha_solo" value="{{ fecha_s }}" required>
+      </div>
+      <div class="form-group">
+        <label for="hora_solo">Hora</label>
+        <input id="hora_solo" type="time" name="hora_solo" value="{{ hora_s }}" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Actualizar cita</button>
+      <a href="{{ url_for('citas.citas') }}" class="btn btn--ghost btn--sm">Cancelar y volver</a>
+    </form>
+  </div>
 </div>
 {% endblock %}
