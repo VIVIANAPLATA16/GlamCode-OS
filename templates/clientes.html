@@ -4,6 +4,19 @@
 {% block page_title %}Clientes{% endblock %}
 
 {% block content %}
+
+<div id="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="padding: 15px; margin-bottom: 20px; border-radius: 8px; background-color: #1a472a; color: #a3cfbb; border: 1px solid #2d5a3e; text-align: center; font-weight: bold; animation: fadeIn 0.5s;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
+
 <div class="card">
   <div class="card__header card__header--between">
     <div>
@@ -38,7 +51,7 @@
             <th>ID</th>
             <th>Nombre</th>
             <th>Teléfono</th>
-            <th></th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -68,4 +81,16 @@
     </div>
   </div>
 </div>
+
+<script>
+  setTimeout(function() {
+    const flash = document.getElementById('flash-container');
+    if (flash) {
+      flash.style.transition = "opacity 0.6s ease";
+      flash.style.opacity = "0";
+      setTimeout(() => flash.innerHTML = "", 600);
+    }
+  }, 3000);
+</script>
+
 {% endblock %}

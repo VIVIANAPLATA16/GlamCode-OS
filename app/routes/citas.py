@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, session, url_for
+from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
 from app.decorators import login_required
 from app.repositories import citas_repo, servicios_repo
@@ -25,6 +25,9 @@ def citas():
         citas_repo.create_cita(
             session["usuario_id"], cliente, servicio_nombre, precio_v, fecha
         )
+
+        flash("¡Cita agendada con éxito!", "success")
+        return redirect(url_for("citas.citas"))
 
     lista_raw = citas_repo.get_citas_by_usuario(session["usuario_id"])
     lista_final = []

@@ -8,8 +8,9 @@ class Usuario:
     id: int
     peluqueria: str
     email: str
+    password: str
     rol: str
-
+    
 
 @dataclass
 class Cliente:
