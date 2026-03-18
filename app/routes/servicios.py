@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, session, url_for
+from flask import Blueprint, redirect, render_template, request, session, url_for, flash
 
 from app.decorators import login_required
 from app.repositories import servicios_repo
@@ -14,6 +14,9 @@ def servicios():
         precio = request.form.get("precio")
         if nombre and precio:
             servicios_repo.create_servicio(session["usuario_id"], nombre, precio)
+            flash("¡Servicio agregado con éxito!", "success")
+        else:
+            flash("Por favor, completa todos los campos.", "warning")
 
     lista = servicios_repo.get_servicios_by_usuario(session["usuario_id"])
     return render_template("servicios.html", servicios=lista)
@@ -23,5 +26,5 @@ def servicios():
 @login_required
 def delete_servicio(id):
     servicios_repo.delete_servicio(session["usuario_id"], id)
-    return redirect(url_for("servicios.servicios"))
-
+    flash("Servicio eliminado correctamente.", "danger")
+    return redirect(url_for("servicios.servicios")) 
