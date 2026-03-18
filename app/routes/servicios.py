@@ -26,5 +26,5 @@ def servicios():
 @login_required
 def delete_servicio(id):
     servicios_repo.delete_servicio(session["usuario_id"], id)
-    flash("Servicio eliminado correctamente.", "danger")
+    flash("Servicio eliminado correctamente.", "success")
     return redirect(url_for("servicios.servicios")) 
