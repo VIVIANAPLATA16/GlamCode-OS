@@ -46,5 +46,5 @@ Viviana Plata
 Futura Ingeniera de Software | Estudiante ADSO
 📍 Bogotá, Colombia
 
-Creado con ❤️ para transformar la industria de la belleza.
+Creado con ❤️ para transformar la industria de la belleza..
 
