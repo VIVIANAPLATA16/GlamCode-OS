@@ -43,4 +43,4 @@ def delete_cliente(id):
     clientes_repo.delete_cliente(session["usuario_id"], id)
     # SE AGREGA ESTO:
     flash("Cliente eliminado correctamente", "success")
-    return redirect(url_for("clientes.clientes"))
+    return redirect(url_for("clientes.clientes")) 
