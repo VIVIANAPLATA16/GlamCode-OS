@@ -20,7 +20,7 @@
 <div class="card">
   <div class="card__header card__header--between">
     <div>
-      <h2 class="card__title">Listado de clientes</h2>
+      <h2 class="card__title">Registrar cliente</h2>
       <p class="card__subtitle">Gestiona la información de tus clientes.</p>
     </div>
   </div>
@@ -45,7 +45,7 @@
   </div>
   <div class="card__body">
     <div class="table-container">
-      <table class="table">
+      <table class="table" id="tabla-clientes">
         <thead>
           <tr>
             <th>ID</th>
@@ -69,12 +69,6 @@
               </a>
             </td>
           </tr>
-          {% else %}
-          <tr>
-            <td colspan="4" class="text-center text-muted">
-              Aún no tienes clientes registrados.
-            </td>
-          </tr>
           {% endfor %}
         </tbody>
       </table>
@@ -83,17 +77,28 @@
 </div>
 
 <script>
-  setTimeout(function() {
-    const flash = document.getElementById('flash-container');
-    if (flash) {
-      flash.style.transition = "opacity 0.6s ease";
-      flash.style.opacity = "0";
-      setTimeout(() => flash.innerHTML = "", 600);
+  // Este es el script que hace que la tabla funcione como las otras
+  $(document).ready(function() {
+    if ($.fn.DataTable) {
+        $('#tabla-clientes').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
+            },
+            "pageLength": 10,
+            "order": [[ 0, "desc" ]]
+        });
     }
-  }, 3000);
+
+    // Timer para los mensajes flash
+    setTimeout(function() {
+      const flash = document.getElementById('flash-container');
+      if (flash) {
+        flash.style.transition = "opacity 0.6s ease";
+        flash.style.opacity = "0";
+        setTimeout(() => flash.innerHTML = "", 600);
+      }
+    }, 3000);
+  });
 </script>
 
 {% endblock %}
-<div class="card" id="tarjeta-formulario">
-  <h2 class="card__title">Listado de Clientes</h2>
-  </div>
