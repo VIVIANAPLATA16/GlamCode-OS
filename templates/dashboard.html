@@ -5,17 +5,17 @@
 
 {% block content %}
 <div class="grid grid--3">
-  <div class="card card--interactive" onclick="alert('✅ Accediendo al módulo de: CLIENTES')">
+  <div class="card card--interactive" onclick="window.location.href='{{ url_for('clientes.clientes') }}'">
     <p class="card__label">Clientes registrados</p>
     <p class="card__value">{{ total_clientes }}</p>
   </div>
 
-  <div class="card card--interactive" onclick="alert('✅ Accediendo al módulo de: CITAS')">
+  <div class="card card--interactive" onclick="window.location.href='{{ url_for('citas.citas') }}'">
     <p class="card__label">Citas programadas</p>
     <p class="card__value card__value--highlight">{{ total_citas }}</p>
   </div>
 
-  <div class="card card--interactive" onclick="alert('✅ Accediendo al módulo de: SERVICIOS')">
+  <div class="card card--interactive" onclick="window.location.href='{{ url_for('servicios.servicios') }}'">
     <p class="card__label">Servicios activos</p>
     <p class="card__value">{{ total_servicios }}</p>
   </div>
