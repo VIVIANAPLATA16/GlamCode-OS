@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="titulo-dashboard">Dashboard</h2>
+
+<div class="dashboard">
+
+    <div class="card">
+        <div class="icono">👥</div>
+        <h3>Total Clientes</h3>
+        <p class="numero">{{ total_clientes }}</p>
+    </div>
+
+    <div class="card">
+        <div class="icono">📅</div>
+        <h3>Total Citas</h3>
+        <p class="numero">{{ total_citas }}</p>
+    </div>
+
+</div>
+
+{% endblock %}

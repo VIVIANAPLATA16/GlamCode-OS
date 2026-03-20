@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar cliente - GlamCode OS{% endblock %}
+{% block page_title %}Editar cliente{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Datos del cliente</h2>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" name="nombre" value="{{ cliente[1] }}" required>
+      </div>
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="text" name="telefono" value="{{ cliente[2] }}" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Actualizar datos</button>
+      <a href="{{ url_for('clientes.clientes') }}" class="btn btn--ghost btn--sm">Cancelar</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

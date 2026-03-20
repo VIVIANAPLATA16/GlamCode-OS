@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Equipo - GlamCode OS{% endblock %}
+{% block page_title %}Equipo{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card__header card__header--between">
+    <div>
+      <h2 class="card__title">Nuevo colaborador</h2>
+      <p class="card__subtitle">Crea cuentas para tu equipo.</p>
+    </div>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="peluqueria">Nombre del estilista</label>
+        <input id="peluqueria" type="text" name="peluqueria" placeholder="Ej: Juan Barbero" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Correo de acceso</label>
+        <input id="email" type="email" name="email" placeholder="juan@glamcode.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña temporal</label>
+        <input id="password" type="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Crear cuenta de empleado</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Equipo de trabajo actual</h2>
+  </div>
+  <div class="card__body">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Estilista</th>
+            <th>Email</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if colaboradores %}
+            {% for colab in colaboradores %}
+            <tr>
+              <td>{{ colab[1] }}</td>
+              <td class="text-muted">{{ colab[2] }}</td>
+              <td>
+                <span class="badge badge--success">Activo</span>
+              </td>
+              <td class="table__actions">
+                <a href="{{ url_for('equipo.eliminar_estilista', id=colab[0]) }}"
+                   class="btn btn--danger btn--sm js-confirm"
+                   data-confirm="¿Seguro que quieres eliminar a este colaborador?">
+                  Eliminar
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4" class="text-center text-muted">
+                No hay colaboradores registrados todavía.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

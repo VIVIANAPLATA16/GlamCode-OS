@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - GlamCode OS{% endblock %}
+{% block page_title %}Resumen de tu peluquería{% endblock %}
+
+{% block content %}
+<div class="grid grid--3">
+  <div class="card card--interactive" onclick="alert('✅ Accediendo al módulo de: CLIENTES')">
+    <p class="card__label">Clientes registrados</p>
+    <p class="card__value">{{ total_clientes }}</p>
+  </div>
+
+  <div class="card card--interactive" onclick="alert('✅ Accediendo al módulo de: CITAS')">
+    <p class="card__label">Citas programadas</p>
+    <p class="card__value card__value--highlight">{{ total_citas }}</p>
+  </div>
+
+  <div class="card card--interactive" onclick="alert('✅ Accediendo al módulo de: SERVICIOS')">
+    <p class="card__label">Servicios activos</p>
+    <p class="card__value">{{ total_servicios }}</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card__header card__header--between">
+    <div>
+      <h2 class="card__title">Acciones rápidas</h2>
+      <p class="card__subtitle">Gestiona tu agenda en segundos.</p>
+    </div>
+    <div class="card__actions">
+      <a href="{{ url_for('citas.citas') }}" class="btn btn--primary">Nueva cita</a>
+      <a href="{{ url_for('clientes.clientes') }}" class="btn btn--outline">Nuevo cliente</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

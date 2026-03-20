@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Citas - GlamCode OS{% endblock %}
+{% block page_title %}Citas{% endblock %}
+
+{% block content %}
+
+<div id="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="padding: 15px; margin-bottom: 20px; border-radius: 8px; background-color: #1a472a; color: #a3cfbb; border: 1px solid #2d5a3e; text-align: center; font-weight: bold;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
+
+<div class="card">
+  <div class="card__header card__header--between">
+    <div>
+      <h2 class="card__title">Agendar nueva cita</h2>
+      <p class="card__subtitle">Registra fácilmente la próxima visita de tu cliente.</p>
+    </div>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="cliente">Cliente</label>
+        <input id="cliente" type="text" name="cliente" required>
+      </div>
+      <div class="form-group">
+        <label for="servicio">Servicio</label>
+        <input id="servicio" type="text" name="servicio" required>
+      </div>
+      <div class="form-group">
+        <label for="fecha">Fecha y hora</label>
+        <input id="fecha" type="datetime-local" name="fecha" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Agendar cita</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Citas programadas</h2>
+  </div>
+  <div class="card__body">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Servicio</th>
+            <th>Precio</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cita in citas %}
+          <tr>
+            <td>{{ cita[0] }}</td>
+            <td>{{ cita[1] }}</td>
+            <td>{{ cita[2] }}</td>
+            <td>${{ "{:,.0f}".format(cita[3]) }}</td>
+            <td>{{ cita[4] }}</td>
+            <td>{{ cita[5] }}</td>
+            <td class="table__actions">
+              <a href="{{ url_for('citas.editar_cita', id=cita[0]) }}" class="btn btn--ghost btn--sm">Editar</a>
+              <a href="{{ url_for('citas.delete_cita', id=cita[0]) }}"
+                 class="btn btn--danger btn--sm js-confirm"
+                 data-confirm="¿Eliminar cita?">
+                Eliminar
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center text-muted">
+              No hay citas programadas todavía.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  setTimeout(function() {
+    const flash = document.getElementById('flash-container');
+    if (flash) {
+      flash.style.transition = "opacity 0.6s ease";
+      flash.style.opacity = "0";
+      setTimeout(() => flash.innerHTML = "", 600);
+    }
+  }, 3000);
+</script>
+
+{% endblock %}

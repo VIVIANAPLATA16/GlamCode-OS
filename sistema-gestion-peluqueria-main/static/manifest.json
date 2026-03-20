@@ -1,0 +1,17 @@
+{
+  "name": "GlamCode OS",
+  "short_name": "GlamCode",
+  "description": "Luxury Hair System Management",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#c5a059",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3667/3667425.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

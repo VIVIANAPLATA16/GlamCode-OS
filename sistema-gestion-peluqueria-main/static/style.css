@@ -1,0 +1,297 @@
+/* ================================================= */
+/* CONFIGURACIÓN BASE Y VARIABLES                    */
+/* ================================================= */
+:root {
+    --gold: #c6a75e;
+    --gold-dark: #b58b4c;
+    --bg-dark: #000000;
+    --bg-card: #0b0b0b;
+    --text-light: #f5f5f5;
+    --transition: 0.4s ease;
+}
+
+body {
+    margin: 0;
+    font-family: 'Cormorant Garamond', serif;
+    background: radial-gradient(circle at top, #111111 0%, var(--bg-dark) 70%);
+    color: var(--text-light);
+    line-height: 1.6;
+    overflow-x: hidden; /* Evita scroll horizontal accidental */
+}
+
+/* ================================================= */
+/* HEADER Y NAVEGACIÓN (RESPONSIVE)                  */
+/* ================================================= */
+header {
+    background: var(--bg-dark);
+    padding: 20px 15px;
+    text-align: center;
+    border-bottom: 1px solid var(--gold);
+}
+
+header h1 {
+    margin: 0;
+    font-size: clamp(24px, 5vw, 40px); /* Tamaño fluido */
+    letter-spacing: 4px;
+    font-weight: 500;
+    color: var(--gold);
+}
+
+nav {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Permite que los links bajen en pantallas pequeñas */
+    gap: 15px;
+}
+
+nav a {
+    color: var(--gold) !important;
+    text-decoration: none !important;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: var(--transition);
+    padding: 5px 10px;
+}
+
+nav a:hover {
+    color: #ffffff !important;
+}
+
+/* ================================================= */
+/* CONTENEDORES Y GRIDS                              */
+/* ================================================= */
+main {
+    padding: 40px 20px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* Grids Autoadaptables */
+.dashboard-grid, .grid-servicios {
+    display: grid;
+    /* Ajusta columnas automáticamente según el ancho disponible */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 30px;
+    margin-top: 30px;
+}
+
+/* Cards */
+.dashboard-card, .servicio-card, .card {
+    background: var(--bg-card);
+    padding: 30px;
+    border: 1px solid var(--gold);
+    text-align: center;
+    transition: var(--transition);
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+.card:hover, .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(197, 157, 95, 0.2);
+}
+
+/* ================================================= */
+/* FORMULARIOS (ADAPTADOS)                           */
+/* ================================================= */
+form {
+    background: var(--bg-card);
+    border: 1px solid var(--gold);
+    padding: clamp(20px, 5vw, 40px);
+    border-radius: 10px;
+    max-width: 400px; /* Evita que el form sea gigante en desktop */
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box; /* Crucial para que el padding no rompa el ancho */
+    background: #1a1a1a;
+    border: 1px solid var(--gold);
+    color: white;
+    font-family: inherit;
+}
+
+button {
+    background: var(--gold);
+    color: var(--bg-dark);
+    border: 1px solid var(--gold);
+    padding: 12px 25px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+button:hover {
+    background: var(--gold-dark);
+    color: #000;
+}
+
+/* ================================================= */
+/* TABLAS RESPONSIVE                                 */
+/* ================================================= */
+.table-container {
+    overflow-x: auto; /* Permite scroll lateral en tablas solo si es necesario */
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border: 1px solid var(--gold);
+    min-width: 600px; /* Evita que la tabla se colapse demasiado */
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid var(--gold);
+    text-align: center;
+}
+
+/* ================================================= */
+/* MEDIA QUERIES (AJUSTES FINALES)                   */
+/* ================================================= */
+
+@media (max-width: 768px) {
+    main {
+        padding: 20px 10px;
+    }
+
+    nav {
+        gap: 10px;
+    }
+
+    nav a {
+        font-size: 11px;
+        margin: 0 5px;
+    }
+
+    .titulo-seccion {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        letter-spacing: 2px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Una sola columna en móviles pequeños */
+    }
+}
+
+
+
+/* Ajustes específicos para la página de Login */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+}
+
+.login-container {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.login-box {
+    background: #0b0b0b;
+    border: 1px solid #c6a75e;
+    padding: 40px;
+    border-radius: 4px; /* Un toque menos redondeado para más elegancia */
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+    border: none; /* Quitamos el borde del header general aquí */
+    padding: 0;
+}
+
+.login-header h1 {
+    font-size: 32px;
+    color: #c6a75e;
+    letter-spacing: 6px;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #888;
+    margin-top: 5px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #c6a75e;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Inputs con estilo moderno y oscuro */
+.input-group input {
+    background: #111;
+    border: 1px solid #333;
+    padding: 12px;
+    color: white;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #c6a75e;
+    background: #161616;
+}
+
+.btn-primary {
+    width: 100%;
+    margin-top: 10px;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.login-footer {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.login-footer a {
+    color: #c6a75e;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}

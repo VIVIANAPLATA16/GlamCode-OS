@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar cita - GlamCode OS{% endblock %}
+{% block page_title %}Editar cita{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Datos de la cita</h2>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="cliente">Cliente</label>
+        <input id="cliente" type="text" name="cliente" value="{{ cita[1] }}" required>
+      </div>
+      <div class="form-group">
+        <label for="servicio">Servicio</label>
+        <input id="servicio" type="text" name="servicio" value="{{ cita[2] }}" required>
+      </div>
+      <div class="form-group">
+        <label for="fecha_solo">Fecha</label>
+        <input id="fecha_solo" type="date" name="fecha_solo" value="{{ fecha_s }}" required>
+      </div>
+      <div class="form-group">
+        <label for="hora_solo">Hora</label>
+        <input id="hora_solo" type="time" name="hora_solo" value="{{ hora_s }}" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Actualizar cita</button>
+      <a href="{{ url_for('citas.citas') }}" class="btn btn--ghost btn--sm">Cancelar y volver</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

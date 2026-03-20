@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Clientes - GlamCode OS{% endblock %}
+{% block page_title %}Clientes{% endblock %}
+
+{% block content %}
+
+<div id="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="padding: 15px; margin-bottom: 20px; border-radius: 8px; background-color: #1a472a; color: #a3cfbb; border: 1px solid #2d5a3e; text-align: center; font-weight: bold; animation: fadeIn 0.5s;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
+
+<div class="card">
+  <div class="card__header card__header--between">
+    <div>
+      <h2 class="card__title">Listado de clientes</h2>
+      <p class="card__subtitle">Gestiona la información de tus clientes.</p>
+    </div>
+  </div>
+  <div class="card__body">
+    <form method="POST">
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" name="nombre" required>
+      </div>
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="text" name="telefono" required>
+      </div>
+      <button type="submit" class="btn btn--primary">Agregar cliente</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Clientes registrados</h2>
+  </div>
+  <div class="card__body">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cliente in clientes %}
+          <tr>
+            <td>{{ cliente[0] }}</td>
+            <td>{{ cliente[1] }}</td>
+            <td>{{ cliente[2] }}</td>
+            <td class="table__actions">
+              <a href="{{ url_for('clientes.editar_cliente', id=cliente[0]) }}" class="btn btn--ghost btn--sm">Editar</a>
+              <a href="{{ url_for('clientes.delete_cliente', id=cliente[0]) }}"
+                 class="btn btn--danger btn--sm js-confirm"
+                 data-confirm="¿Eliminar cliente?">
+                Eliminar
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-center text-muted">
+              Aún no tienes clientes registrados.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  setTimeout(function() {
+    const flash = document.getElementById('flash-container');
+    if (flash) {
+      flash.style.transition = "opacity 0.6s ease";
+      flash.style.opacity = "0";
+      setTimeout(() => flash.innerHTML = "", 600);
+    }
+  }, 3000);
+</script>
+
+{% endblock %}
