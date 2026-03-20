@@ -16,7 +16,7 @@
   {% endif %}
 {% endwith %}
 
-<div class="card">
+<div class="card" id="tarjeta-formulario">
   <div class="card__header card__header--between">
     <div>
       <h2 class="card__title">Nuevo servicio</h2>
@@ -94,15 +94,25 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // 1. Lógica de alertas
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(function(alert) {
         setTimeout(function() {
             alert.style.opacity = '0';
             setTimeout(function() {
                 alert.remove();
-            }, 500); // Espera a que termine la animación de opacidad
-        }, 3000); // Se queda visible por 3 segundos
+            }, 500);
+        }, 3000);
     });
+
+    // 2. Lógica para ocultar formulario si venimos del Dashboard (?vista=tabla)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('vista') === 'tabla') {
+        const formulario = document.getElementById('tarjeta-formulario');
+        if (formulario) {
+            formulario.style.display = 'none';
+        }
+    }
 });
 </script>
 
