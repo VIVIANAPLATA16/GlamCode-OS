@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GlamCode OS - Panel{% endblock %}</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
@@ -19,28 +19,38 @@
         <nav class="sidebar__nav">
             <a href="{{ url_for('dashboard.inicio') }}"
                class="nav-link {% if request.endpoint == 'dashboard.inicio' %}nav-link--active{% endif %}">
-                <span class="nav-link__icon">🏠</span>
+                <span class="nav-link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.25 12 11.204 3.045c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
+                </span>
                 <span>Dashboard</span>
             </a>
             <a href="{{ url_for('clientes.clientes') }}"
                class="nav-link {% if request.endpoint == 'clientes.clientes' %}nav-link--active{% endif %}">
-                <span class="nav-link__icon">👤</span>
+                <span class="nav-link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20v-.5A5.5 5.5 0 0 1 10.5 14h3A5.5 5.5 0 0 1 19 19.5V20"/></svg>
+                </span>
                 <span>Clientes</span>
             </a>
             <a href="{{ url_for('citas.citas') }}"
                class="nav-link {% if request.endpoint == 'citas.citas' %}nav-link--active{% endif %}">
-                <span class="nav-link__icon">📅</span>
+                <span class="nav-link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+                </span>
                 <span>Citas</span>
             </a>
             <a href="{{ url_for('servicios.servicios') }}"
                class="nav-link {% if request.endpoint == 'servicios.servicios' %}nav-link--active{% endif %}">
-                <span class="nav-link__icon">✂️</span>
+                <span class="nav-link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 10.5 13.5M9.5 9.5 20 20"/></svg>
+                </span>
                 <span>Servicios</span>
             </a>
             {% if session.get('rol') == 'admin' %}
             <a href="{{ url_for('equipo.crear_estilista') }}"
                class="nav-link {% if request.endpoint == 'equipo.crear_estilista' %}nav-link--active{% endif %}">
-                <span class="nav-link__icon">👥</span>
+                <span class="nav-link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><path d="M3 21v-1a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v1"/><circle cx="17" cy="8" r="2.5"/><path d="M21 21v-1a3.5 3.5 0 0 0-2.5-3.35"/></svg>
+                </span>
                 <span>Equipo</span>
             </a>
             {% endif %}
@@ -57,8 +67,8 @@
 
     <div class="layout__main">
         <header class="topbar">
-            <button class="topbar__menu-toggle" aria-label="Abrir menú" id="btn-menu-toggle">
-                ☰
+            <button class="topbar__menu-toggle" aria-label="Abrir menú" id="btn-menu-toggle" type="button">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
             </button>
             <div class="topbar__content">
                 <div>
