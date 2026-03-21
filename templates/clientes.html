@@ -17,22 +17,22 @@
     {% endwith %}
 </div>
 
-<div class="card">
+<div class="card" id="tarjeta-formulario">
   <div class="card__header card__header--between">
     <div>
-      <h2 class="card__title">Registrar cliente</h2>
-      <p class="card__subtitle">Gestiona la información de tus clientes.</p>
+      <h2 class="card__title">Registrar nuevo cliente</h2>
+      <p class="card__subtitle">Guarda los datos de contacto de tus clientes.</p>
     </div>
   </div>
   <div class="card__body">
     <form method="POST">
       <div class="form-group">
         <label for="nombre">Nombre</label>
-        <input id="nombre" type="text" name="nombre" required>
+        <input id="nombre" type="text" name="nombre" required placeholder="Nombre completo">
       </div>
       <div class="form-group">
         <label for="telefono">Teléfono</label>
-        <input id="telefono" type="text" name="telefono" required>
+        <input id="telefono" type="text" name="telefono" required placeholder="Ej: 3001234567">
       </div>
       <button type="submit" class="btn btn--primary">Agregar cliente</button>
     </form>
@@ -77,31 +77,34 @@
 </div>
 
 <script>
-  // ESTO BORRA LOS LETREROS SÍ O SÍ (JavaScript Puro)
-  (function() {
-    setTimeout(function() {
-      var messages = document.getElementsByClassName('js-flash-msg');
-      for (var i = 0; i < messages.length; i++) {
-        (function(msg) {
-          msg.style.opacity = "0";
-          setTimeout(function() {
-            if (msg.parentNode) {
-              msg.parentNode.removeChild(msg);
-            }
-          }, 600);
-        })(messages[i]);
-      }
-    }, 3000);
-  })();
+document.addEventListener('DOMContentLoaded', function() {
+    // A. Borrar letreros automáticamente (JS Nativo)
+    const messages = document.querySelectorAll('.js-flash-msg');
+    messages.forEach(function(msg) {
+        setTimeout(function() {
+            msg.style.opacity = '0';
+            setTimeout(() => msg.remove(), 600);
+        }, 3000);
+    });
 
-  // Script para la tabla (Solo si jQuery está disponible)
-  if (typeof $ !== 'undefined' && $.fn.DataTable) {
-      $('#tabla-clientes').DataTable({
-          "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
-          "pageLength": 10,
-          "order": [[ 0, "desc" ]]
-      });
-  }
+    // B. Ocultar formulario si vienes del Dashboard (Igual que Citas)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('vista') === 'tabla') {
+        const formulario = document.getElementById('tarjeta-formulario');
+        if (formulario) {
+            formulario.style.display = 'none';
+        }
+    }
+
+    // C. Activar buscador (Solo si jQuery está listo)
+    if (typeof $ !== 'undefined' && $.fn.DataTable) {
+        $('#tabla-clientes').DataTable({
+            "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+            "pageLength": 10,
+            "order": [[ 0, "desc" ]]
+        });
+    }
+});
 </script>
 
 {% endblock %}
