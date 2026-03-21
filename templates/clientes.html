@@ -9,7 +9,7 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
-          <div style="padding: 15px; margin-bottom: 20px; border-radius: 8px; background-color: #1a472a; color: #a3cfbb; border: 1px solid #2d5a3e; text-align: center; font-weight: bold; animation: fadeIn 0.5s;">
+          <div class="flash-item" style="padding: 15px; margin-bottom: 20px; border-radius: 8px; background-color: #1a472a; color: #a3cfbb; border: 1px solid #2d5a3e; text-align: center; font-weight: bold; animation: fadeIn 0.5s; transition: opacity 0.6s ease;">
             {{ message }}
           </div>
         {% endfor %}
@@ -77,8 +77,8 @@
 </div>
 
 <script>
-  // Este es el script que hace que la tabla funcione como las otras
   $(document).ready(function() {
+    // 1. Inicializar la tabla (lo que ya tenías y funcionaba)
     if ($.fn.DataTable) {
         $('#tabla-clientes').DataTable({
             "language": {
@@ -89,14 +89,13 @@
         });
     }
 
-    // Timer para los mensajes flash
+    // 2. Timer para que TODOS los mensajes flash se borren (Agregado o Eliminado)
     setTimeout(function() {
-      const flash = document.getElementById('flash-container');
-      if (flash) {
-        flash.style.transition = "opacity 0.6s ease";
-        flash.style.opacity = "0";
-        setTimeout(() => flash.innerHTML = "", 600);
-      }
+      const messages = document.querySelectorAll('.flash-item');
+      messages.forEach(function(msg) {
+        msg.style.opacity = "0";
+        setTimeout(() => msg.remove(), 600);
+      });
     }, 3000);
   });
 </script>
