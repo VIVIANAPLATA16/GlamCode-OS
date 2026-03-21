@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlamCode OS — La Plataforma Universal de Bienestar y Estética</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --carbon: #0a0a0a;
+    --carbon-mid: #111111;
+    --carbon-light: #1a1a1a;
+    --carbon-border: #242424;
+    --gold: #c5a059;
+    --gold-light: #d4b577;
+    --gold-dark: #a07d3a;
+    --gold-glow: rgba(197,160,89,0.15);
+    --white: #ffffff;
+    --white-dim: rgba(255,255,255,0.7);
+    --white-faint: rgba(255,255,255,0.08);
+    --whatsapp: #25D366;
+    --whatsapp-dark: #1da851;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--carbon);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.2s ease, height 0.2s ease, opacity 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 99998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s;
+    opacity: 0.5;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--carbon); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 2px; }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 20px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(197,160,89,0.1);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-logo sup {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--white-dim);
+    text-transform: uppercase;
+    vertical-align: super;
+  }
+
+  .nav-links {
+    display: flex; gap: 32px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cta {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 10px 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: none;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  .nav-cta:hover {
+    background: var(--gold);
+    color: var(--carbon);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 40px 80px;
+  }
+
+  .hero-img-bg {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden;
+  }
+  .hero-img-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center 30%;
+    filter: grayscale(100%) brightness(12%);
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 1;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(197,160,89,0.10) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 80% 20%, rgba(197,160,89,0.06) 0%, transparent 60%);
+  }
+
+  .hero-grid-lines {
+    position: absolute; inset: 0; z-index: 2;
+    background-image:
+      linear-gradient(rgba(197,160,89,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(197,160,89,0.05) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .hero-content {
+    position: relative; z-index: 4;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid rgba(197,160,89,0.3);
+    background: rgba(197,160,89,0.06);
+    padding: 8px 20px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    backdrop-filter: blur(8px);
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 28px;
+  }
+  .hero-title .gold { color: var(--gold); }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-sub {
+    font-size: clamp(0.9rem, 1.5vw, 1.15rem);
+    font-weight: 300;
+    color: var(--white-dim);
+    max-width: 620px;
+    margin: 0 auto 48px;
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-ctas {
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; flex-wrap: wrap;
+  }
+
+  .btn-gold {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--carbon);
+    padding: 18px 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 40px rgba(197,160,89,0.25);
+  }
+  .btn-gold::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .btn-gold:hover::after { transform: translateX(100%); }
+  .btn-gold:hover {
+    box-shadow: 0 0 60px rgba(197,160,89,0.45);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--white-dim);
+    padding: 18px 40px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .hero-stats {
+    display: flex; justify-content: center; gap: 60px;
+    margin-top: 80px;
+    padding-top: 48px;
+    border-top: 1px solid var(--carbon-border);
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* floating orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: orb-float 8s ease-in-out infinite;
+    z-index: 3;
+  }
+  .orb-1 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(197,160,89,0.12), transparent);
+    top: -100px; right: -100px;
+    animation-delay: 0s;
+  }
+  .orb-2 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(197,160,89,0.07), transparent);
+    bottom: 50px; left: -80px;
+    animation-delay: 3s;
+  }
+  @keyframes orb-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: 120px 40px; }
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--gold);
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .section-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.8;
+    max-width: 560px;
+  }
+
+  /* ── BENTO GRID — ECOSYSTEM ── */
+  .ecosystem { background: var(--carbon); }
+  .ecosystem-header { max-width: 1200px; margin: 0 auto 60px; }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto;
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .bento-card {
+    background: var(--carbon-light);
+    border: 1px solid var(--carbon-border);
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+  .bento-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gold-glow), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .bento-card:hover { 
+    border-color: rgba(197,160,89,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(197,160,89,0.08);
+  }
+  .bento-card:hover::before { opacity: 1; }
+
+  .bento-1 { grid-column: span 7; }
+  .bento-2 { grid-column: span 5; }
+  .bento-3 { grid-column: span 4; }
+  .bento-4 { grid-column: span 4; }
+  .bento-5 { grid-column: span 4; }
+  .bento-6 { grid-column: span 12; }
+
+  .bento-icon {
+    width: 52px; height: 52px;
+    border: 1px solid rgba(197,160,89,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    font-size: 1.4rem;
+    color: var(--gold);
+    background: rgba(197,160,89,0.06);
+  }
+
+  .bento-tag {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(197,160,89,0.25);
+    padding: 4px 10px;
+    display: inline-block;
+    margin-bottom: 14px;
+    background: rgba(197,160,89,0.05);
+  }
+
+  .bento-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .bento-title.large {
+    font-size: 2rem;
+  }
+
+  .bento-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.7;
+  }
+
+  /* mini chart inside bento */
+  .mini-chart {
+    display: flex; align-items: flex-end; gap: 5px;
+    margin-top: 24px;
+    height: 60px;
+  }
+  .bar {
+    flex: 1;
+    background: linear-gradient(to top, var(--gold-dark), var(--gold));
+    border-radius: 2px 2px 0 0;
+    opacity: 0.8;
+    animation: bar-grow 1.5s ease-out forwards;
+    transform-origin: bottom;
+    transform: scaleY(0);
+  }
+  @keyframes bar-grow {
+    to { transform: scaleY(1); }
+  }
+
+  /* citas module */
+  .citas-list {
+    margin-top: 24px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .cita-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-left: 2px solid var(--gold);
+    font-size: 0.78rem;
+  }
+  .cita-name { font-weight: 600; }
+  .cita-time { color: var(--gold); font-size: 0.7rem; font-weight: 700; }
+  .cita-status {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    background: rgba(37,211,102,0.15);
+    color: var(--whatsapp);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* inventory */
+  .inv-items {
+    margin-top: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .inv-row {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.78rem;
+  }
+  .inv-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .inv-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    animation: fill-bar 1.5s ease-out forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  @keyframes fill-bar { to { transform: scaleX(1); } }
+  .inv-pct { font-size: 0.68rem; color: var(--gold); font-weight: 700; min-width: 32px; text-align: right; }
+
+  /* marketing module */
+  .mkt-metrics {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-top: 20px;
+  }
+  .mkt-metric {
+    padding: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--carbon-border);
+  }
+  .mkt-metric .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+  .mkt-metric .lbl {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-top: 4px;
+    display: block;
+  }
+  /* ── DASHBOARD SECTION ── */
+  .dashboard-section {
+    background: var(--carbon-mid);
+    position: relative; overflow: hidden;
+  }
+  .dashboard-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .dashboard-wrapper {
+    max-width: 1200px;
+    margin: 60px auto 0;
+    background: var(--carbon-light);
+    border: 1px solid var(--carbon-border);
+    overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 0 80px rgba(197,160,89,0.05);
+    position: relative;
+  }
+
+  .dash-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--carbon-border);
+    background: rgba(197,160,89,0.03);
+  }
+  .dash-circles { display: flex; gap: 7px; }
+  .dash-circle {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+  }
+  .dc-r { background: #ff5f57; }
+  .dc-y { background: #febc2e; }
+  .dc-g { background: #28c840; }
+
+  .dash-title-bar {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+  }
+
+  .dash-time {
+    font-size: 0.65rem;
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .dash-body {
+    display: grid;
+    grid-template-columns: 220px 1fr 240px;
+    min-height: 500px;
+  }
+
+  /* sidebar */
+  .dash-sidebar {
+    border-right: 1px solid var(--carbon-border);
+    padding: 24px 0;
+  }
+  .dash-nav-item {
+    padding: 12px 24px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--white-dim);
+    display: flex; align-items: center; gap: 10px;
+    cursor: default;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .dash-nav-item.active {
+    color: var(--gold);
+    background: rgba(197,160,89,0.07);
+    border-left: 2px solid var(--gold);
+  }
+  .dash-nav-item .icon { font-size: 0.9rem; }
+  .dash-nav-label { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.25); padding: 16px 24px 6px; }
+
+  /* main dash area */
+  .dash-main { padding: 24px; }
+  .dash-kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    padding: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--carbon-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+  }
+  .kpi-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    display: block;
+  }
+  .kpi-lbl {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-top: 4px;
+    display: block;
+  }
+  .kpi-delta {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--whatsapp);
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* chart area */
+  .dash-chart-area {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--carbon-border);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .chart-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .chart-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+  }
+  .chart-period {
+    display: flex; gap: 4px;
+  }
+  .period-btn {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    cursor: default;
+    text-transform: uppercase;
+  }
+  .period-btn.active {
+    background: var(--gold);
+    color: var(--carbon);
+  }
+  .period-btn:not(.active) {
+    color: var(--white-dim);
+    border: 1px solid var(--carbon-border);
+  }
+
+  /* SVG sparkline */
+  .sparkline-svg { width: 100%; height: 80px; overflow: visible; }
+  .sparkline-path {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 2;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgba(197,160,89,0.5));
+  }
+  .sparkline-fill {
+    fill: url(#spark-grad);
+    opacity: 0.3;
+  }
+
+  /* activity feed */
+  .dash-activity { font-size: 0.72rem; }
+  .act-title {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--white-dim); margin-bottom: 12px;
+  }
+  .act-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .act-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-top: 5px; flex-shrink: 0;
+  }
+  .act-dot.green { background: var(--whatsapp); }
+  .act-text { color: var(--white-dim); line-height: 1.4; }
+  .act-text strong { color: var(--white); }
+  .act-time { font-size: 0.6rem; color: rgba(255,255,255,0.3); margin-top: 2px; display: block; }
+
+  /* right panel */
+  .dash-right {
+    border-left: 1px solid var(--carbon-border);
+    padding: 24px;
+  }
+  .right-section-title {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--white-dim); margin-bottom: 14px;
+  }
+  .service-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.72rem;
+  }
+  .service-name { color: var(--white-dim); }
+  .service-val { color: var(--gold); font-weight: 700; }
+
+  .staff-list { margin-top: 20px; }
+  .staff-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0;
+  }
+  .staff-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem; font-weight: 800; color: var(--carbon); flex-shrink: 0;
+  }
+  .staff-info { flex: 1; }
+  .staff-name { font-size: 0.72rem; font-weight: 600; line-height: 1; }
+  .staff-role { font-size: 0.6rem; color: var(--white-dim); margin-top: 2px; }
+  .staff-perf {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--whatsapp);
+  }
+
+  /* ── DUALITY SECTION ── */
+  .duality { background: var(--carbon); }
+  .duality-inner {
+    max-width: 1200px;
+    margin: 60px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--carbon-border);
+    overflow: hidden;
+  }
+
+  .duality-side {
+    padding: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .duality-side::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.04;
+  }
+  .duality-salon::before {
+    background: linear-gradient(135deg, var(--gold), transparent);
+  }
+  .duality-barber::before {
+    background: linear-gradient(135deg, #444, transparent);
+  }
+  .duality-divider {
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    position: relative;
+  }
+  .duality-divider::after {
+    content: 'VS';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--carbon);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+
+  .duality-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    margin-bottom: 24px;
+  }
+  .tag-salon {
+    background: rgba(197,160,89,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(197,160,89,0.3);
+  }
+  .tag-barber {
+    background: rgba(255,255,255,0.06);
+    color: var(--white-dim);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .duality-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 8px;
+    line-height: 1.1;
+  }
+  .duality-name .italic { font-style: italic; }
+  .duality-tagline {
+    font-size: 0.8rem;
+    color: var(--white-dim);
+    font-weight: 300;
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  .duality-features { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .duality-features li {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.82rem;
+    color: var(--white-dim);
+    font-weight: 400;
+  }
+  .duality-features li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* ── GLOBAL SECTION ── */
+  .global-section {
+    background: var(--carbon-mid);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .global-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(197,160,89,0.06), transparent);
+  }
+
+  .global-inner { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+
+  .globe-visual {
+    width: 280px; height: 280px;
+    margin: 50px auto 50px;
+    position: relative;
+    border-radius: 50%;
+    border: 1px solid rgba(197,160,89,0.2);
+    background: radial-gradient(circle at 35% 35%, rgba(197,160,89,0.12), rgba(197,160,89,0.03), transparent 70%);
+    box-shadow: 0 0 60px rgba(197,160,89,0.1), inset 0 0 60px rgba(197,160,89,0.05);
+    animation: globe-spin 20s linear infinite;
+  }
+  .globe-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(197,160,89,0.15);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .globe-ring-1 { width: 120%; height: 120%; }
+  .globe-ring-2 { width: 145%; height: 145%; border-style: dashed; }
+  .globe-ring-3 { width: 170%; height: 170%; }
+  .globe-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--gold);
+  }
+  @keyframes globe-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .countries-grid {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+    margin-top: 40px;
+  }
+  .country-tag {
+    padding: 8px 18px;
+    border: 1px solid var(--carbon-border);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    background: rgba(255,255,255,0.03);
+    transition: all 0.3s;
+  }
+  .country-tag.active {
+    border-color: rgba(197,160,89,0.4);
+    color: var(--gold);
+    background: rgba(197,160,89,0.06);
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials { background: var(--carbon); }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 60px auto 0;
+  }
+  .testi-card {
+    background: var(--carbon-light);
+    border: 1px solid var(--carbon-border);
+    padding: 36px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .testi-card::before {
+    content: '"';
+    position: absolute;
+    top: 20px; right: 28px;
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: rgba(197,160,89,0.1);
+    line-height: 1;
+    font-style: italic;
+  }
+  .testi-card:hover {
+    border-color: rgba(197,160,89,0.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .testi-stars { color: var(--gold); font-size: 0.7rem; margin-bottom: 16px; letter-spacing: 4px; }
+  .testi-text {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.8;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+  .testi-author {
+    display: flex; align-items: center; gap: 14px;
+  }
+  .testi-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--carbon);
+    flex-shrink: 0;
+  }
+  .testi-name { font-size: 0.82rem; font-weight: 700; }
+  .testi-loc { font-size: 0.66rem; color: var(--white-dim); margin-top: 3px; }
+
+  /* ── CTA FINAL ── */
+  .cta-section {
+    background: var(--carbon-mid);
+    text-align: center;
+    padding: 120px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .cta-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(197,160,89,0.06), transparent);
+  }
+  .cta-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .cta-title em { font-style: italic; color: var(--gold); }
+  .cta-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    margin-bottom: 48px;
+    line-height: 1.7;
+  }
+
+  .btn-whatsapp {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, var(--whatsapp), var(--whatsapp-dark));
+    color: white;
+    padding: 20px 48px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: none;
+    transition: all 0.3s;
+    box-shadow: 0 0 40px rgba(37,211,102,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-whatsapp::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .btn-whatsapp:hover::after { transform: translateX(100%); }
+  .btn-whatsapp:hover {
+    box-shadow: 0 0 70px rgba(37,211,102,0.4);
+    transform: translateY(-3px);
+  }
+
+  .whatsapp-icon {
+    width: 22px; height: 22px;
+    fill: white;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--carbon);
+    border-top: 1px solid var(--carbon-border);
+    padding: 60px 40px;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+  }
+  .footer-logo span { color: var(--gold); }
+  .footer-tagline {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    margin-top: 4px;
+  }
+  .footer-links {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.7rem;
+    color: var(--white-dim);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── FLOATING WHATSAPP ── */
+  .wa-float {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 8000;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+  }
+  .wa-bubble {
+    background: var(--carbon-light);
+    border: 1px solid rgba(37,211,102,0.3);
+    color: var(--white-dim);
+    font-size: 0.72rem;
+    padding: 10px 16px;
+    max-width: 200px;
+    text-align: right;
+    animation: bubble-pop 0.4s ease 1.5s both;
+    line-height: 1.4;
+  }
+  @keyframes bubble-pop {
+    from { opacity: 0; transform: translateY(10px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .wa-btn {
+    width: 58px; height: 58px;
+    background: linear-gradient(135deg, var(--whatsapp), var(--whatsapp-dark));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: none;
+    box-shadow: 0 4px 24px rgba(37,211,102,0.4);
+    transition: all 0.3s;
+    text-decoration: none;
+    animation: wa-pulse 3s ease-in-out infinite;
+  }
+  .wa-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 40px rgba(37,211,102,0.6);
+  }
+  @keyframes wa-pulse {
+    0%, 100% { box-shadow: 0 4px 24px rgba(37,211,102,0.4), 0 0 0 0 rgba(37,211,102,0.2); }
+    50% { box-shadow: 0 4px 24px rgba(37,211,102,0.4), 0 0 0 16px rgba(37,211,102,0); }
+  }
+
+  /* ── SECTORS GRID ── */
+  .sectors-section { background: var(--carbon-mid); }
+  .sectors-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    max-width: 1200px;
+    margin: 60px auto 0;
+  }
+  /* sector card bg image */
+  .sector-card {
+    background: var(--carbon-light);
+    border: 1px solid var(--carbon-border);
+    padding: 28px 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.35s ease;
+    cursor: default;
+  }
+  .sector-bg {
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%) brightness(22%);
+    transition: filter 0.5s ease, transform 0.6s ease;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .sector-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    filter: grayscale(100%) brightness(22%);
+    transition: filter 0.5s ease, transform 0.6s ease;
+  }
+  .sector-card:hover .sector-bg img {
+    filter: grayscale(80%) brightness(32%);
+    transform: scale(1.06);
+  }
+  .sector-card > *:not(.sector-bg) { position: relative; z-index: 1; }
+  .sector-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+    z-index: 2;
+  }
+  .sector-card:hover {
+    border-color: rgba(197,160,89,0.5);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(197,160,89,0.1);
+  }
+  .sector-card:hover::after { transform: scaleX(1); }
+
+  /* FA chevron for FAQ */
+  .faq-icon {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(197,160,89,0.35);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--gold);
+    font-size: 0.7rem;
+    transition: transform 0.35s ease, background 0.3s;
+  }
+  .faq-question.open .faq-icon {
+    transform: rotate(180deg);
+    background: rgba(197,160,89,0.12);
+  }
+  .sector-icon {
+    font-size: 1.6rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px; height: 54px;
+    border: 1px solid rgba(197,160,89,0.25);
+    background: rgba(197,160,89,0.05);
+    color: var(--gold);
+    margin-left: auto; margin-right: auto;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .sector-card:hover .sector-icon {
+    background: rgba(197,160,89,0.12);
+    border-color: rgba(197,160,89,0.5);
+  }
+  .sector-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .sector-sub {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+  }
+
+  /* ── VERSATILITY ── */
+  .versatility { background: var(--carbon); }
+  .versatility-inner {
+    max-width: 1200px;
+    margin: 60px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--carbon-border);
+    overflow: hidden;
+  }
+  .vers-side {
+    padding: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vers-side-tattoo::before { content: none; }
+  .vers-side-spa::before { content: none; }
+  .vers-divider {
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .vers-divider::after {
+    content: '↔';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--carbon);
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  /* ── FAQ ACCORDION ── */
+  .faq-section { background: var(--carbon-mid); position: relative; }
+  .faq-section::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .faq-list {
+    max-width: 800px;
+    margin: 60px auto 0;
+    display: flex; flex-direction: column;
+    border: 1px solid var(--carbon-border);
+  }
+  .faq-item { border-bottom: 1px solid var(--carbon-border); overflow: hidden; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 28px 36px;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    text-align: left;
+    cursor: none;
+    transition: background 0.3s;
+  }
+  .faq-question:hover { background: rgba(197,160,89,0.04); }
+  .faq-question.open { background: rgba(197,160,89,0.06); }
+  .faq-q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.3;
+  }
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1), padding 0.3s;
+    padding: 0 36px;
+  }
+  .faq-answer.open { max-height: 200px; padding: 0 36px 28px; }
+  .faq-answer p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.8;
+    border-left: 2px solid var(--gold);
+    padding-left: 20px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .bento-1 { grid-column: span 12; }
+    .bento-2 { grid-column: span 12; }
+    .bento-3, .bento-4, .bento-5 { grid-column: span 6; }
+    .bento-6 { grid-column: span 12; }
+    .dash-body { grid-template-columns: 1fr; }
+    .dash-sidebar, .dash-right { display: none; }
+    .dash-kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .versatility-inner { grid-template-columns: 1fr; }
+    .vers-divider { display: none; }
+    .sectors-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    section { padding: 80px 20px; }
+    .bento-3, .bento-4, .bento-5 { grid-column: span 12; }
+    .hero-stats { gap: 32px; }
+    .vers-side { padding: 40px 28px; }
+    .footer-inner { flex-direction: column; align-items: flex-start; }
+    .sectors-grid { grid-template-columns: repeat(2, 1fr); }
+    .faq-question { padding: 20px 24px; }
+    .faq-answer { padding: 0 24px; }
+    .faq-answer.open { padding: 0 24px 20px; }
+  }
+</style>
+</head>
+<body>
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- FLOATING WHATSAPP -->
+<div class="wa-float">
+  <div class="wa-bubble">¿Tienes dudas sobre tu tipo de negocio? <strong style="color:var(--whatsapp)">Consulta tu caso →</strong></div>
+  <a href="https://wa.me/1234567890?text=Hola,%20quiero%20consultar%20mi%20caso%20específico%20con%20GlamCode%20OS" class="wa-btn" target="_blank" rel="noopener">
+    <svg class="whatsapp-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  </a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Glam<span>Code</span><sup>OS</sup></div>
+  <ul class="nav-links">
+    <li><a href="#ecosystem">Ecosistema</a></li>
+    <li><a href="#sectores">Sectores</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#global">Global</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a href="/registro" class="nav-cta">Agendar Demo</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-img-bg">
+    <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=80&w=1800&auto=format&fit=crop" alt="Luxury beauty salon" loading="eager">
+  </div>
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="hero-content">
+    <div class="hero-badge" data-aos="fade-down" data-aos-duration="600">La Plataforma que se Adapta a tu Negocio</div>
+    <h1 class="hero-title" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+      Infinitas <em>Posibilidades</em><br>para <span class="gold">Creadores</span><br>de Estilo
+    </h1>
+    <p class="hero-sub" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+      La plataforma 360° que se adapta a tu negocio, sin importar cuál sea. Spas, salones, estudios de tatuaje, centros de estética y más — todo en un solo ecosistema de clase mundial.
+    </p>
+    <div class="hero-ctas" data-aos="fade-up" data-aos-duration="600" data-aos-delay="350">
+      <a href="/registro" class="btn-gold">
+        <span>Empezar Ahora</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="https://wa.me/1234567890" class="btn-ghost" target="_blank">Ver Demo en Vivo</a>
+    </div>
+    <div class="hero-stats" data-aos="fade-up" data-aos-duration="800" data-aos-delay="500">
+      <div class="stat">
+        <span class="stat-num">+3,200</span>
+        <span class="stat-label">Negocios Activos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">18</span>
+        <span class="stat-label">Países</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">98%</span>
+        <span class="stat-label">Satisfacción</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">$2.4M</span>
+        <span class="stat-label">Revenue Gestionado</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ECOSYSTEM -->
+<section class="ecosystem" id="ecosystem">
+  <div class="ecosystem-header" data-aos="fade-up">
+    <div class="section-label">El Ecosistema</div>
+    <h2 class="section-title">Cada Pieza del Sistema,<br>Diseñada para <span style="color:var(--gold)">Escalar</span></h2>
+    <p class="section-sub">No es una agenda. Es el cerebro operativo de tu negocio, trabajando 24/7 para multiplicar tu rentabilidad, sin importar el sector en que operas.</p>
+  </div>
+
+  <div class="bento-grid">
+
+    <!-- Citas IA -->
+    <div class="bento-card bento-1" data-aos="fade-right" data-aos-duration="700">
+      <div class="bento-tag">IA Predictiva</div>
+      <div class="bento-title large">Gestión de Citas <span style="color:var(--gold)">Inteligente</span></div>
+      <p class="bento-desc" style="max-width:480px;">Motor de IA que aprende los patrones de tu clientela, predice ausencias y optimiza tu agenda para cero tiempos muertos.</p>
+      <div class="citas-list">
+        <div class="cita-row">
+          <span class="cita-name">Valentina Ruiz</span>
+          <span class="cita-time">10:30 AM</span>
+          <span class="cita-status">Confirmada</span>
+        </div>
+        <div class="cita-row">
+          <span class="cita-name">Carlos Medina</span>
+          <span class="cita-time">11:15 AM</span>
+          <span class="cita-status">Confirmada</span>
+        </div>
+        <div class="cita-row">
+          <span class="cita-name">Sofia Herrera</span>
+          <span class="cita-time">12:00 PM</span>
+          <span class="cita-status">Confirmada</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reportes -->
+    <div class="bento-card bento-2" data-aos="fade-left" data-aos-duration="700">
+      <div class="bento-icon"><i class="fa-solid fa-chart-line"></i></div>
+      <div class="bento-tag">Real-Time</div>
+      <div class="bento-title">Reportes de<br>Rentabilidad</div>
+      <p class="bento-desc">Datos en tiempo real. Márgenes, costos, tendencias.</p>
+      <div class="mini-chart">
+        <div class="bar" style="height:35%; animation-delay:0.1s"></div>
+        <div class="bar" style="height:55%; animation-delay:0.2s"></div>
+        <div class="bar" style="height:42%; animation-delay:0.3s"></div>
+        <div class="bar" style="height:78%; animation-delay:0.4s"></div>
+        <div class="bar" style="height:60%; animation-delay:0.5s"></div>
+        <div class="bar" style="height:88%; animation-delay:0.6s"></div>
+        <div class="bar" style="height:95%; animation-delay:0.7s; opacity:1"></div>
+      </div>
+    </div>
+
+    <!-- Inventario -->
+    <div class="bento-card bento-3" data-aos="fade-up" data-aos-duration="700" data-aos-delay="100">
+      <div class="bento-icon"><i class="fa-solid fa-boxes-stacked"></i></div>
+      <div class="bento-tag">Inventario</div>
+      <div class="bento-title">Stock<br>Inteligente</div>
+      <div class="inv-items">
+        <div class="inv-row">
+          <span style="font-size:0.7rem;color:var(--white-dim);min-width:70px">Keratin</span>
+          <div class="inv-bar-bg"><div class="inv-bar-fill" style="width:82%;animation-delay:0.2s"></div></div>
+          <span class="inv-pct">82%</span>
+        </div>
+        <div class="inv-row">
+          <span style="font-size:0.7rem;color:var(--white-dim);min-width:70px">Color</span>
+          <div class="inv-bar-bg"><div class="inv-bar-fill" style="width:45%;animation-delay:0.4s"></div></div>
+          <span class="inv-pct">45%</span>
+        </div>
+        <div class="inv-row">
+          <span style="font-size:0.7rem;color:var(--white-dim);min-width:70px">Cera</span>
+          <div class="inv-bar-bg"><div class="inv-bar-fill" style="width:91%;animation-delay:0.6s"></div></div>
+          <span class="inv-pct">91%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagos -->
+    <div class="bento-card bento-4" data-aos="fade-up" data-aos-duration="700" data-aos-delay="200">
+      <div class="bento-icon"><i class="fa-solid fa-credit-card"></i></div>
+      <div class="bento-tag">Finanzas</div>
+      <div class="bento-title">Pagos<br>Integrados</div>
+      <p class="bento-desc">Tarjeta, efectivo, transferencia. Todo en un solo lugar con conciliación automática.</p>
+    </div>
+
+    <!-- Marketing -->
+    <div class="bento-card bento-5" data-aos="fade-up" data-aos-duration="700" data-aos-delay="300">
+      <div class="bento-icon"><i class="fa-solid fa-rocket"></i></div>
+      <div class="bento-tag">Automatización</div>
+      <div class="bento-title">Marketing<br>Automatizado</div>
+      <div class="mkt-metrics">
+        <div class="mkt-metric">
+          <span class="val">+47%</span>
+          <span class="lbl">Retención</span>
+        </div>
+        <div class="mkt-metric">
+          <span class="val">3.2×</span>
+          <span class="lbl">Recompra</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fidelización banner -->
+    <div class="bento-card bento-6" data-aos="zoom-in" data-aos-duration="600" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;background:linear-gradient(135deg,rgba(197,160,89,0.08),rgba(197,160,89,0.02));">
+      <div>
+        <div class="bento-tag">Módulo Premium</div>
+        <div class="bento-title" style="font-size:1.3rem">Programa de Fidelización con Puntos + Membresías VIP</div>
+      </div>
+      <p class="bento-desc" style="max-width:340px;">Convierte cada visita en una razón para volver. Sistema de recompensas que transforma clientes ocasionales en embajadores de marca.</p>
+      <a href="https://wa.me/1234567890" class="btn-gold" style="white-space:nowrap">Conocer Más →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- DASHBOARD SECTION -->
+<section class="dashboard-section" id="dashboard">
+  <div style="max-width:1200px;margin:0 auto" data-aos="fade-up">
+    <div class="section-label">Dashboard Inteligente</div>
+    <h2 class="section-title">Tu Negocio al<br><span style="color:var(--gold)">Instante</span>, sin Fricciones</h2>
+    <p class="section-sub">Panel de control diseñado para decisiones rápidas. No tablas de Excel — inteligencia visual de lujo.</p>
+  </div>
+
+  <div class="dashboard-wrapper" data-aos="fade-up" data-aos-delay="200">
+    <div class="dash-topbar">
+      <div class="dash-circles">
+        <div class="dash-circle dc-r"></div>
+        <div class="dash-circle dc-y"></div>
+        <div class="dash-circle dc-g"></div>
+      </div>
+      <div class="dash-title-bar">GlamCode OS — Panel de Control</div>
+      <div class="dash-time" id="dash-clock">—</div>
+    </div>
+
+    <div class="dash-body">
+      <!-- Sidebar -->
+      <div class="dash-sidebar">
+        <div class="dash-nav-label">Principal</div>
+        <div class="dash-nav-item active"><span class="icon">◈</span> Overview</div>
+        <div class="dash-nav-item"><span class="icon">◉</span> Citas</div>
+        <div class="dash-nav-item"><span class="icon">◎</span> Clientes</div>
+        <div class="dash-nav-label">Finanzas</div>
+        <div class="dash-nav-item"><span class="icon">◈</span> Ingresos</div>
+        <div class="dash-nav-item"><span class="icon">◉</span> Inventario</div>
+        <div class="dash-nav-label">Marketing</div>
+        <div class="dash-nav-item"><span class="icon">◎</span> Campañas</div>
+        <div class="dash-nav-item"><span class="icon">◈</span> Métricas</div>
+      </div>
+
+      <!-- Main content -->
+      <div class="dash-main">
+        <!-- KPIs -->
+        <div class="dash-kpi-row">
+          <div class="kpi-card">
+            <span class="kpi-val">$18,450</span>
+            <span class="kpi-lbl">Ingresos Hoy</span>
+            <span class="kpi-delta">▲ +12.4%</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-val">47</span>
+            <span class="kpi-lbl">Citas Hoy</span>
+            <span class="kpi-delta">▲ +3 vs ayer</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-val">94%</span>
+            <span class="kpi-lbl">Ocupación</span>
+            <span class="kpi-delta">▲ Óptimo</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-val">$392</span>
+            <span class="kpi-lbl">Ticket Promedio</span>
+            <span class="kpi-delta">▲ +8.1%</span>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="dash-chart-area">
+          <div class="chart-header">
+            <span class="chart-title">Ingresos — Últimas 4 Semanas</span>
+            <div class="chart-period">
+              <button class="period-btn">1S</button>
+              <button class="period-btn active">4S</button>
+              <button class="period-btn">3M</button>
+            </div>
+          </div>
+          <svg class="sparkline-svg" viewBox="0 0 600 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="spark-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c5a059" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#c5a059" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path class="sparkline-fill" d="M0,70 L30,60 L80,52 L120,55 L160,38 L200,42 L240,30 L280,35 L320,20 L360,25 L400,15 L440,18 L480,8 L520,12 L560,5 L600,8 L600,80 Z"/>
+            <path class="sparkline-path" d="M0,70 L30,60 L80,52 L120,55 L160,38 L200,42 L240,30 L280,35 L320,20 L360,25 L400,15 L440,18 L480,8 L520,12 L560,5 L600,8"/>
+          </svg>
+        </div>
+
+        <!-- Activity -->
+        <div class="dash-activity">
+          <div class="act-title">Actividad Reciente</div>
+          <div class="act-item">
+            <div class="act-dot green"></div>
+            <div class="act-text"><strong>Pago recibido</strong> — Valentina Ruiz · Keratina + Corte<span class="act-time">hace 3 min · $185</span></div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot"></div>
+            <div class="act-text"><strong>Nueva cita agendada</strong> — Carlos M. para mañana 10am<span class="act-time">hace 8 min · Barbería Premium</span></div>
+          </div>
+          <div class="act-item">
+            <div class="act-dot green"></div>
+            <div class="act-text"><strong>Stock actualizado</strong> — Keratina Pro 500ml (×12 unidades)<span class="act-time">hace 22 min</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <div class="dash-right">
+        <div class="right-section-title">Top Servicios</div>
+        <div class="service-row"><span class="service-name">Keratina</span><span class="service-val">$4,200</span></div>
+        <div class="service-row"><span class="service-name">Color + Corte</span><span class="service-val">$3,800</span></div>
+        <div class="service-row"><span class="service-name">Fade Premium</span><span class="service-val">$2,900</span></div>
+        <div class="service-row"><span class="service-name">Tratamiento</span><span class="service-val">$2,100</span></div>
+
+        <div class="staff-list">
+          <div class="right-section-title" style="margin-top:20px">Equipo Hoy</div>
+          <div class="staff-item">
+            <div class="staff-avatar">AM</div>
+            <div class="staff-info">
+              <div class="staff-name">Andrea M.</div>
+              <div class="staff-role">Estilista Senior</div>
+            </div>
+            <div class="staff-perf">98%</div>
+          </div>
+          <div class="staff-item">
+            <div class="staff-avatar">CR</div>
+            <div class="staff-info">
+              <div class="staff-name">Carlos R.</div>
+              <div class="staff-role">Barbero Master</div>
+            </div>
+            <div class="staff-perf">94%</div>
+          </div>
+          <div class="staff-item">
+            <div class="staff-avatar">LV</div>
+            <div class="staff-info">
+              <div class="staff-name">Laura V.</div>
+              <div class="staff-role">Colorista</div>
+            </div>
+            <div class="staff-perf">91%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTORS GRID -->
+<section class="sectors-section" id="sectores">
+  <div style="max-width:1200px;margin:0 auto" data-aos="fade-up">
+    <div class="section-label">Sectores</div>
+    <h2 class="section-title">Un Ecosistema para<br><span style="color:var(--gold)">Cada Disciplina</span></h2>
+    <p class="section-sub">Desde la alta peluquería hasta el tattoo studio más exclusivo — GlamCode OS se configura según tu mundo.</p>
+  </div>
+  <div class="sectors-grid">
+    <div class="sector-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="sector-bg"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=600&auto=format&fit=crop" alt="Salón de belleza" loading="lazy"></div>
+      <div class="sector-icon"><i class="fa-solid fa-scissors"></i></div>
+      <div class="sector-name">Alta Peluquería</div>
+      <div class="sector-sub">Salones</div>
+    </div>
+    <div class="sector-card" data-aos="fade-up" data-aos-delay="60">
+      <div class="sector-bg"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=600&auto=format&fit=crop" alt="Barbería" loading="lazy"></div>
+      <div class="sector-icon"><i class="fa-solid fa-gun"></i></div>
+      <div class="sector-name">Barbería Técnica</div>
+      <div class="sector-sub">Barberías</div>
+    </div>
+    <div class="sector-card" data-aos="fade-up" data-aos-delay="120">
+      <div class="sector-bg"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=600&auto=format&fit=crop" alt="Nail Studio" loading="lazy"></div>
+      <div class="sector-icon"><i class="fa-solid fa-hand-sparkles"></i></div>
+      <div class="sector-name">Nail Studios</div>
+      <div class="sector-sub">Uñas & Manicura</div>
+    </div>
+    <div class="sector-card" data-aos="fade-up" data-aos-delay="180">
+      <div class="sector-bg"><img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=600&auto=format&fit=crop" alt="Spa y wellness" loading="lazy"></div>
+      <div class="sector-icon"><i class="fa-solid fa-spa"></i></div>
+      <div class="sector-name">Wellness & Spa</div>
+      <div class="sector-sub">Bienestar</div>
+    </div>
+    <div class="sector-card" data-aos="fade-up" data-aos-delay="240">
+      <div class="sector-bg"><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=600&auto=format&fit=crop" alt="Medicina estética" loading="lazy"></div>
+      <div class="sector-icon"><i class="fa-solid fa-hand-holding-medical"></i></div>
+      <div class="sector-name">Medicina Estética</div>
+      <div class="sector-sub">Clínicas</div>
+    </div>
+    <div class="sector-card" data-aos="fade-up" data-aos-delay="300">
+      <div class="sector-bg"><img src="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?q=80&w=600&auto=format&fit=crop" alt="Tattoo studio" loading="lazy"></div>
+      <div class="sector-icon"><i class="fa-solid fa-pen-nib"></i></div>
+      <div class="sector-name">Tattoo & Piercing</div>
+      <div class="sector-sub">Estudios</div>
+    </div>
+    <div class="sector-card" data-aos="fade-up" data-aos-delay="360">
+      <div class="sector-bg"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=600&auto=format&fit=crop" alt="Fitness y yoga" loading="lazy"></div>
+      <div class="sector-icon"><i class="fa-solid fa-dumbbell"></i></div>
+      <div class="sector-name">Fitness & Yoga</div>
+      <div class="sector-sub">Centros</div>
+    </div>
+  </div>
+</section>
+
+<!-- VERSATILITY -->
+<section class="versatility" id="duality">
+  <div style="max-width:1200px;margin:0 auto" data-aos="fade-up">
+    <div class="section-label">Versatilidad sin Límites</div>
+    <h2 class="section-title">El Software que<br><span style="color:var(--gold)">Piensa como Tú</span></h2>
+    <p class="section-sub">GlamCode OS no impone una sola forma de trabajar. Sus módulos se adaptan a las necesidades reales de cada tipo de negocio.</p>
+  </div>
+
+  <div class="versatility-inner" data-aos="fade-up" data-aos-delay="200">
+    <div class="vers-side vers-side-tattoo" style="position:relative; overflow:hidden;">
+      <div style="position:absolute;inset:0;z-index:0;overflow:hidden;">
+        <img src="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?q=80&w=1200&auto=format&fit=crop" alt="Tattoo studio" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:grayscale(100%) brightness(18%);">
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,10,0.75),rgba(10,10,10,0.60));z-index:1;"></div>
+      <div style="position:relative;z-index:2;">
+      <span class="duality-tag tag-barber"><i class="fa-solid fa-pen-nib" style="margin-right:6px"></i> Studio de Tatuajes</span>
+      <div class="duality-name">El <span class="italic">Arte</span><br>con Control Total</div>
+      <p class="duality-tagline">Para estudios donde cada cita es un proyecto único que requiere documentación, consentimientos y seguimiento preciso.</p>
+      <ul class="duality-features">
+        <li>Gestión digital de consentimientos informados</li>
+        <li>Historial de diseños por cliente con adjuntos</li>
+        <li>Control de sesiones y avances de proyectos grandes</li>
+        <li>Inventario de tintas, agujas y materiales estériles</li>
+        <li>Depósitos y pagos parciales automatizados</li>
+        <li>Recordatorios de cuidado post-sesión por WhatsApp</li>
+      </ul>
+      </div>
+    </div>
+
+    <div class="vers-divider"></div>
+
+    <div class="vers-side vers-side-spa" style="position:relative; overflow:hidden;">
+      <div style="position:absolute;inset:0;z-index:0;overflow:hidden;">
+        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200&auto=format&fit=crop" alt="Spa wellness" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:grayscale(100%) brightness(18%);">
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,10,10,0.72),rgba(10,10,10,0.58));z-index:1;"></div>
+      <div style="position:relative;z-index:2;">
+      <span class="duality-tag tag-salon"><i class="fa-solid fa-spa" style="margin-right:6px"></i> Wellness & Spa</span>
+      <div class="duality-name">La <span class="italic">Calma</span><br>que Genera Dinero</div>
+      <p class="duality-tagline">Para espacios de bienestar donde la experiencia del cliente lo es todo y la gestión de cabinas define la rentabilidad.</p>
+      <ul class="duality-features">
+        <li>Gestión de cabinas y salas por disponibilidad</li>
+        <li>Agendamiento de rituales y tratamientos en secuencia</li>
+        <li>Control de inventario de aceites y productos premium</li>
+        <li>Membresías y paquetes de sesiones con vigencia</li>
+        <li>Encuestas de satisfacción post-servicio automáticas</li>
+        <li>Rendimiento por especialista y por cabina</li>
+      </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBAL -->
+<section class="global-section" id="global">
+  <div class="global-inner" data-aos="fade-up">
+    <div class="section-label" style="justify-content:center">Expansión Global</div>
+    <h2 class="section-title">Construido para<br>Conquistar el <span style="color:var(--gold)">Mundo</span></h2>
+    <p class="section-sub" style="margin:0 auto 0;text-align:center">GlamCode OS nació en Latinoamérica y creció a 18 países. La infraestructura que necesitas para abrir tu segundo, tercer o décimo local.</p>
+
+    <div class="globe-visual" data-aos="zoom-in" data-aos-delay="200">
+      <div class="globe-ring globe-ring-1"></div>
+      <div class="globe-ring globe-ring-2"></div>
+      <div class="globe-ring globe-ring-3"></div>
+      <div class="globe-dot" style="top:30%;left:40%"></div>
+      <div class="globe-dot" style="top:55%;left:60%;width:6px;height:6px;background:var(--whatsapp)"></div>
+      <div class="globe-dot" style="top:20%;left:65%;width:5px;height:5px"></div>
+      <div class="globe-dot" style="top:70%;left:30%;width:7px;height:7px"></div>
+    </div>
+
+    <div class="countries-grid" data-aos="fade-up" data-aos-delay="300">
+      <div class="country-tag active">🇲🇽 México</div>
+      <div class="country-tag active">🇨🇴 Colombia</div>
+      <div class="country-tag active">🇦🇷 Argentina</div>
+      <div class="country-tag active">🇺🇸 USA</div>
+      <div class="country-tag">🇧🇷 Brasil</div>
+      <div class="country-tag">🇨🇱 Chile</div>
+      <div class="country-tag">🇵🇪 Perú</div>
+      <div class="country-tag">🇪🇸 España</div>
+      <div class="country-tag">🇵🇦 Panamá</div>
+      <div class="country-tag">🌍 +9 más</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div style="max-width:800px;margin:0 auto;text-align:center" data-aos="fade-up">
+    <div class="section-label" style="justify-content:center">FAQ</div>
+    <h2 class="section-title">Preguntas que<br><span style="color:var(--gold)">se Hacen los Mejores</span></h2>
+    <p class="section-sub" style="margin:0 auto;text-align:center">Resolvemos las dudas de los profesionales que piensan en grande antes de dar el paso.</p>
+  </div>
+
+  <div class="faq-list" data-aos="fade-up" data-aos-delay="200">
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span class="faq-q-text">¿Se adapta a mi tipo de negocio?</span>
+        <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+      </button>
+      <div class="faq-answer">
+        <p>Sí. GlamCode OS es completamente modular y se configura según los servicios, flujos y necesidades específicas de tu negocio. Ya sea un spa con gestión de cabinas, un studio de tatuajes con consentimientos digitales o un nail studio con paquetes de uñas — el sistema se moldea a ti, no al revés.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span class="faq-q-text">¿Puedo gestionar múltiples sedes desde un solo lugar?</span>
+        <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+      </button>
+      <div class="faq-answer">
+        <p>Absolutamente. GlamCode OS fue diseñado pensando en la expansión. Controla todo tu imperio — agenda, inventario, equipo y finanzas — desde un único dashboard centralizado, en tiempo real, sin importar cuántas sedes tengas o en qué países operes.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span class="faq-q-text">¿Necesito conocimientos técnicos para usarlo?</span>
+        <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+      </button>
+      <div class="faq-answer">
+        <p>No. GlamCode OS está diseñado para ser intuitivo y sofisticado a la vez. Si sabes manejar tu smartphone, puedes manejar el sistema. Además, contarás con onboarding personalizado y soporte continuo de nuestro equipo de consultores especializados en negocios de bienestar y estética.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span class="faq-q-text">¿Cuánto tiempo tarda la implementación?</span>
+        <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+      </button>
+      <div class="faq-answer">
+        <p>La mayoría de los negocios están operando en menos de 48 horas. Nuestro equipo de éxito te acompaña en la configuración inicial, migración de datos y entrenamiento del equipo. Empiezas a ver resultados desde el primer día de uso.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        <span class="faq-q-text">¿Hay contratos de permanencia?</span>
+        <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
+      </button>
+      <div class="faq-answer">
+        <p>No existe ningún compromiso de permanencia. Puedes cancelar cuando quieras, aunque nuestra tasa de retención del 98% habla por sí misma. Los profesionales que prueban GlamCode OS no vuelven a trabajar de otra forma.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="social">
+  <div style="max-width:1200px;margin:0 auto;text-align:center" data-aos="fade-up">
+    <div class="section-label" style="justify-content:center">Prueba Social</div>
+    <h2 class="section-title">Lo Que Dicen<br>los que <span style="color:var(--gold)">Ya Escalaron</span></h2>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="testi-card" data-aos="fade-up" data-aos-delay="0">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Pasé de perder citas y dinero a tener total control. Mi segundo spa abrió en 6 meses gracias a los datos que me dio GlamCode OS."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">MR</div>
+        <div>
+          <div class="testi-name">María Rodríguez</div>
+          <div class="testi-loc">Fundadora · Lumière Spa · Medellín 🇨🇴</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card" data-aos="fade-up" data-aos-delay="120">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Mi studio de tatuajes era caos puro antes. Hoy gestiono consentimientos, sesiones y pagos desde el teléfono. El dashboard es como tener un CFO en el bolsillo."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">JL</div>
+        <div>
+          <div class="testi-name">Javier López</div>
+          <div class="testi-loc">Fundador · BlackLine Studio · Ciudad de México 🇲🇽</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card" data-aos="fade-up" data-aos-delay="240">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"El marketing automatizado de GlamCode OS me trajo clientes que no regresaban en meses. Aumenté mis ingresos un 40% en el primer trimestre de mi nail studio."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AP</div>
+        <div>
+          <div class="testi-name">Andrea Pérez</div>
+          <div class="testi-loc">CEO · Gloss Nail Atelier · Buenos Aires 🇦🇷</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+  <div class="cta-inner" data-aos="zoom-in">
+    <div class="section-label" style="justify-content:center;margin-bottom:28px">El Siguiente Paso</div>
+    <h2 class="cta-title">Tu Negocio de Bienestar<br>Comienza a <em>Escalar Hoy</em></h2>
+    <p class="cta-sub">Habla con un consultor de éxito de GlamCode OS y cuéntanos tu caso específico. Sin compromiso, con resultados reales desde el primer día.</p>
+    <a href="https://wa.me/1234567890?text=Hola,%20quiero%20consultar%20mi%20caso%20específico%20con%20GlamCode%20OS" class="btn-whatsapp" target="_blank" rel="noopener">
+      <svg class="whatsapp-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      </svg>
+      Consulta tu Caso Específico
+    </a>
+    <p style="margin-top:16px;font-size:0.68rem;color:rgba(255,255,255,0.3);letter-spacing:0.1em">Respuesta en menos de 2 horas · Sin contratos · Cancela cuando quieras</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Glam<span>Code</span> OS</div>
+      <div class="footer-tagline">Ecosistema 360° para Profesionales del Bienestar y la Estética</div>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#ecosystem">Ecosistema</a></li>
+      <li><a href="#sectores">Sectores</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#global">Global</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#social">Testimonios</a></li>
+    </ul>
+    <div class="footer-copy">© 2025 GlamCode OS. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<script>
+  // AOS Init
+  AOS.init({ once: true, easing: 'ease-out-cubic', offset: 60 });
+
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    cursorRing.style.left = ringX + 'px';
+    cursorRing.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+  document.querySelectorAll('a, button, .bento-card, .country-tag').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px'; cursor.style.height = '20px';
+      cursorRing.style.width = '56px'; cursorRing.style.height = '56px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px'; cursor.style.height = '12px';
+      cursorRing.style.width = '36px'; cursorRing.style.height = '36px';
+    });
+  });
+
+  // Live clock in dashboard
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    const el = document.getElementById('dash-clock');
+    if (el) el.textContent = `${h}:${m}:${s}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Animated stat counters
+  function animateCounters() {
+    document.querySelectorAll('.stat-num').forEach(el => {
+      const raw = el.textContent;
+      const num = parseFloat(raw.replace(/[^0-9.]/g,''));
+      const prefix = raw.match(/^[^0-9]*/)?.[0] || '';
+      const suffix = raw.match(/[^0-9.]+$/)?.[0] || '';
+      let start = 0;
+      const duration = 2000;
+      const step = (timestamp) => {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const val = num * ease;
+        el.textContent = prefix + (Number.isInteger(num) ? Math.round(val) : val.toFixed(1)) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+  // Trigger on hero visible
+  const heroObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) { animateCounters(); heroObs.disconnect(); }
+  }, { threshold: 0.3 });
+  heroObs.observe(document.querySelector('.hero-stats'));
+
+  // Country tags click effect
+  document.querySelectorAll('.country-tag').forEach(tag => {
+    tag.addEventListener('click', function() {
+      this.classList.toggle('active');
+    });
+  });
+
+  // FAQ accordion
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const answer = item.querySelector('.faq-answer');
+    const isOpen = btn.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-question.open').forEach(q => {
+      q.classList.remove('open');
+      q.closest('.faq-item').querySelector('.faq-answer').classList.remove('open');
+    });
+    // Open clicked if it was closed
+    if (!isOpen) {
+      btn.classList.add('open');
+      answer.classList.add('open');
+    }
+  }
+
+  // Add cursor effect to sector cards and faq buttons
+  document.querySelectorAll('.sector-card, .faq-question').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px'; cursor.style.height = '20px';
+      cursorRing.style.width = '56px'; cursorRing.style.height = '56px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px'; cursor.style.height = '12px';
+      cursorRing.style.width = '36px'; cursorRing.style.height = '36px';
+    });
+  });
+
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>

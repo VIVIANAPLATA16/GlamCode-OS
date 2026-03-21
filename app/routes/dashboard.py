@@ -1,14 +1,14 @@
-from flask import Blueprint, redirect, render_template, session, url_for
+from flask import Blueprint, render_template, session
 
-from app.decorators import login_required
 from datos.database_pro import obtener_dashboard_data
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
 
 @dashboard_bp.route("/")
-@login_required
 def inicio():
+    if "usuario_id" not in session:
+        return render_template("landing.html")
     usuario_id = session["usuario_id"]
     data = obtener_dashboard_data(usuario_id)
 
