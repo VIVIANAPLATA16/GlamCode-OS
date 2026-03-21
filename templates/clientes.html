@@ -9,7 +9,7 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
-          <div class="flash-item" style="padding: 15px; margin-bottom: 20px; border-radius: 8px; background-color: #1a472a; color: #a3cfbb; border: 1px solid #2d5a3e; text-align: center; font-weight: bold; animation: fadeIn 0.5s; transition: opacity 0.6s ease;">
+          <div class="js-flash-msg" style="padding: 15px; margin-bottom: 20px; border-radius: 8px; background-color: #1a472a; color: #a3cfbb; border: 1px solid #2d5a3e; text-align: center; font-weight: bold; transition: opacity 0.6s ease;">
             {{ message }}
           </div>
         {% endfor %}
@@ -77,27 +77,31 @@
 </div>
 
 <script>
-  $(document).ready(function() {
-    // 1. Inicializar la tabla (lo que ya tenías y funcionaba)
-    if ($.fn.DataTable) {
-        $('#tabla-clientes').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json"
-            },
-            "pageLength": 10,
-            "order": [[ 0, "desc" ]]
-        });
-    }
-
-    // 2. Timer para que TODOS los mensajes flash se borren (Agregado o Eliminado)
+  // ESTO BORRA LOS LETREROS SÍ O SÍ (JavaScript Puro)
+  (function() {
     setTimeout(function() {
-      const messages = document.querySelectorAll('.flash-item');
-      messages.forEach(function(msg) {
-        msg.style.opacity = "0";
-        setTimeout(() => msg.remove(), 600);
-      });
+      var messages = document.getElementsByClassName('js-flash-msg');
+      for (var i = 0; i < messages.length; i++) {
+        (function(msg) {
+          msg.style.opacity = "0";
+          setTimeout(function() {
+            if (msg.parentNode) {
+              msg.parentNode.removeChild(msg);
+            }
+          }, 600);
+        })(messages[i]);
+      }
     }, 3000);
-  });
+  })();
+
+  // Script para la tabla (Solo si jQuery está disponible)
+  if (typeof $ !== 'undefined' && $.fn.DataTable) {
+      $('#tabla-clientes').DataTable({
+          "language": { "url": "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json" },
+          "pageLength": 10,
+          "order": [[ 0, "desc" ]]
+      });
+  }
 </script>
 
 {% endblock %}
