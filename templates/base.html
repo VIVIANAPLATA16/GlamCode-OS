@@ -6,6 +6,7 @@
     <title>{% block title %}GlamCode OS - Panel{% endblock %}</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
@@ -44,6 +45,20 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 10.5 13.5M9.5 9.5 20 20"/></svg>
                 </span>
                 <span>Servicios</span>
+            </a>
+            <a href="{{ url_for('dashboard.inventario_page') }}"
+               class="nav-link {% if request.endpoint == 'dashboard.inventario_page' %}nav-link--active{% endif %}">
+                <span class="nav-link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h16"/></svg>
+                </span>
+                <span>Inventario</span>
+            </a>
+            <a href="{{ url_for('dashboard.metricas_page') }}"
+               class="nav-link {% if request.endpoint == 'dashboard.metricas_page' %}nav-link--active{% endif %}">
+                <span class="nav-link__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 12v5M12 8v9M17 5v12"/></svg>
+                </span>
+                <span>Métricas globales</span>
             </a>
             {% if session.get('rol') == 'admin' %}
             <a href="{{ url_for('equipo.crear_estilista') }}"

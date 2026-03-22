@@ -340,6 +340,21 @@ a:hover {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.grid--4 {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.card--metric {
+  margin-bottom: 0;
+}
+
+.dashboard-chart-wrap {
+  position: relative;
+  height: 180px;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -545,6 +560,34 @@ textarea:focus {
 
 .text-muted {
   color: var(--color-text-muted);
+}
+
+/* Tablas estilo landing (inventario / métricas) */
+.lux-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #ffffff;
+  font-size: 0.85rem;
+}
+
+.lux-table th {
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  background: #111111;
+  color: #c5a059;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+  border-bottom: 1px solid #242424;
+}
+
+.lux-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #242424;
+}
+
+.lux-table tbody tr:hover {
+  background: rgba(197, 160, 89, 0.04);
 }
 
 /* Flash messages */

@@ -1,24 +1,28 @@
-import mysql.connector
+import logging
 import os
+
+import mysql.connector
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash
 
 load_dotenv()
+_log = logging.getLogger(__name__)
+
 
 def obtener_conexion():
     try:
         conexion = mysql.connector.connect(
-            host=os.getenv('DB_HOST'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASSWORD'),
-            database=os.getenv('DB_NAME'),
-            port=int(os.getenv('DB_PORT', 4000)),
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME"),
+            port=int(os.getenv("DB_PORT", 4000)),
             ssl_verify_cert=False,
-            ssl_ca=None
+            ssl_ca=None,
         )
         return conexion
     except mysql.connector.Error as err:
-        print(f"Error al conectar: {err}")
+        _log.warning("Error al conectar a la base de datos: %s", err)
         return None
 
 def crear_usuario(peluqueria, email, password):
@@ -49,6 +53,29 @@ def validar_usuario(email, password):
         cursor.close()
         conexion.close()
     return None
+
+def count_citas_hoy_usuario(usuario_id, fecha_iso: str) -> int:
+    """Cuenta citas del día (fecha almacenada como texto ISO o fecha)."""
+    conexion = obtener_conexion()
+    if not conexion:
+        return 0
+    cursor = conexion.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT COUNT(*) FROM citas
+            WHERE usuario_id = %s
+              AND substr(trim(cast(fecha as char)), 1, 10) = %s
+            """,
+            (usuario_id, fecha_iso[:10]),
+        )
+        n = cursor.fetchone()[0]
+    except Exception:
+        n = 0
+    cursor.close()
+    conexion.close()
+    return int(n or 0)
+
 
 def obtener_dashboard_data(usuario_id):
     conexion = obtener_conexion()
@@ -84,7 +111,7 @@ def crear_cita(usuario_id, cliente, servicio, precio, fecha_input):
             conexion.commit()
             return True
         except Exception as e:
-            print(f"Error al crear cita: {e}")
+            _log.warning("Error al crear cita: %s", e)
             return False
         finally:
             cursor.close()
