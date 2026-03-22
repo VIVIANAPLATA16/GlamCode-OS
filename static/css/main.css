@@ -723,3 +723,31 @@ textarea:focus {
   color: rgba(255, 255, 255, 0.82);
 }
 
+/* KPI CARDS MEJORADAS */
+.kpi-card {
+  padding: 28px !important;
+  min-height: 120px !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin-bottom: 4px !important;
+}
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #a07d3a, #c5a059);
+}
+.kpi-card:hover {
+  border-color: rgba(197,160,89,0.4) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 
+              0 0 40px rgba(197,160,89,0.08) !important;
+  background: linear-gradient(135deg, 
+              rgba(197,160,89,0.07), #1a1a1a) !important;
+}
+.grid--4 {
+  gap: 20px !important;
+}
+
