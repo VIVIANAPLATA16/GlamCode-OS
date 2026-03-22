@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Métricas globales - GlamCode OS{% endblock %}
+{% block page_title %}Métricas globales{% endblock %}
+
+{% block content %}
+<div class="card" style="background:#1a1a1a;border:1px solid #242424;margin-bottom:1rem">
+  <h2 class="card__title" style="color:#c5a059">Inventario</h2>
+  <div style="overflow-x:auto">
+    <table class="lux-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Stock actual</th>
+          <th>Stock mínimo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+        <tr>
+          <td>{{ it.nombre }}</td>
+          <td>{{ it.categoria or '—' }}</td>
+          <td>{{ it.stock_actual }}</td>
+          <td>{{ it.stock_minimo }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-muted">Sin ítems en inventario.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card" style="background:#1a1a1a;border:1px solid #242424">
+  <h2 class="card__title" style="color:#c5a059">Transacciones recientes</h2>
+  <div style="overflow-x:auto;margin-top:0.75rem">
+    <table class="lux-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Tipo</th>
+          <th>Monto</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in transacciones %}
+        <tr>
+          <td>{{ t.fecha }}</td>
+          <td>{{ t.tipo or '—' }}</td>
+          <td>{{ t.monto }}</td>
+          <td>{{ t.descripcion or '—' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="text-muted">Sin transacciones registradas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

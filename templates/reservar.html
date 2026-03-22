@@ -1,0 +1,181 @@
+{% extends 'reserva_layout.html' %}
+{% block title %}Reservar cita - GlamCode OS{% endblock %}
+
+{% block extra_head %}
+<style>
+  .wrap { max-width: 480px; margin: 0 auto; padding: 24px 16px 48px; min-height: 100vh; box-sizing: border-box; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #c5a059; margin: 0 0 8px; }
+  .sub { color: rgba(255,255,255,0.55); font-size: 0.9rem; margin-bottom: 24px; }
+  .step { display: none; }
+  .step.active { display: block; }
+  .card-pick {
+    background: #111; border: 1px solid #242424; border-radius: 8px; padding: 16px; margin-bottom: 12px;
+    cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .card-pick.selected, .card-pick:hover { border-color: #c5a059; box-shadow: 0 0 20px rgba(197,160,89,0.15); }
+  .card-pick h3 { margin: 0 0 6px; font-size: 1rem; color: #fff; }
+  .card-pick p { margin: 0; font-size: 0.85rem; color: rgba(255,255,255,0.55); }
+  .avatar {
+    width: 56px; height: 56px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800; color: #0a0a0a; background: linear-gradient(135deg,#c5a059,#a07d3a); margin-right: 12px;
+  }
+  .emp-row { display: flex; align-items: center; }
+  .slots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .slot-btn {
+    min-width: 72px; padding: 10px; border-radius: 6px; border: 1px solid #c5a059; background: transparent;
+    color: #fff; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .slot-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #444; color: #666; }
+  .slot-btn.selected { background: #c5a059; color: #0a0a0a; }
+  input[type="text"], input[type="tel"], input[type="date"] {
+    width: 100%; box-sizing: border-box; padding: 16px; height: 52px; border-radius: 8px;
+    border: 1px solid #242424; background: #111; color: #fff; font-size: 16px; margin-bottom: 12px; font-family: inherit;
+  }
+  .cta {
+    width: 100%; padding: 16px; height: 52px; border: none; border-radius: 8px; background: #c5a059; color: #0a0a0a;
+    font-weight: 800; font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; margin-top: 8px; font-family: inherit;
+  }
+  .cta:disabled { opacity: 0.5; cursor: wait; }
+  .back { background: transparent; border: 1px solid #444; color: rgba(255,255,255,0.7); margin-bottom: 16px; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 0.85rem; }
+  .err { color: #f87171; font-size: 0.85rem; margin-top: 8px; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="wrap">
+  <h1>Reservar cita</h1>
+  <p class="sub">Elige servicio, profesional y horario en unos pasos.</p>
+
+  <div id="step1" class="step active">
+    <h2 style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#c5a059;margin-bottom:12px">Paso 1 · Servicio</h2>
+    <div id="lista-servicios"></div>
+  </div>
+
+  <div id="step2" class="step">
+    <button type="button" class="back" id="b2">← Atrás</button>
+    <h2 style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#c5a059;margin-bottom:12px">Paso 2 · Profesional</h2>
+    <div id="lista-empleados"></div>
+  </div>
+
+  <div id="step3" class="step">
+    <button type="button" class="back" id="b3">← Atrás</button>
+    <h2 style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#c5a059;margin-bottom:12px">Paso 3 · Fecha y hora</h2>
+    <label for="fecha-reserva" style="display:block;font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:6px">Fecha</label>
+    <input type="date" id="fecha-reserva">
+    <div id="slots-wrap" style="display:none">
+      <p style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin:12px 0 0">Horarios disponibles</p>
+      <div class="slots" id="slots"></div>
+    </div>
+  </div>
+
+  <div id="step4" class="step">
+    <button type="button" class="back" id="b4">← Atrás</button>
+    <h2 style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:#c5a059;margin-bottom:12px">Tus datos</h2>
+    <input type="text" id="nombre" placeholder="Nombre completo" autocomplete="name">
+    <input type="tel" id="telefono" placeholder="Teléfono (WhatsApp)" autocomplete="tel">
+    <p class="err" id="err4" style="display:none"></p>
+    <button type="button" class="cta" id="btn-confirmar">Confirmar reserva</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const state = { servicio_id: null, empleado_id: null, fecha: null, hora: null };
+  const $ = id => document.getElementById(id);
+  function show(n) {
+    for (let i = 1; i <= 4; i++) $('step'+i).classList.toggle('active', i === n);
+  }
+  function loadServicios() {
+    fetch('{{ url_for("reservar.servicios_json") }}').then(r=>r.json()).then(list => {
+      const el = $('lista-servicios');
+      el.innerHTML = '';
+      list.forEach(s => {
+        const d = document.createElement('div');
+        d.className = 'card-pick';
+        d.innerHTML = '<h3><i class="fa-solid fa-scissors" style="color:#c5a059;margin-right:8px"></i>'+s.nombre+'</h3><p>'+s.duracion_minutos+' min · $'+Number(s.precio).toLocaleString('es-CO')+'</p>';
+        d.onclick = () => { state.servicio_id = s.id; loadEmpleados(); show(2); };
+        el.appendChild(d);
+      });
+    });
+  }
+  function loadEmpleados() {
+    fetch('{{ url_for("reservar.empleados_json") }}?servicio_id='+state.servicio_id).then(r=>r.json()).then(list => {
+      const el = $('lista-empleados');
+      el.innerHTML = '';
+      (Array.isArray(list) ? list : []).forEach(e => {
+        const ini = (e.nombre||'P').split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+        const d = document.createElement('div');
+        d.className = 'card-pick emp-row';
+        d.innerHTML = '<span class="avatar">'+ini+'</span><div><h3 style="margin:0">'+e.nombre+'</h3></div>';
+        d.onclick = () => { state.empleado_id = e.id; show(3); loadSlots(); };
+        el.appendChild(d);
+      });
+    });
+  }
+  function loadSlots() {
+    const f = $('fecha-reserva').value;
+    if (!f || !state.empleado_id) return;
+    state.fecha = f;
+    fetch('{{ url_for("reservar.disponibilidad_json") }}?empleado_id='+state.empleado_id+'&fecha='+encodeURIComponent(f))
+      .then(r=>r.json()).then(data => {
+        $('slots-wrap').style.display = 'block';
+        const el = $('slots');
+        el.innerHTML = '';
+        state.hora = null;
+        (data.slots||[]).forEach(sl => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'slot-btn';
+          b.textContent = sl.hora;
+          b.disabled = !sl.libre;
+          if (sl.libre) {
+            b.onclick = () => {
+              el.querySelectorAll('.slot-btn').forEach(x => x.classList.remove('selected'));
+              b.classList.add('selected');
+              state.hora = sl.hora;
+              show(4);
+            };
+          }
+          el.appendChild(b);
+        });
+      });
+  }
+  $('fecha-reserva').addEventListener('change', loadSlots);
+  $('b2').onclick = () => show(1);
+  $('b3').onclick = () => show(2);
+  $('b4').onclick = () => show(3);
+  $('btn-confirmar').onclick = () => {
+    const nombre = $('nombre').value.trim();
+    const telefono = $('telefono').value.trim();
+    const err = $('err4');
+    err.style.display = 'none';
+    if (!nombre || !telefono) { err.textContent = 'Completa nombre y teléfono.'; err.style.display = 'block'; return; }
+    const btn = $('btn-confirmar');
+    btn.disabled = true;
+    fetch('{{ url_for("reservar.reservar") }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre_cliente: nombre,
+        telefono: telefono,
+        servicio_id: state.servicio_id,
+        empleado_id: state.empleado_id,
+        fecha: state.fecha,
+        hora: state.hora
+      })
+    }).then(r => r.json()).then(data => {
+      if (data.ok && data.cita_id) {
+        window.location.href = '/reservar/confirmacion/' + data.cita_id;
+      } else {
+        err.textContent = data.error || 'No se pudo reservar.';
+        err.style.display = 'block';
+        btn.disabled = false;
+      }
+    }).catch(() => { err.textContent = 'Error de red.'; err.style.display = 'block'; btn.disabled = false; });
+  };
+  const t = new Date();
+  $('fecha-reserva').min = t.toISOString().slice(0,10);
+  loadServicios();
+})();
+</script>
+{% endblock %}

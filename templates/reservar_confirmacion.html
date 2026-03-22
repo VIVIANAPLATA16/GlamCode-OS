@@ -1,0 +1,55 @@
+{% extends 'reserva_layout.html' %}
+{% block title %}Cita confirmada - GlamCode OS{% endblock %}
+
+{% block extra_head %}
+<style>
+  .wrap { max-width: 480px; margin: 0 auto; padding: 40px 20px; text-align: center; min-height: 100vh; box-sizing: border-box; }
+  .check-wrap {
+    width: 88px; height: 88px; margin: 0 auto 28px; border-radius: 50%; border: 2px solid #c5a059;
+    display: flex; align-items: center; justify-content: center;
+    animation: popIn 0.65s ease-out forwards;
+    box-shadow: 0 0 40px rgba(197,160,89,0.25);
+  }
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; box-shadow: 0 0 0 rgba(197,160,89,0); }
+    to { transform: scale(1); opacity: 1; box-shadow: 0 0 40px rgba(197,160,89,0.25); }
+  }
+  .check-wrap i { font-size: 2.2rem; color: #c5a059; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 2rem; color: #c5a059; margin: 0 0 24px; line-height: 1.2; }
+  .detail { text-align: left; background: #111; border: 1px solid #242424; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+  .detail p { margin: 0 0 10px; font-size: 0.95rem; color: #fff; }
+  .detail span { color: rgba(255,255,255,0.5); display: inline-block; min-width: 100px; }
+  .wa-banner {
+    text-align: left; padding: 14px 16px; background: rgba(37,211,102,0.08);
+    border-left: 3px solid #25D366; border-radius: 0 8px 8px 0; font-size: 0.88rem; color: rgba(255,255,255,0.85);
+    margin-bottom: 24px; line-height: 1.5;
+  }
+  .btn-row { display: flex; flex-direction: column; gap: 12px; }
+  a.btn {
+    display: block; padding: 16px; border-radius: 8px; text-align: center; font-weight: 800; text-decoration: none;
+    font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  a.primary { background: #c5a059; color: #0a0a0a; }
+  a.ghost { border: 1px solid #444; color: rgba(255,255,255,0.85); }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="wrap">
+  <div class="check-wrap"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
+  <h1>¡Tu cita está confirmada!</h1>
+  <div class="detail">
+    <p><span>Servicio</span> {{ cita.servicio }}</p>
+    <p><span>Profesional</span> {{ cita.profesional | default('—', true) }}</p>
+    <p><span>Fecha</span> {{ fecha_txt }}</p>
+    <p><span>Hora</span> {{ hora_txt }}</p>
+  </div>
+  <div class="wa-banner">
+    Recibirás un recordatorio por WhatsApp 2 horas antes de tu cita
+  </div>
+  <div class="btn-row">
+    <a class="btn primary" href="{{ url_for('reservar.reservar') }}">Agendar otra cita</a>
+    <a class="btn ghost" href="{{ url_for('dashboard.inicio') }}">Volver al inicio</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Inventario - GlamCode OS{% endblock %}
+{% block page_title %}Inventario{% endblock %}
+
+{% block content %}
+<div class="card" style="background:#1a1a1a;border:1px solid #242424">
+  <h2 class="card__title" style="color:#c5a059">Stock del salón</h2>
+  <p class="card__subtitle">Productos y materiales (TiDB).</p>
+  <div style="overflow-x:auto;margin-top:1rem">
+    <table class="lux-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Categoría</th>
+          <th>Stock</th>
+          <th>Mínimo</th>
+          <th>Unidad</th>
+          <th>Costo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+        <tr>
+          <td>{{ it.nombre }}</td>
+          <td>{{ it.categoria or '—' }}</td>
+          <td>{{ it.stock_actual }}</td>
+          <td>{{ it.stock_minimo }}</td>
+          <td>{{ it.unidad or '—' }}</td>
+          <td>{{ it.precio_costo if it.precio_costo is not none else '—' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-muted">Sin ítems. Los registros aparecerán aquí.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
