@@ -1439,28 +1439,28 @@
       La plataforma 360° que se adapta a tu negocio, sin importar cuál sea. Spas, salones, estudios de tatuaje, centros de estética y más — todo en un solo ecosistema de clase mundial.
     </p>
     <div class="hero-ctas" data-aos="fade-up" data-aos-duration="600" data-aos-delay="350">
-      <a href="/registro" class="btn-gold">
+      <a href="https://wa.me/573134191320?text=Hola%20Viviana%2C%20quiero%20implementar%20GlamCode%20OS%20en%20mi%20negocio" class="btn-gold" target="_blank" rel="noopener">
         <span>Empezar Ahora</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
-      <a href="https://wa.me/573134191320?text=Hola%20Viviana,%20vi%20la%20página%20de%20GlamCode%20OS%20y%20me%20gustaría%20agendar%20una%20demo." class="btn-ghost" target="_blank" rel="noopener">Ver Demo en Vivo</a>
+      <a href="#" class="btn-ghost" onclick="abrirDemo(event)">Ver Demo en Vivo</a>
     </div>
     <div class="hero-stats" data-aos="fade-up" data-aos-duration="800" data-aos-delay="500">
       <div class="stat">
-        <span class="stat-num">+3,200</span>
-        <span class="stat-label">Negocios Activos</span>
+        <span class="stat-num">+12</span>
+        <span class="stat-label">Negocios usando el sistema</span>
       </div>
       <div class="stat">
-        <span class="stat-num">18</span>
-        <span class="stat-label">Países</span>
+        <span class="stat-num">1</span>
+        <span class="stat-label">País activo</span>
       </div>
       <div class="stat">
-        <span class="stat-num">98%</span>
-        <span class="stat-label">Satisfacción</span>
+        <span class="stat-num">~40%</span>
+        <span class="stat-label">Menos tiempo en admin</span>
       </div>
       <div class="stat">
-        <span class="stat-num">$2.4M</span>
-        <span class="stat-label">Revenue Gestionado</span>
+        <span class="stat-num">+300</span>
+        <span class="stat-label">Citas gestionadas</span>
       </div>
     </div>
   </div>
@@ -1695,7 +1695,7 @@
               <div class="staff-name">Andrea M.</div>
               <div class="staff-role">Estilista Senior</div>
             </div>
-            <div class="staff-perf">98%</div>
+            <div class="staff-perf">~40%</div>
           </div>
           <div class="staff-item">
             <div class="staff-avatar">CR</div>
@@ -1913,7 +1913,7 @@
         <span class="faq-icon"><i class="fa-solid fa-chevron-down"></i></span>
       </button>
       <div class="faq-answer">
-        <p>No existe ningún compromiso de permanencia. Puedes cancelar cuando quieras, aunque nuestra tasa de retención del 98% habla por sí misma. Los profesionales que prueban GlamCode OS no vuelven a trabajar de otra forma.</p>
+        <p>No existe ningún compromiso de permanencia. Puedes cancelar cuando quieras, aunque nuestra tasa de retención del ~40% habla por sí misma. Los profesionales que prueban GlamCode OS no vuelven a trabajar de otra forma.</p>
       </div>
     </div>
 
@@ -2117,3 +2117,37 @@
 </script>
 </body>
 </html>
+
+<!-- MODAL VIDEO GLAMCODE -->
+<div id="modal-demo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;align-items:center;justify-content:center;flex-direction:column">
+  <button onclick="cerrarDemo()" style="position:absolute;top:24px;right:32px;background:none;border:none;color:#D4AF37;font-size:28px;cursor:pointer;font-family:monospace">✕</button>
+  <video id="video-demo" src="/static/videos/glamcode-demo.mp4" controls autoplay playsinline
+    style="width:90%;max-width:900px;aspect-ratio:16/9;outline:1px solid rgba(212,175,55,0.3)">
+  </video>
+</div>
+
+<script>
+function abrirDemo(e) {
+  e.preventDefault();
+  var modal = document.getElementById('modal-demo');
+  var video = document.getElementById('video-demo');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  video.currentTime = 0;
+  video.play();
+}
+function cerrarDemo() {
+  var modal = document.getElementById('modal-demo');
+  var video = document.getElementById('video-demo');
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
+  video.pause();
+  video.currentTime = 0;
+}
+document.getElementById('modal-demo').addEventListener('click', function(e) {
+  if (e.target === this) cerrarDemo();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') cerrarDemo();
+});
+</script>
