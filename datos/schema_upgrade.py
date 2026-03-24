@@ -67,6 +67,20 @@ def upgrade_schema() -> None:
         cur,
         "ALTER TABLE servicios ADD COLUMN duracion_minutos INT DEFAULT 60",
     )
+    # ── FASE 2: columnas multi-tenant en usuarios ──────────────────────
+    for stmt in (
+        "ALTER TABLE usuarios MODIFY COLUMN password VARCHAR(255) NOT NULL",
+        "ALTER TABLE usuarios ADD COLUMN ciudad VARCHAR(120) NULL",
+        "ALTER TABLE usuarios ADD COLUMN horario VARCHAR(255) NULL",
+        "ALTER TABLE usuarios ADD COLUMN servicios_principales TEXT NULL",
+        "ALTER TABLE usuarios ADD COLUMN whatsapp_number VARCHAR(40) NULL",
+        "ALTER TABLE usuarios ADD COLUMN qr_code_url VARCHAR(500) NULL",
+        "ALTER TABLE usuarios ADD COLUMN onboarding_completo TINYINT(1) DEFAULT 0",
+        "ALTER TABLE usuarios ADD COLUMN stylist_slug VARCHAR(120) NULL",
+        "ALTER TABLE usuarios ADD COLUMN admin_id INT NULL",
+        "ALTER TABLE usuarios ADD COLUMN rol VARCHAR(50) DEFAULT 'owner'",
+    ):
+        _try(cur, stmt)
     conn.commit()
     cur.close()
     conn.close()

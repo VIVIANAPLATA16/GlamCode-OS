@@ -168,3 +168,96 @@ def crear_usuario_seguro(peluqueria: str, email: str, password: str) -> dict | N
     cursor.close()
     conexion.close()
     return {"id": nuevo_id, "peluqueria": peluqueria, "rol": "owner"}
+
+
+def get_salon_by_usuario_id(usuario_id: int) -> dict | None:
+    """
+    Retorna todos los datos del salón/tenant autenticado.
+    Usado en dashboard, QR download y onboarding.
+    """
+    conexion = obtener_conexion()
+    if not conexion:
+        return None
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            """
+            SELECT id, peluqueria, email, rol, ciudad, horario,
+                   servicios_principales, whatsapp_number, qr_code_url,
+                   onboarding_completo, admin_id
+            FROM usuarios WHERE id = %s
+            """,
+            (usuario_id,),
+        )
+        row = cursor.fetchone()
+    except Exception as e:
+        _log.warning("get_salon_by_usuario_id error: %s", e)
+        row = None
+    cursor.close()
+    conexion.close()
+    return row
+
+
+def update_salon_config(usuario_id: int, **kwargs) -> bool:
+    """
+    Actualiza campos del salón. Solo acepta columnas de la whitelist.
+    Uso: update_salon_config(1, ciudad="Bogotá", horario="Lun-Sáb 9-7")
+    Retorna True si actualizó, False si no había campos válidos o falló conexión.
+    """
+    ALLOWED = {
+        "ciudad", "horario", "servicios_principales",
+        "whatsapp_number", "onboarding_completo", "peluqueria",
+    }
+    fields = {k: v for k, v in kwargs.items() if k in ALLOWED}
+    if not fields:
+        return False
+    set_clause = ", ".join(f"{k} = %s" for k in fields)
+    values = list(fields.values()) + [usuario_id]
+    conexion = obtener_conexion()
+    if not conexion:
+        return False
+    cursor = conexion.cursor()
+    try:
+        cursor.execute(
+            f"UPDATE usuarios SET {set_clause} WHERE id = %s", values
+        )
+        conexion.commit()
+        return True
+    except Exception as e:
+        _log.warning("update_salon_config error: %s", e)
+        return False
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+def verificar_columnas_fase2() -> dict:
+    """
+    Utilidad de diagnóstico. Verifica que las columnas de Fase 2 existen en TiDB.
+    Llamar desde flask shell: from datos.database_pro import verificar_columnas_fase2; print(verificar_columnas_fase2())
+    """
+    ESPERADAS = {
+        "ciudad", "horario", "servicios_principales", "whatsapp_number",
+        "qr_code_url", "onboarding_completo", "stylist_slug", "admin_id",
+    }
+    conexion = obtener_conexion()
+    if not conexion:
+        return {"error": "Sin conexión a TiDB"}
+    cursor = conexion.cursor()
+    cursor.execute(
+        """
+        SELECT COLUMN_NAME, COLUMN_TYPE
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'usuarios'
+        ORDER BY ORDINAL_POSITION
+        """,
+    )
+    existentes = {row[0]: row[1] for row in cursor.fetchall()}
+    cursor.close()
+    conexion.close()
+    faltantes = ESPERADAS - set(existentes.keys())
+    return {
+        "columnas_existentes": list(existentes.keys()),
+        "columnas_fase2_faltantes": list(faltantes),
+        "fase2_completa": len(faltantes) == 0,
+    }
