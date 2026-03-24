@@ -15,15 +15,15 @@ def create_app():
         static_folder=os.path.join(base_dir, "static"),
     )
 
-    app.config.from_object(get_config())
-    
-    # --- AGREGAR ESTO PARA RENDER ---
+   app.config.from_object(get_config())
+
+    # Configuración de seguridad para producción
     app.config.update(
-        SESSION_COOKIE_SECURE=True,   # Obliga a usar HTTPS (necesario en Render)
-        SESSION_COOKIE_SAMESITE='Lax', # Permite que la sesión persista entre rutas
-        SESSION_COOKIE_HTTPONLY=True  # Protege la cookie de ataques JS
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_SAMESITE='Lax',
+        SESSION_COOKIE_HTTPONLY=True
     )
-    # --------------------------------
+    
 
     # SQLAlchemy (modelos en models.py)
     from app.extensions import db
