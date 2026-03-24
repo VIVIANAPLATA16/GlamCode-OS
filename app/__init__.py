@@ -15,7 +15,7 @@ def create_app():
         static_folder=os.path.join(base_dir, "static"),
     )
 
-   app.config.from_object(get_config())
+    app.config.from_object(get_config())
 
     # Configuración de seguridad para producción
     app.config.update(
