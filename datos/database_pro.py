@@ -39,30 +39,36 @@ def validar_usuario(email: str, password: str) -> dict | None:
     conexion = obtener_conexion()
     if not conexion:
         return None
-    cursor = conexion.cursor(dictionary=True)
-    cursor.execute(
-        "SELECT id, peluqueria, email, rol, password FROM usuarios WHERE email = %s",
-        (email.strip(),),
-    )
-    usuario = cursor.fetchone()
-    if not usuario:
+    try:
+        cursor = conexion.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT id, peluqueria, email, rol, password FROM usuarios WHERE email = %s",
+            (email.strip(),),
+        )
+        usuario = cursor.fetchone()
+        
+        if not usuario or not usuario["password"]:
+            cursor.close()
+            conexion.close()
+            return None
+
+        pwd_stored = usuario["password"]
+        
+        # Verificamos que el hash tenga el formato correcto (debe tener al menos un ':')
+        if ":" in pwd_stored:
+            autenticado = check_password_hash(pwd_stored, password.strip())
+        else:
+            # Si no es un hash válido, comparamos texto plano y migramos
+            autenticado = (pwd_stored == password.strip())
+            if autenticado:
+                _migrar_password_a_hash(usuario["id"], password.strip(), cursor, conexion)
+
         cursor.close()
         conexion.close()
+        return usuario if autenticado else None
+    except Exception as e:
+        print(f"Error en validación: {e}")
         return None
-
-    pwd_stored = usuario["password"]
-    es_hash = pwd_stored.startswith(("pbkdf2:", "$2b$", "$argon2"))
-
-    if es_hash:
-        autenticado = check_password_hash(pwd_stored, password.strip())
-    else:
-        autenticado = (pwd_stored == password.strip())
-        if autenticado:
-            _migrar_password_a_hash(usuario["id"], password.strip(), cursor, conexion)
-
-    cursor.close()
-    conexion.close()
-    return usuario if autenticado else None
 
 
 def _migrar_password_a_hash(usuario_id: int, password_plano: str,
