@@ -16,6 +16,14 @@ def create_app():
     )
 
     app.config.from_object(get_config())
+    
+    # --- AGREGAR ESTO PARA RENDER ---
+    app.config.update(
+        SESSION_COOKIE_SECURE=True,   # Obliga a usar HTTPS (necesario en Render)
+        SESSION_COOKIE_SAMESITE='Lax', # Permite que la sesión persista entre rutas
+        SESSION_COOKIE_HTTPONLY=True  # Protege la cookie de ataques JS
+    )
+    # --------------------------------
 
     # SQLAlchemy (modelos en models.py)
     from app.extensions import db
