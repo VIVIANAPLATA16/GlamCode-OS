@@ -1,4 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 
 from datos.database_pro import crear_usuario, validar_usuario, crear_usuario_seguro
 
@@ -13,9 +22,15 @@ def login():
 
         usuario = validar_usuario(email, password)
         if usuario:
+            # Orden crítico: limpiar sid anterior; marcar permanente ANTES de asignar
+            # claves para que PERMANENT_SESSION_LIFETIME y Flask-Session apliquen bien.
+            session.clear()
+            session.permanent = True
             session["usuario_id"] = usuario["id"]
+            session["usuario_email"] = usuario["email"]
             session["usuario_nombre"] = usuario["peluqueria"]
             session["rol"] = usuario["rol"]
+            current_app.logger.info("[SESSION DEBUG] Session creada")
             flash("Bienvenido de nuevo.", "success")
             return redirect(url_for("dashboard.inicio"))
 
