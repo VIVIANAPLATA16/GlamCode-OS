@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 
-from datos.database_pro import crear_usuario, validar_usuario
+from datos.database_pro import crear_usuario, validar_usuario, crear_usuario_seguro
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -27,16 +27,21 @@ def login():
 @auth_bp.route("/registro", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
-        peluqueria = request.form.get("peluqueria")
-        email = request.form.get("email")
-        password = request.form.get("password")
+        peluqueria = request.form.get("peluqueria", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
 
-        if peluqueria and email and password:
-            crear_usuario(peluqueria, email, password)
-            flash("Cuenta creada con éxito. Ahora puedes iniciar sesión.", "success")
-            return redirect(url_for("auth.login"))
+        if not all([peluqueria, email, password]):
+            flash("Todos los campos son obligatorios.", "error")
+            return render_template("registro.html")
 
-        flash("Todos los campos son obligatorios.", "error")
+        nuevo = crear_usuario_seguro(peluqueria, email, password)
+        if not nuevo:
+            flash("Ese correo ya está registrado.", "error")
+            return render_template("registro.html")
+
+        flash("Cuenta creada con éxito. Ahora puedes iniciar sesión.", "success")
+        return redirect(url_for("auth.login"))
 
     return render_template("registro.html")
 

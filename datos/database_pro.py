@@ -3,7 +3,7 @@ import os
 
 import mysql.connector
 from dotenv import load_dotenv
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 load_dotenv()
 _log = logging.getLogger(__name__)
@@ -35,24 +35,47 @@ def crear_usuario(peluqueria, email, password):
         cursor.close()
         conexion.close()
 
-def validar_usuario(email, password):
+def validar_usuario(email: str, password: str) -> dict | None:
     conexion = obtener_conexion()
-    if conexion:
-        cursor = conexion.cursor(dictionary=True)
-        query = "SELECT id, peluqueria, email, rol, password FROM usuarios WHERE email = %s"
-        cursor.execute(query, (email.strip(),))
-        usuario = cursor.fetchone()
-
-        if usuario:
-            # Esta línea es la que hace que el login sea SEGURO
-            if check_password_hash(usuario['password'], password.strip()):
-                cursor.close()
-                conexion.close()
-                return usuario
-        
+    if not conexion:
+        return None
+    cursor = conexion.cursor(dictionary=True)
+    cursor.execute(
+        "SELECT id, peluqueria, email, rol, password FROM usuarios WHERE email = %s",
+        (email.strip(),),
+    )
+    usuario = cursor.fetchone()
+    if not usuario:
         cursor.close()
         conexion.close()
-    return None
+        return None
+
+    pwd_stored = usuario["password"]
+    es_hash = pwd_stored.startswith(("pbkdf2:", "$2b$", "$argon2"))
+
+    if es_hash:
+        autenticado = check_password_hash(pwd_stored, password.strip())
+    else:
+        autenticado = (pwd_stored == password.strip())
+        if autenticado:
+            _migrar_password_a_hash(usuario["id"], password.strip(), cursor, conexion)
+
+    cursor.close()
+    conexion.close()
+    return usuario if autenticado else None
+
+
+def _migrar_password_a_hash(usuario_id: int, password_plano: str,
+                             cursor, conexion) -> None:
+    try:
+        nuevo_hash = generate_password_hash(password_plano)
+        cursor.execute(
+            "UPDATE usuarios SET password = %s WHERE id = %s",
+            (nuevo_hash, usuario_id),
+        )
+        conexion.commit()
+    except Exception:
+        pass
 
 def count_citas_hoy_usuario(usuario_id, fecha_iso: str) -> int:
     """Cuenta citas del día (fecha almacenada como texto ISO o fecha)."""
@@ -117,3 +140,25 @@ def crear_cita(usuario_id, cliente, servicio, precio, fecha_input):
             cursor.close()
             conexion.close()
     return False
+
+
+def crear_usuario_seguro(peluqueria: str, email: str, password: str) -> dict | None:
+    conexion = obtener_conexion()
+    if not conexion:
+        return None
+    cursor = conexion.cursor(dictionary=True)
+    cursor.execute("SELECT id FROM usuarios WHERE email = %s", (email.strip(),))
+    if cursor.fetchone():
+        cursor.close()
+        conexion.close()
+        return None
+    hashed = generate_password_hash(password)
+    cursor.execute(
+        "INSERT INTO usuarios (peluqueria, email, password, rol) VALUES (%s, %s, %s, 'owner')",
+        (peluqueria.strip(), email.strip(), hashed),
+    )
+    conexion.commit()
+    nuevo_id = cursor.lastrowid
+    cursor.close()
+    conexion.close()
+    return {"id": nuevo_id, "peluqueria": peluqueria, "rol": "owner"}
