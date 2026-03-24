@@ -4,8 +4,13 @@ from datetime import timedelta
 from flask import Flask, request, session, jsonify
 from flask_session import Session
 from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_sqlalchemy import SQLAlchemy
 
-from .extensions import db
+
+# ==========================================================
+# GLOBAL DB
+# ==========================================================
+db = SQLAlchemy()
 
 
 # ==========================================================
@@ -15,12 +20,23 @@ def create_app():
     app = Flask(__name__)
 
     # ------------------------------------------------------
-    # BASIC CONFIG
+    # SECRET KEY
     # ------------------------------------------------------
     app.config["SECRET_KEY"] = os.environ.get(
         "SECRET_KEY",
         "development-only-secret",
     )
+
+    # ------------------------------------------------------
+    # DATABASE (usa tu DATABASE_URL de Render)
+    # ------------------------------------------------------
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+        "DATABASE_URL",
+        "sqlite:///app.db",
+    )
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    db.init_app(app)
 
     # ------------------------------------------------------
     # SESSION CONFIG (RENDER SAFE)
@@ -32,7 +48,6 @@ def create_app():
     app.config["SESSION_COOKIE_NAME"] = "render_session"
     app.config["SESSION_COOKIE_HTTPONLY"] = True
 
-    # HTTPS detrás del proxy de Render
     if os.getenv("RENDER"):
         app.config["SESSION_COOKIE_SECURE"] = True
         app.config["SESSION_COOKIE_SAMESITE"] = "None"
@@ -40,10 +55,8 @@ def create_app():
         app.config["SESSION_COOKIE_SECURE"] = False
         app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
-    # carpeta donde Flask-Session guarda sesiones
     session_dir = os.path.join(app.instance_path, "flask_session")
     os.makedirs(session_dir, exist_ok=True)
-
     app.config["SESSION_FILE_DIR"] = session_dir
 
     Session(app)
@@ -60,15 +73,7 @@ def create_app():
     )
 
     # ------------------------------------------------------
-    # DATABASE
-    # ------------------------------------------------------
-    db.init_app(app)
-
-    with app.app_context():
-        db.create_all()
-
-    # ------------------------------------------------------
-    # REGISTER BLUEPRINTS
+    # BLUEPRINTS
     # ------------------------------------------------------
     from .routes.auth import auth_bp
     from .routes.dashboard import dashboard_bp
@@ -76,18 +81,13 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
 
-    # ==========================================================
-    # SESSION DEBUG TOOLKIT (SEGURO PARA RENDER)
-    # ==========================================================
-
-    SESSION_DEBUG = os.getenv("SESSION_DEBUG", "true").lower() == "true"
+    # ======================================================
+    # SESSION DEBUG (SAFE)
+    # ======================================================
+    SESSION_DEBUG = True
 
     @app.before_request
-    def session_debug_before_request():
-        if not SESSION_DEBUG:
-            return
-
-        # Render hace health checks HEAD /
+    def debug_in():
         if request.method == "HEAD" and request.path == "/":
             return
 
@@ -99,29 +99,17 @@ def create_app():
         )
 
     @app.after_request
-    def session_debug_after_request(response):
-        if not SESSION_DEBUG:
-            return response
-
+    def debug_out(response):
         try:
             cookies = response.headers.getlist("Set-Cookie")
 
             for cookie in cookies:
-                line = cookie if isinstance(cookie, str) else str(cookie)
-
-                if len(line) > 500:
-                    line = line[:500] + "..."
-
                 app.logger.info(
-                    "[SESSION DEBUG][OUT] Set-Cookie=%s",
-                    line,
+                    "[SESSION DEBUG][OUT] %s",
+                    cookie[:300],
                 )
-
-        except Exception as e:
-            app.logger.error(
-                "[SESSION DEBUG][ERROR]=%s",
-                str(e),
-            )
+        except Exception:
+            pass
 
         return response
 
@@ -131,7 +119,6 @@ def create_app():
             session_data=dict(session),
             cookies_received=dict(request.cookies),
             is_logged_in=bool(session.get("usuario_id")),
-            environment=os.getenv("RENDER", "local"),
         )
 
     # ------------------------------------------------------
