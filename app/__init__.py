@@ -107,42 +107,70 @@ def create_app():
     Session(app)
 
     @app.before_request
-    def _log_incoming_cookies_for_session_debug():
-        """Log de cookies recibidas (Render → Logs → filtrar [SESSION DEBUG])."""
-        if app.debug:
-            app.logger.debug("[SESSION DEBUG] request.cookies=%s", dict(request.cookies))
-        else:
-            app.logger.info("[SESSION DEBUG] request.cookies=%s", dict(request.cookies))
+def _log_incoming_cookies_for_session_debug():
+    """
+    Log de cookies recibidas.
+    IMPORTANTE:
+    Render envía HEAD / como health check constantemente.
+    Evitamos loggear esos requests para prevenir timeouts.
+    """
+
+    # Ignorar health checks de Render
+    if request.method == "HEAD" and request.path == "/":
+        return
+
+    if app.debug:
+        app.logger.debug(
+            "[SESSION DEBUG] request.cookies=%s",
+            dict(request.cookies),
+        )
+    else:
+        app.logger.info(
+            "[SESSION DEBUG] request.cookies=%s",
+            dict(request.cookies),
+        )
 
     @app.after_request
-    def _log_set_cookie_headers(response):
-        """Log de cabeceras Set-Cookie generadas en la respuesta."""
-        try:
-            raw = response.headers.getlist("Set-Cookie")
-        except AttributeError:
-            raw = response.headers.get_all("Set-Cookie")  # type: ignore[attr-defined]
-        if not raw:
-            return response
-        for cookie_header in raw:
-            line = cookie_header if isinstance(cookie_header, str) else str(cookie_header)
-            if len(line) > 500:
-                line = line[:500] + "…"
-            app.logger.info("[SESSION DEBUG] Set-Cookie: %s", line)
+def log_set_cookie_headers(response):
+    if not SESSION_DEBUG:
         return response
 
-    @app.get("/session-debug")
-    def session_debug():
-        """
-        Diagnóstico remoto: estado de sesión y cookies (sin abrir DevTools).
+    try:
+        raw_headers = response.headers.getlist("Set-Cookie")
 
-        ADVERTENCIA: Eliminar esta ruta o protegerla (auth + secreto en header)
-        antes del corte final a producción público; expone datos de sesión.
-        """
-        return jsonify(
-            session_data=dict(session),
-            cookies_received=dict(request.cookies),
-            is_logged_in=bool(session.get("usuario_id")),
-        )
+        for cookie in raw_headers:
+            line = cookie if isinstance(cookie, str) else str(cookie)
+
+            # evitar logs gigantes
+            if len(line) > 500:
+                line = line[:500] + "..."
+
+            app.logger.info(
+                "[SESSION DEBUG][OUT] Set-Cookie => %s",
+                line,
+            )
+
+    except Exception as e:
+        app.logger.error("[SESSION DEBUG][OUT][ERROR] %s", str(e))
+
+    return response
+
+
+    @app.get("/session-debug")
+def session_debug():
+    """
+    Endpoint temporal para verificar sesión remotamente.
+
+    IMPORTANTE:
+    - Eliminar o proteger antes de producción pública.
+    """
+
+    return jsonify(
+        session_data=dict(session),
+        cookies_received=dict(request.cookies),
+        is_logged_in=bool(session.get("usuario_id")),
+        environment=os.getenv("RENDER", "local"),
+    )
 
     # SQLAlchemy (modelos en models.py)
     from app.extensions import db
