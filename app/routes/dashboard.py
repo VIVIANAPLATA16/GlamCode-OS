@@ -26,12 +26,19 @@ _DIAS_SEM = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
 def inicio():
     if "usuario_id" not in session:
         return render_template("landing.html")
+
     usuario_id = session["usuario_id"]
     data = obtener_dashboard_data(usuario_id)
 
+    from datos.database_pro import get_salon_by_usuario_id
+    salon = get_salon_by_usuario_id(usuario_id) or {}
+    nombre_salon = salon.get("peluqueria") or session.get("usuario_nombre", "Mi Salón")
+
     return render_template(
         "dashboard.html",
-        nombre=session.get("usuario_nombre", "Admin"),
+        nombre=nombre_salon,
+        salon=salon,
+        onboarding_completo=salon.get("onboarding_completo", 1),
         total_clientes=data.get("clientes", 0),
         total_citas=data.get("citas", 0),
         total_servicios=data.get("servicios", 0),

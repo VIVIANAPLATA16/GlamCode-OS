@@ -1,9 +1,22 @@
 {% extends 'base.html' %}
 
 {% block title %}Dashboard - GlamCode OS{% endblock %}
-{% block page_title %}Resumen de tu peluquería{% endblock %}
+{% block page_title %}Resumen de {{ nombre | upper }}{% endblock %}
 
 {% block content %}
+
+{% if onboarding_completo == 0 %}
+<div style="border:1px solid #c5a059; border-radius:8px; padding:1rem;
+            margin-bottom:1.5rem; background:rgba(197,160,89,0.05);">
+  <strong>✨ Primeros pasos — configura tu salón</strong>
+  <ul style="margin:.5rem 0 0; padding-left:1.2rem; color:rgba(255,255,255,0.75);">
+    <li><a href="{{ url_for('clientes.clientes') }}" style="color:#c5a059;">👤 Crear tu primer cliente</a></li>
+    <li><a href="{{ url_for('citas.citas') }}" style="color:#c5a059;">📅 Crear tu primera cita</a></li>
+    <li><a href="{{ url_for('dashboard.qr_download') }}" style="color:#c5a059;">📲 Descargar tu QR y compartirlo</a></li>
+  </ul>
+</div>
+{% endif %}
+
 <div class="grid grid--4" id="dashboard-metrics">
   <div class="card card--metric kpi-card">
     <p class="card__label">Ingresos hoy</p>
