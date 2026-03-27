@@ -3,11 +3,9 @@
 {% block title %}Login | GlamCode OS{% endblock %}
 
 {% block content %}
-    <div style="text-align: center; margin-bottom: 1.5rem;">
-        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo GlamCode" style="width: 120px; height: auto;">
-    </div>
-
-    <h2 class="card__title" style="margin-bottom: 1.5rem; text-align: center;">Acceso a tu Negocio</h2>
+    <h2 class="card__title" style="margin-bottom: 2rem; text-align: center; letter-spacing: 1px;">
+        Acceso a tu Negocio
+    </h2>
 
     <form method="POST">
         <div class="form-group">
@@ -20,14 +18,16 @@
             <input id="password" type="password" name="password" placeholder="••••••••" required autocomplete="current-password">
         </div>
 
-        <button type="submit" class="btn btn--primary w-100">
+        <button type="submit" class="btn btn--primary w-100" style="margin-top: 1rem;">
             Ingresar
         </button>
     </form>
 
-    <div class="login-footer" style="margin-top: 1rem; text-align: center; font-size: 0.9rem;">
-        <p>¿Aún no tienes cuenta?
-            <a href="{{ url_for('auth.registro') }}">Regístrate aquí</a>
+    <div class="login-footer" style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <p style="color: #888;">¿Aún no tienes cuenta? 
+            <a href="{{ url_for('auth.registro') }}" style="color: #D4AF37; text-decoration: none; font-weight: bold;">
+                Regístrate aquí
+            </a>
         </p>
     </div>
 {% endblock %}
