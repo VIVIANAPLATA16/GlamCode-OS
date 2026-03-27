@@ -39,6 +39,7 @@ def inicio():
         nombre=nombre_salon,
         salon=salon,
         onboarding_completo=salon.get("onboarding_completo", 1),
+        rol=session.get("rol", "owner"),
         total_clientes=data.get("clientes", 0),
         total_citas=data.get("citas", 0),
         total_servicios=data.get("servicios", 0),

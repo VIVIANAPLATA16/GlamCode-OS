@@ -138,6 +138,12 @@ def _reservar_post_handler():
     )
     if not ok:
         return jsonify({"ok": False, "error": err or "No se pudo crear la cita"})
+    # Log de notificación en tiempo real
+    try:
+        print(f"🔔 CITA NUEVA: El salón {salon_id} tiene una nueva cita "
+              f"de {nombre} para el {fecha} a las {hora}")
+    except Exception:
+        pass
     return jsonify({"ok": True, "cita_id": cid})
 
 

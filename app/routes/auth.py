@@ -80,3 +80,16 @@ def logout():
     flash("Sesión cerrada correctamente.", "info")
     return redirect(url_for("auth.login"))
 
+
+@auth_bp.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        print(f"🔑 RESET SOLICITADO: El email '{email}' solicitó recuperar acceso.")
+        flash(
+            "Se ha enviado una notificación al administrador para restablecer "
+            "tu acceso al correo registrado.",
+            "success",
+        )
+        return redirect(url_for("auth.login"))
+    return render_template("forgot_password.html")
