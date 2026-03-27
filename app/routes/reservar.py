@@ -97,16 +97,22 @@ def _reservar_post_handler():
     fecha = (payload.get("fecha") or "").strip()
     hora = (payload.get("hora") or "").strip()
 
-    # salon_id: desde el body JSON (enviado por el wizard) o fallback a _salon_id()
-    salon_id_body = payload.get("salon_id", type=int) if hasattr(payload.get("salon_id"), "__int__") else None
+    # Parsear salon_id robusto: acepta int, string numérico o string vacío
+    _raw = payload.get("salon_id")
+    salon_id = None
     try:
-        salon_id_body = int(payload.get("salon_id")) if payload.get("salon_id") else None
+        _parsed = int(str(_raw).strip()) if _raw not in (None, "", "null") else None
+        if _parsed and _parsed > 0:
+            salon_id = _parsed
     except (TypeError, ValueError):
-        salon_id_body = None
-    salon_id = salon_id_body or _salon_id()
+        salon_id = None
+    # Fallback solo si no vino salon_id válido en el body
+    if not salon_id:
+        salon_id = int(current_app.config.get("PUBLIC_BOOKING_USUARIO_ID", 1))
 
     if not all([nombre, tel, sid, eid, fecha, hora]):
         return jsonify({"ok": False, "error": "Faltan campos obligatorios"}), 400
+
     ok, err, cid = reservar_repo.create_reserva(
         salon_id,
         nombre,
