@@ -1,6 +1,7 @@
 """
 Generador de códigos QR para reservas públicas (dorado sobre negro carbón).
 """
+import io
 import os
 from pathlib import Path
 
@@ -73,3 +74,26 @@ def generate_qr_for_salon(salon_id: int, base_url: str, static_folder: str) -> s
         back_color="#0a0a0a",
     )
     return f"/static/img/{filename}"
+
+
+def generate_qr_bytes_for_salon(salon_id: int, base_url: str) -> io.BytesIO:
+    """
+    Genera el QR del salón en memoria (BytesIO) — sin escribir al disco.
+    Compatible con Render (filesystem efímero) y cualquier hosting.
+    Usa los colores dorados de identidad GlamCode.
+    Retorna buffer PNG listo para send_file().
+    """
+    booking_url = f"{base_url.rstrip('/')}/reservar?salon={salon_id}"
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(booking_url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="#c5a059", back_color="#0a0a0a")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+    return buf

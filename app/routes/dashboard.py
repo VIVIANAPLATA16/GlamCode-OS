@@ -48,44 +48,27 @@ def inicio():
 @dashboard_bp.route("/dashboard/qr-download")
 @login_required
 def qr_download():
-    from datos.database_pro import get_salon_by_usuario_id
+    """
+    Genera el QR en memoria con el usuario_id de la sesión activa.
+    URL del QR: BASE_URL/reservar?salon={usuario_id}
+    Sin dependencia de disco — funciona en Render después de cada deploy.
+    """
+    from utils.qr_generator import generate_qr_bytes_for_salon
 
-    salon = get_salon_by_usuario_id(session["usuario_id"]) or {}
-    qr_url = salon.get("qr_code_url")
-
-    if qr_url:
-        # qr_url = "/static/img/qr_salon_3.png" → convertir a path absoluto
-        rel_path = qr_url.replace("/static/", "", 1)
-        path = os.path.join(current_app.static_folder, rel_path)
-        if not os.path.exists(path):
-            # Archivo efímero (Render reinició) → regenerar en caliente
-            try:
-                from utils.qr_generator import generate_qr_for_salon
-                from datos.database_pro import save_qr_url
-
-                base_url = current_app.config.get("BASE_URL", "")
-                qr_url = generate_qr_for_salon(
-                    salon["id"], base_url, current_app.static_folder
-                )
-                save_qr_url(salon["id"], qr_url)
-                rel_path = qr_url.replace("/static/", "", 1)
-                path = os.path.join(current_app.static_folder, rel_path)
-            except Exception as e:
-                current_app.logger.warning("QR regeneration failed: %s", e)
-                path = os.path.join(
-                    current_app.static_folder, "img", "qr_reserva.png"
-                )
-    else:
-        # Fallback: QR genérico — nunca rompe usuarios existentes
-        path = os.path.join(current_app.static_folder, "img", "qr_reserva.png")
-
-    salon_nombre = salon.get("peluqueria") or session.get("usuario_nombre", "Salon")
-    return send_file(
-        path,
-        as_attachment=True,
-        download_name=f"GlamCode_QR_{salon_nombre}.png",
-        mimetype="image/png",
-    )
+    usuario_id = session["usuario_id"]
+    salon_nombre = session.get("usuario_nombre", "Salon")
+    base_url = current_app.config.get("BASE_URL", "https://glamcode-os.onrender.com")
+    try:
+        buf = generate_qr_bytes_for_salon(usuario_id, base_url)
+        return send_file(
+            buf,
+            as_attachment=True,
+            download_name=f"GlamCode_QR_{salon_nombre}.png",
+            mimetype="image/png",
+        )
+    except Exception as e:
+        current_app.logger.error("QR generation failed for usuario %s: %s", usuario_id, e)
+        return jsonify({"error": "No se pudo generar el QR"}), 500
 
 
 @dashboard_bp.route("/dashboard/metricas-json")
