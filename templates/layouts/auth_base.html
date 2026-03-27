@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GlamCode OS - Acceso{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}?v=3">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=3">
     {% block extra_css %}{% endblock %}
 </head>
 <body class="auth-body">
 <main class="auth-layout" id="main-content">
     <section class="auth-card">
-        <header class="auth-card__header">
+        <header class="auth-card__header" style="text-align: center;">
+            <img src="{{ url_for('static', filename='img/logo.png') }}?v=3" alt="Logo" style="max-width: 100px; margin-bottom: 15px; display: inline-block;">
             <h1 class="auth-card__brand">GLAMCODE</h1>
             <p class="auth-card__subtitle">Sistema de gestión profesional</p>
         </header>
@@ -26,4 +28,3 @@
 {% block extra_js %}{% endblock %}
 </body>
 </html>
-
