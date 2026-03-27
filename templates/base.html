@@ -13,10 +13,14 @@
 <body class="app-body">
 <div class="layout">
     <aside class="sidebar" aria-label="Menú principal">
-        <div class="sidebar__brand">
-            <span class="sidebar__brand-mark">GC</span>
-            <span class="sidebar__brand-text">GlamCode OS</span>
+        <div class="sidebar__brand" style="padding: 20px 10px; text-align: center;">
+            <a href="{{ url_for('dashboard.inicio') }}" style="text-decoration: none; display: flex; justify-content: center; width: 100%;">
+                <img src="{{ url_for('static', filename='img/logo.jpg') }}" 
+                     alt="GlamCode OS Logo" 
+                     style="max-width: 160px; height: auto; display: block;">
+            </a>
         </div>
+
         <nav class="sidebar__nav">
             <a href="{{ url_for('dashboard.inicio') }}"
                class="nav-link {% if request.endpoint == 'dashboard.inicio' %}nav-link--active{% endif %}">
