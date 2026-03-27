@@ -17,6 +17,17 @@ reservar_bp = Blueprint("reservar", __name__, url_prefix="")
 
 
 def _salon_id() -> int:
+    """
+    Prioridad:
+    1. ?salon=X en la URL (QR del salón)
+    2. JSON body salon_id (POST del wizard)
+    3. Config PUBLIC_BOOKING_USUARIO_ID (fallback)
+    """
+    # GET param (QR link: /reservar?salon=3)
+    salon_param = request.args.get("salon", type=int)
+    if salon_param:
+        return salon_param
+    # Fallback a config
     return int(current_app.config.get("PUBLIC_BOOKING_USUARIO_ID", 1))
 
 
@@ -85,10 +96,19 @@ def _reservar_post_handler():
     eid = payload.get("empleado_id")
     fecha = (payload.get("fecha") or "").strip()
     hora = (payload.get("hora") or "").strip()
+
+    # salon_id: desde el body JSON (enviado por el wizard) o fallback a _salon_id()
+    salon_id_body = payload.get("salon_id", type=int) if hasattr(payload.get("salon_id"), "__int__") else None
+    try:
+        salon_id_body = int(payload.get("salon_id")) if payload.get("salon_id") else None
+    except (TypeError, ValueError):
+        salon_id_body = None
+    salon_id = salon_id_body or _salon_id()
+
     if not all([nombre, tel, sid, eid, fecha, hora]):
         return jsonify({"ok": False, "error": "Faltan campos obligatorios"}), 400
     ok, err, cid = reservar_repo.create_reserva(
-        _salon_id(),
+        salon_id,
         nombre,
         tel,
         int(sid),
