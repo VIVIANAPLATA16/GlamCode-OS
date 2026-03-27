@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body class="app-body">
@@ -15,7 +16,7 @@
     <aside class="sidebar" aria-label="Menú principal">
         <div class="sidebar__brand" style="padding: 20px 10px; text-align: center;">
             <a href="{{ url_for('dashboard.inicio') }}" style="text-decoration: none; display: flex; justify-content: center; width: 100%;">
-                <img src="{{ url_for('static', filename='img/logo.jpg') }}" 
+                <img src="{{ url_for('static', filename='img/logo.png') }}" 
                      alt="GlamCode OS Logo" 
                      style="max-width: 160px; height: auto; display: block;">
             </a>
