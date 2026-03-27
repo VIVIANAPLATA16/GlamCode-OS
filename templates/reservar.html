@@ -80,13 +80,18 @@
 
 <script>
 (function(){
+  // Persistir salon_id en sessionStorage para sobrevivir refresh
+  const _urlSalon = new URLSearchParams(window.location.search).get('salon') || '';
+  if (_urlSalon) sessionStorage.setItem('glamcode_salon_id', _urlSalon);
+  const _salonId = _urlSalon || sessionStorage.getItem('glamcode_salon_id') || '';
+
   const state = { servicio_id: null, empleado_id: null, fecha: null, hora: null };
   const $ = id => document.getElementById(id);
   function show(n) {
     for (let i = 1; i <= 4; i++) $('step'+i).classList.toggle('active', i === n);
   }
   function loadServicios() {
-    fetch('{{ url_for("reservar.servicios_json") }}?salon=' + (new URLSearchParams(window.location.search).get('salon') || '')).then(r=>r.json()).then(list => {
+    fetch('{{ url_for("reservar.servicios_json") }}?salon=' + _salonId).then(r=>r.json()).then(list => {
       const el = $('lista-servicios');
       el.innerHTML = '';
       list.forEach(s => {
@@ -99,7 +104,7 @@
     });
   }
   function loadEmpleados() {
-    fetch('{{ url_for("reservar.empleados_json") }}?servicio_id='+state.servicio_id+'&salon=' + (new URLSearchParams(window.location.search).get('salon') || '')).then(r=>r.json()).then(list => {
+    fetch('{{ url_for("reservar.empleados_json") }}?servicio_id='+state.servicio_id+'&salon=' + _salonId).then(r=>r.json()).then(list => {
       const el = $('lista-empleados');
       el.innerHTML = '';
       (Array.isArray(list) ? list : []).forEach(e => {
@@ -116,7 +121,7 @@
     const f = $('fecha-reserva').value;
     if (!f || !state.empleado_id) return;
     state.fecha = f;
-    fetch('{{ url_for("reservar.disponibilidad_json") }}?empleado_id='+state.empleado_id+'&fecha='+encodeURIComponent(f)+'&salon=' + (new URLSearchParams(window.location.search).get('salon') || ''))
+    fetch('{{ url_for("reservar.disponibilidad_json") }}?empleado_id='+state.empleado_id+'&fecha='+encodeURIComponent(f)+'&salon=' + _salonId)
       .then(r=>r.json()).then(data => {
         $('slots-wrap').style.display = 'block';
         const el = $('slots');
@@ -162,7 +167,7 @@
         empleado_id: state.empleado_id,
         fecha: state.fecha,
         hora: state.hora,
-        salon_id: new URLSearchParams(window.location.search).get('salon') || ''
+        salon_id: _salonId
       })
     }).then(r => r.json()).then(data => {
       if (data.ok && data.cita_id) {

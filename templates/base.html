@@ -65,7 +65,7 @@
                 </span>
                 <span>Métricas globales</span>
             </a>
-            {% if session.get('rol') == 'admin' %}
+            {% if session.get('usuario_id') %}
             <a href="{{ url_for('equipo.crear_estilista') }}"
                class="nav-link {% if request.endpoint == 'equipo.crear_estilista' %}nav-link--active{% endif %}">
                 <span class="nav-link__icon" aria-hidden="true">

@@ -16,19 +16,23 @@ from app.repositories import reservar_repo
 reservar_bp = Blueprint("reservar", __name__, url_prefix="")
 
 
-def _salon_id() -> int:
+def _salon_id() -> int | None:
     """
     Prioridad:
     1. ?salon=X en la URL (QR del salón)
-    2. JSON body salon_id (POST del wizard)
-    3. Config PUBLIC_BOOKING_USUARIO_ID (fallback)
+    2. session["usuario_id"] si el dueño está logueado
+    3. None → el caller debe retornar error 400
+    Nunca usa fallback hardcodeado — evita cruzar datos entre salones.
     """
-    # GET param (QR link: /reservar?salon=3)
     salon_param = request.args.get("salon", type=int)
     if salon_param:
         return salon_param
-    # Fallback a config
-    return int(current_app.config.get("PUBLIC_BOOKING_USUARIO_ID", 1))
+    from flask import session
+
+    uid = session.get("usuario_id")
+    if uid:
+        return int(uid)
+    return None
 
 
 def _slots_dia() -> list[str]:
@@ -50,7 +54,10 @@ def reservar():
 
 @reservar_bp.route("/reservar/servicios-json")
 def servicios_json():
-    rows = reservar_repo.list_servicios_salon(_salon_id())
+    sid = _salon_id()
+    if not sid:
+        return jsonify({"error": "salon_id requerido"}), 400
+    rows = reservar_repo.list_servicios_salon(sid)
     data = [
         {
             "id": r[0],
@@ -68,7 +75,10 @@ def empleados_json():
     servicio_id = request.args.get("servicio_id", type=int)
     if not servicio_id:
         return jsonify({"error": "servicio_id requerido"}), 400
-    rows = reservar_repo.list_empleados_salon(_salon_id())
+    sid = _salon_id()
+    if not sid:
+        return jsonify({"error": "salon_id requerido"}), 400
+    rows = reservar_repo.list_empleados_salon(sid)
     data = [{"id": r[0], "nombre": r[1]} for r in rows]
     return jsonify(data)
 
@@ -79,12 +89,11 @@ def disponibilidad_json():
     fecha = request.args.get("fecha", "")
     if not empleado_id or not fecha or not re.match(r"^\d{4}-\d{2}-\d{2}$", fecha):
         return jsonify({"error": "empleado_id y fecha YYYY-MM-DD requeridos"}), 400
-    busy = set(
-        reservar_repo.citas_ocupadas_slot(_salon_id(), empleado_id, fecha)
-    )
-    slots = []
-    for s in _slots_dia():
-        slots.append({"hora": s, "libre": s not in busy})
+    sid = _salon_id()
+    if not sid:
+        return jsonify({"error": "salon_id requerido"}), 400
+    busy = set(reservar_repo.citas_ocupadas_slot(sid, empleado_id, fecha))
+    slots = [{"hora": s, "libre": s not in busy} for s in _slots_dia()]
     return jsonify({"slots": slots})
 
 
@@ -106,9 +115,14 @@ def _reservar_post_handler():
             salon_id = _parsed
     except (TypeError, ValueError):
         salon_id = None
-    # Fallback solo si no vino salon_id válido en el body
+    # Si no vino salon_id válido en el body, intentar desde sesión
     if not salon_id:
-        salon_id = int(current_app.config.get("PUBLIC_BOOKING_USUARIO_ID", 1))
+        from flask import session
+
+        salon_id = session.get("usuario_id")
+    # Nunca fallback a ID hardcodeado — retornar error explícito
+    if not salon_id:
+        return jsonify({"ok": False, "error": "Salón no identificado. Usa el link QR de tu salón."}), 400
 
     if not all([nombre, tel, sid, eid, fecha, hora]):
         return jsonify({"ok": False, "error": "Faltan campos obligatorios"}), 400
