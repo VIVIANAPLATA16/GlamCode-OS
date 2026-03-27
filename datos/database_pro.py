@@ -261,3 +261,27 @@ def verificar_columnas_fase2() -> dict:
         "columnas_fase2_faltantes": list(faltantes),
         "fase2_completa": len(faltantes) == 0,
     }
+
+
+def save_qr_url(usuario_id: int, qr_url: str) -> None:
+    """Persiste la URL del QR del salón en la columna qr_code_url."""
+    conexion = obtener_conexion()
+    if not conexion:
+        return
+    cursor = conexion.cursor()
+    try:
+        cursor.execute(
+            "UPDATE usuarios SET qr_code_url = %s WHERE id = %s",
+            (qr_url, usuario_id),
+        )
+        conexion.commit()
+    except Exception as e:
+        try:
+            from flask import current_app
+
+            current_app.logger.warning("save_qr_url error: %s", e)
+        except Exception:
+            pass
+    finally:
+        cursor.close()
+        conexion.close()

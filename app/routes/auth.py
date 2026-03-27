@@ -55,6 +55,19 @@ def registro():
             flash("Ese correo ya está registrado.", "error")
             return render_template("registro.html")
 
+        # Generar QR único para el salón recién creado
+        try:
+            from utils.qr_generator import generate_qr_for_salon
+            from datos.database_pro import save_qr_url
+
+            base_url = current_app.config.get("BASE_URL", "").rstrip("/")
+            qr_url = generate_qr_for_salon(
+                nuevo["id"], base_url, current_app.static_folder
+            )
+            save_qr_url(nuevo["id"], qr_url)
+        except Exception as e:
+            current_app.logger.warning("QR no generado en registro: %s", e)
+
         flash("Cuenta creada con éxito. Ahora puedes iniciar sesión.", "success")
         return redirect(url_for("auth.login"))
 

@@ -54,3 +54,22 @@ if __name__ == "__main__":
         back_color="#0a0a0a",
     )
     print("QR generado en", _static_img / "qr_reserva.png")
+
+
+def generate_qr_for_salon(salon_id: int, base_url: str, static_folder: str) -> str:
+    """
+    Genera QR único por salón apuntando a /reservar?salon={id}.
+    Usa los mismos colores dorado/negro de la identidad GlamCode.
+    NO toca qr_reserva.png (QR genérico existente).
+    Retorna URL relativa tipo '/static/img/qr_salon_3.png'.
+    """
+    booking_url = f"{base_url.rstrip('/')}/reservar?salon={salon_id}"
+    filename = f"qr_salon_{salon_id}.png"
+    output_path = os.path.join(static_folder, "img", filename)
+    generate_qr(
+        booking_url,
+        output_path,
+        fill_color="#c5a059",
+        back_color="#0a0a0a",
+    )
+    return f"/static/img/{filename}"

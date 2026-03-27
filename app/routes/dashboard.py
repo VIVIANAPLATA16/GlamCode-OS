@@ -48,12 +48,42 @@ def inicio():
 @dashboard_bp.route("/dashboard/qr-download")
 @login_required
 def qr_download():
-    base_dir = current_app.static_folder
-    path = os.path.join(base_dir, "img", "qr_reserva.png")
+    from datos.database_pro import get_salon_by_usuario_id
+
+    salon = get_salon_by_usuario_id(session["usuario_id"]) or {}
+    qr_url = salon.get("qr_code_url")
+
+    if qr_url:
+        # qr_url = "/static/img/qr_salon_3.png" → convertir a path absoluto
+        rel_path = qr_url.replace("/static/", "", 1)
+        path = os.path.join(current_app.static_folder, rel_path)
+        if not os.path.exists(path):
+            # Archivo efímero (Render reinició) → regenerar en caliente
+            try:
+                from utils.qr_generator import generate_qr_for_salon
+                from datos.database_pro import save_qr_url
+
+                base_url = current_app.config.get("BASE_URL", "")
+                qr_url = generate_qr_for_salon(
+                    salon["id"], base_url, current_app.static_folder
+                )
+                save_qr_url(salon["id"], qr_url)
+                rel_path = qr_url.replace("/static/", "", 1)
+                path = os.path.join(current_app.static_folder, rel_path)
+            except Exception as e:
+                current_app.logger.warning("QR regeneration failed: %s", e)
+                path = os.path.join(
+                    current_app.static_folder, "img", "qr_reserva.png"
+                )
+    else:
+        # Fallback: QR genérico — nunca rompe usuarios existentes
+        path = os.path.join(current_app.static_folder, "img", "qr_reserva.png")
+
+    salon_nombre = salon.get("peluqueria") or session.get("usuario_nombre", "Salon")
     return send_file(
         path,
         as_attachment=True,
-        download_name="GlamCode_QR_Reserva.png",
+        download_name=f"GlamCode_QR_{salon_nombre}.png",
         mimetype="image/png",
     )
 
