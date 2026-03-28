@@ -5,10 +5,13 @@ import os
 from flask import (
     Blueprint,
     current_app,
+    flash,
     jsonify,
+    redirect,
     render_template,
     send_file,
     session,
+    url_for,
 )
 from sqlalchemy import func
 
@@ -129,6 +132,9 @@ def metricas_json():
 @dashboard_bp.route("/dashboard/inventario")
 @login_required
 def inventario_page():
+    if session.get("rol") == "estilista":
+        flash("No tienes acceso a esta sección.", "error")
+        return redirect(url_for("dashboard.inicio"))
     uid = session["usuario_id"]
     items = (
         InventarioItem.query.filter_by(usuario_id=uid)
@@ -141,6 +147,9 @@ def inventario_page():
 @dashboard_bp.route("/dashboard/metricas")
 @login_required
 def metricas_page():
+    if session.get("rol") == "estilista":
+        flash("No tienes acceso a esta sección.", "error")
+        return redirect(url_for("dashboard.inicio"))
     uid = session["usuario_id"]
     items = (
         InventarioItem.query.filter_by(usuario_id=uid)

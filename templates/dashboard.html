@@ -5,7 +5,7 @@
 
 {% block content %}
 
-{% if onboarding_completo == 0 %}
+{% if onboarding_completo == 0 and rol != 'estilista' %}
 <div style="border:1px solid #c5a059; border-radius:8px; padding:1rem;
             margin-bottom:1.5rem; background:rgba(197,160,89,0.05);">
   <strong>✨ Primeros pasos — configura tu salón</strong>
@@ -38,12 +38,7 @@
     <p class="card__value" id="metric-ticket">—</p>
   </div>
   {% endif %}
-  {% if rol == 'estilista' %}
-  <div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden" aria-hidden="true">
-    <span id="metric-ingresos-hoy">—</span>
-    <span id="metric-ticket">—</span>
-  </div>
-  {% endif %}
+  {# elementos fantasma eliminados — el JS ahora usa null-check #}
 </div>
 
 <div class="grid grid--3">
@@ -63,6 +58,7 @@
   </div>
 </div>
 
+{% if rol != 'estilista' %}
 <div class="card">
   <div class="card__header card__header--between">
     <div>
@@ -87,6 +83,17 @@
     <a href="{{ url_for('clientes.clientes') }}" class="btn btn--gold">Nuevo cliente</a>
   </div>
 </div>
+{% else %}
+<div class="card">
+  <div class="card__header">
+    <h2 class="card__title">Tus citas de hoy</h2>
+    <p class="card__subtitle">Actualización automática cada 60 segundos.</p>
+  </div>
+  <div class="card__actions" style="margin-top:1rem">
+    <a href="{{ url_for('citas.citas') }}" class="btn btn--gold">Ver mis citas</a>
+  </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}
@@ -99,14 +106,16 @@
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
   }
   function update(data) {
-    document.getElementById('metric-ingresos-hoy').textContent = fmtMoney(data.ingresos_hoy || 0);
-    document.getElementById('metric-citas-hoy').textContent = data.citas_hoy ?? '0';
-    document.getElementById('metric-ocupacion').textContent = (data.ocupacion_pct ?? 0) + '%';
-    document.getElementById('metric-ticket').textContent = fmtMoney(data.ticket_promedio || 0);
+    const safe = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    safe('metric-ingresos-hoy', fmtMoney(data.ingresos_hoy || 0));
+    safe('metric-citas-hoy', data.citas_hoy ?? '0');
+    safe('metric-ocupacion', (data.ocupacion_pct ?? 0) + '%');
+    safe('metric-ticket', fmtMoney(data.ticket_promedio || 0));
     const labels = (data.ingresos_semana || []).map(x => x.dia);
     const values = (data.ingresos_semana || []).map(x => x.monto);
+    const ctx = document.getElementById('chartIngresos');
+    if (!ctx) return;
     if (!chart) {
-      const ctx = document.getElementById('chartIngresos');
       chart = new Chart(ctx, {
         type: 'line',
         data: {
