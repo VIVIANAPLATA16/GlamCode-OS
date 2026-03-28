@@ -163,3 +163,36 @@ def metricas_page():
         .all()
     )
     return render_template("metricas.html", items=items, transacciones=trans)
+
+
+@dashboard_bp.route("/dashboard/notificaciones-json")
+@login_required
+def notificaciones_json():
+    """Endpoint de polling — retorna notificaciones no leídas del salón."""
+    from app.repositories.reservar_repo import get_notificaciones_nuevas
+
+    salon_id = session["usuario_id"]
+    notifs = get_notificaciones_nuevas(salon_id)
+    # Convertir datetime a string para JSON
+    result = []
+    for n in notifs:
+        result.append(
+            {
+                "id": n["id"],
+                "cliente": n["cliente"],
+                "servicio": n["servicio"],
+                "hora": n["hora"],
+                "creada_en": str(n["creada_en"])[:16] if n.get("creada_en") else "",
+            }
+        )
+    return jsonify({"notificaciones": result, "total": len(result)})
+
+
+@dashboard_bp.route("/dashboard/notificaciones-leidas", methods=["POST"])
+@login_required
+def notificaciones_leidas():
+    """Marca todas las notificaciones del salón como leídas."""
+    from app.repositories.reservar_repo import marcar_notificaciones_leidas
+
+    marcar_notificaciones_leidas(session["usuario_id"])
+    return jsonify({"ok": True})

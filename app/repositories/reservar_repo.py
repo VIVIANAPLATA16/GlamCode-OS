@@ -154,6 +154,28 @@ def create_reserva(
         )
         c.commit()
         cid = cur.lastrowid
+
+        # ── Fase 6: WhatsApp + notificación para polling ──────────────
+        try:
+            from services.whatsapp_service import notify_salon_owner
+
+            notify_salon_owner(
+                usuario_salon_id,
+                nombre_cliente,
+                nombre_serv,
+                fecha[:10],
+                hora[:5],
+            )
+        except Exception:
+            pass  # WhatsApp nunca rompe el flujo
+
+        try:
+            _guardar_notificacion(
+                c, cur, usuario_salon_id, nombre_cliente, nombre_serv, hora[:5]
+            )
+        except Exception:
+            pass  # notificación nunca rompe el flujo
+
         cur.close()
         c.close()
         return True, "", cid
@@ -192,3 +214,79 @@ def get_cita_publica(cita_id: int) -> Optional[dict]:
     cur.close()
     c.close()
     return row
+
+
+def _guardar_notificacion(c, cur, salon_id: int, cliente: str, servicio: str, hora: str) -> None:
+    """
+    Guarda notificación en tabla notificaciones para que el polling del dashboard la lea.
+    Tabla creada automáticamente si no existe.
+    """
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS notificaciones (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            salon_id INT NOT NULL,
+            cliente VARCHAR(200),
+            servicio VARCHAR(200),
+            hora VARCHAR(10),
+            leida TINYINT(1) DEFAULT 0,
+            creada_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """
+    )
+    cur.execute(
+        """
+        INSERT INTO notificaciones (salon_id, cliente, servicio, hora)
+        VALUES (%s, %s, %s, %s)
+        """,
+        (salon_id, cliente, servicio, hora),
+    )
+    c.commit()
+
+
+def get_notificaciones_nuevas(salon_id: int) -> list:
+    """Retorna notificaciones no leídas del salón. Usado por el endpoint de polling."""
+    from datos.database_pro import obtener_conexion
+
+    conn = obtener_conexion()
+    if not conn:
+        return []
+    cur = conn.cursor(dictionary=True)
+    try:
+        cur.execute(
+            """
+            SELECT id, cliente, servicio, hora, creada_en
+            FROM notificaciones
+            WHERE salon_id = %s AND leida = 0
+            ORDER BY creada_en DESC
+            LIMIT 10
+            """,
+            (salon_id,),
+        )
+        return cur.fetchall() or []
+    except Exception:
+        return []
+    finally:
+        cur.close()
+        conn.close()
+
+
+def marcar_notificaciones_leidas(salon_id: int) -> None:
+    """Marca todas las notificaciones del salón como leídas."""
+    from datos.database_pro import obtener_conexion
+
+    conn = obtener_conexion()
+    if not conn:
+        return
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "UPDATE notificaciones SET leida = 1 WHERE salon_id = %s AND leida = 0",
+            (salon_id,),
+        )
+        conn.commit()
+    except Exception:
+        pass
+    finally:
+        cur.close()
+        conn.close()

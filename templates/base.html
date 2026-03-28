@@ -38,9 +38,17 @@
                 <span>Clientes</span>
             </a>
             <a href="{{ url_for('citas.citas') }}"
-               class="nav-link {% if request.endpoint == 'citas.citas' %}nav-link--active{% endif %}">
-                <span class="nav-link__icon" aria-hidden="true">
+               class="nav-link {% if request.endpoint == 'citas.citas' %}nav-link--active{% endif %}"
+               id="nav-citas-link"
+               onclick="glamMarkRead()">
+                <span class="nav-link__icon" aria-hidden="true" style="position:relative">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+                    <span id="notif-badge"
+                          style="display:none;position:absolute;top:-4px;right:-4px;
+                                 width:10px;height:10px;border-radius:50%;
+                                 background:#c5a059;
+                                 box-shadow:0 0 6px 2px rgba(197,160,89,0.7);">
+                    </span>
                 </span>
                 <span>Citas</span>
             </a>
@@ -114,5 +122,119 @@
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script src="{{ url_for('static', filename='js/confirm.js') }}"></script>
 {% block extra_js %}{% endblock %}
+
+{% if session.get('usuario_id') %}
+<style>
+  #glam-toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: #111; border: 1px solid #c5a059;
+    border-radius: 10px; padding: 14px 20px;
+    color: #fff; font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
+    box-shadow: 0 0 30px rgba(197,160,89,0.25);
+    display: none; max-width: 300px;
+    animation: glamSlideIn 0.4s cubic-bezier(0.19,1,0.22,1);
+  }
+  @keyframes glamSlideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  @keyframes glamPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(197,160,89,0); }
+    50%      { box-shadow: 0 0 0 12px rgba(197,160,89,0.25); }
+  }
+  .glam-pulse { animation: glamPulse 1s ease-in-out 5; }
+</style>
+
+<div id="glam-toast">
+  <span style="color:#c5a059;font-size:1rem;margin-right:8px">✨</span>
+  <span id="glam-toast-msg">Nueva cita agendada</span>
+  <button onclick="document.getElementById('glam-toast').style.display='none'"
+          style="background:none;border:none;color:#888;cursor:pointer;
+                 float:right;font-size:1rem;margin-left:12px;">✕</button>
+</div>
+
+<script>
+(function () {
+  // ── Chime (Web Audio API — sin archivo externo) ──────────────────
+  function playChime() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const t = ctx.currentTime + i * 0.18;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.18, t + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+        osc.start(t); osc.stop(t + 0.5);
+      });
+    } catch(e) {}
+  }
+
+  // ── Toast ────────────────────────────────────────────────────────
+  function showToast(msg) {
+    const toast = document.getElementById('glam-toast');
+    const msgEl = document.getElementById('glam-toast-msg');
+    if (!toast || !msgEl) return;
+    msgEl.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 6000);
+  }
+
+  // ── Badge ────────────────────────────────────────────────────────
+  function showBadge() {
+    const b = document.getElementById('notif-badge');
+    if (b) b.style.display = 'block';
+  }
+  function hideBadge() {
+    const b = document.getElementById('notif-badge');
+    if (b) b.style.display = 'none';
+  }
+
+  // ── Pulse en card de citas ───────────────────────────────────────
+  function pulseCard() {
+    const card = document.querySelector('.card');
+    if (!card) return;
+    card.classList.add('glam-pulse');
+    setTimeout(() => card.classList.remove('glam-pulse'), 5500);
+  }
+
+  // ── Marcar leídas (al hacer click en Citas) ──────────────────────
+  window.glamMarkRead = function() {
+    hideBadge();
+    fetch('/dashboard/notificaciones-leidas', {
+      method: 'POST', credentials: 'same-origin'
+    }).catch(() => {});
+  };
+
+  // ── Polling cada 30 segundos ─────────────────────────────────────
+  let _lastNotifId = 0;
+
+  function pollNotificaciones() {
+    fetch('/dashboard/notificaciones-json', { credentials: 'same-origin' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data || !data.notificaciones || data.total === 0) return;
+        const newest = data.notificaciones[0];
+        if (newest.id === _lastNotifId) return; // ya procesada
+        _lastNotifId = newest.id;
+        // Activar todas las alertas
+        showBadge();
+        showToast(`¡Nueva cita! ${newest.cliente} — ${newest.servicio} a las ${newest.hora}`);
+        playChime();
+        pulseCard();
+      })
+      .catch(() => {});
+  }
+
+  // Polling inicial + intervalo 30s
+  pollNotificaciones();
+  setInterval(pollNotificaciones, 30000);
+})();
+</script>
+{% endif %}
 </body>
 </html>
